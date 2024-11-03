@@ -1,6 +1,6 @@
-import Carousel from '../components/carrousel/Carrousel';
-import CardGrid from '../components/cards/CardGrid';
-import Footer from '../components/footer/Footer';
+import Carousel from './components/carrousel/Carrousel';
+import CardGrid from './components/cards/CardGrid';
+import Footer from './components/footer/Footer';
 
 export default function Home() {
   return (
