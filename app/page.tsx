@@ -1,6 +1,4 @@
-import Carousel from './components/carrousel/Carrousel';
-import CardGrid from './components/cards/CardGrid';
-import Footer from './components/footer/Footer';
+
 
 export default function Home() {
   return (
@@ -9,15 +7,7 @@ export default function Home() {
       <h1 className="text-3xl font-bold">Galería de Audios</h1>
     </header>
 
-    <section className="w-full max-w-5xl px-4 mt-8">
-      <Carousel />
-    </section>
-
-    <section className="w-full max-w-5xl px-4 mt-8">
-      <CardGrid />
-    </section>
-
-    <Footer />
+  
   </main>
   );
 }
