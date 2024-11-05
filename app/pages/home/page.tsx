@@ -1,35 +1,32 @@
 'use client'
 
-import { useEffect, useState } from 'react';
-import { getAllAudios } from '../../services/audio-service';
-import { Audio } from '../../types/audio';
-import AudioCard from '../../components/audio/AudioCard';
+import React, { useState } from 'react';
+import CardGrid from '../../components/cards/CardGrid';
 
-export default function Home() {
-    const [audios, setAudios] = useState<Audio[]>([]);
+const HomePage: React.FC = () => {
+  const [searchTerm, setSearchTerm] = useState('');
 
-    useEffect(() => {
-        const fetchAudios = async () => {
-            try {
-                const response = await getAllAudios();
-                setAudios(response.data);
-            } catch (error) {
-                console.error("Error fetching audios:", error);
-            }
-        };
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
 
-        fetchAudios();
-    }, []);
-
-    return (
-        <div className="container mx-auto p-4">
-            <h1 className="text-2xl font-bold mb-4">Todos los Audios</h1>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {audios.map(audio => (
-                    <AudioCard key={audio.id} audio={audio} />
-                ))}
-            </div>
-        </div>
-    );
+  return (
+    <div className="min-h-screen bg-dark text-white">
+      <header className="py-6 bg-violet text-center text-3xl font-bold">AudioLibre</header>
+      <div className="p-4">
+        <input
+          type="text"
+          placeholder="Search audio..."
+          value={searchTerm}
+          onChange={handleSearch}
+          className="w-full p-2 bg-gray-700 rounded"
+        />
+      </div>
+      <div className="p-4">
+        <CardGrid />
+      </div>
+    </div>
+  );
 };
 
+export default HomePage;
