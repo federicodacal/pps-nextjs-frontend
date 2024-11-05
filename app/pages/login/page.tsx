@@ -5,10 +5,11 @@ export const metadata: Metadata = {
     description: "Listado de audios favoritos",
 };
 
-export default function Favorites() {
+
+export default function Login() {
     return (
         <main className="flex flex-col items-center p-24">
-          <span className="text-5xl">Listado de audios favoritos</span>
-        </main>
+        <span className="text-5xl">Login</span>
+      </main>
       );
 }

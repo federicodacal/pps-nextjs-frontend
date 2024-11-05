@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Efectos",
-    description: "Listado de FX",
+    title: "Mi perfil",
+    description: "Perfil de usuario",
 };
 
-export default function Effects() {
+export default function MyProfile() {
     return (
         <main className="flex flex-col items-center p-24">
-          <span className="text-5xl">Listado de efectos</span>
+          <span className="text-5xl">Mi Perfil</span>
         </main>
       );
 }
