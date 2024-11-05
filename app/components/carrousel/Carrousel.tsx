@@ -31,7 +31,7 @@ export default function Carousel() {
     <div className="relative flex items-center">
       <button onClick={handlePrev} className="text-white p-2">❮</button>
       <div className="flex flex-col items-center w-full mx-4">
-        <Image src={images[currentIndex].url} alt="carousel image" className="h-64 w-full object-cover rounded-md" />
+        <Image width={500} height={500} src={images[currentIndex].url} alt="carousel image" className="h-64 w-full object-cover rounded-md" />
         <p className="text-white mt-2">{images[currentIndex].text}</p>
       </div>
       <button onClick={handleNext} className="text-white p-2">❯</button>
