@@ -2,6 +2,8 @@
 
 import React, { useState } from 'react';
 import CardGrid from '../../components/cards/CardGrid';
+import Header from '../../components/header/Header';
+
 
 const HomePage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -12,7 +14,7 @@ const HomePage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-dark text-white">
-      <header className="py-6 bg-violet text-center text-3xl font-bold">AudioLibre</header>
+      <Header title='AudioLibre'/>
       <div className="p-4">
         <input
           type="text"

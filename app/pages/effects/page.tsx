@@ -1,20 +1,68 @@
-"use client";
+'use client'
 
-import React, { useState } from "react";
-import AudioList from "../../components/audio/AudioList";
-import LoginModal from "../../components/loginModal/LoginModal";
+import { useState } from 'react';
+import Header from '../../components/header/Header';
+import Footer from '../../components/footer/Footer';
+import SearchBar from '../../components/searchbar/SearchBar';
+import AudioRow from '../../components/audio/Audio';
+import { Audio } from '../../types/audio';
 
 export default function Effects() {
-  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const audios: Audio[] = [
+    { 
+      id: '1',
+      name: 'Audio 1', 
+      description: 'Audio 1',
+      creator: 'Creador 1', 
+      bpm: 120, tone: 'C', 
+      length: 320, 
+      genre: 'Rock', 
+      category: 'Instrumental' 
+    },
+    { 
+      id: '2',
+      name: 'Audio 2', 
+      description: 'Audio 2',
+      creator: 'Creador 2', 
+      bpm: 89, tone: 'D', 
+      length: 320, 
+      genre: 'Pop', 
+      category: 'Instrumental' 
+    },
+    { 
+      id: '3',
+      name: 'Audio 3', 
+      description: 'Audio 3',
+      creator: 'Creador 3', 
+      bpm: 100, tone: 'F', 
+      length: 280, 
+      genre: 'Tango', 
+      category: 'Instrumental' 
+    },
+    
+    // Agrega más audios según necesites
+  ];
+
+  const filteredAudios = audios.filter((audio) =>
+    Object.values(audio).some((value) =>
+      value.toString().toLowerCase().includes(searchTerm.toLowerCase())
+    )
+  );
 
   return (
-    <main className="flex flex-col items-center p-24">
-      <span className="text-5xl">Listado de efectos</span>
-      <button onClick={() => setShowLoginModal(true)}>Iniciar Sesión</button>
-      <AudioList />
-      {showLoginModal && (
-        <LoginModal onClose={() => setShowLoginModal(false)} />
-      )}
-    </main>
+    <div className="min-h-screen bg-black text-violet-200 flex flex-col items-center w-full">
+      <Header title='Listado de Efectos'/>
+      <main className="w-full max-w-4xl px-4 py-4">
+        <SearchBar />
+        <div className="space-y-4">
+          {filteredAudios.map((audio, index) => (
+            <AudioRow key={index} audio={audio} />
+          ))}
+        </div>
+      </main>
+      <Footer />
+    </div>
   );
-}
+};

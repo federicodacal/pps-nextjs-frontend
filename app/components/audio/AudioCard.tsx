@@ -56,28 +56,22 @@ const AudioCard: React.FC<AudioProps> = ({
     <>
       <div className="container">
         <div className="sub-container">
-          <p>{name}</p>
+          <div>
+            <h1>{name}</h1>
+          </div>
           <div ref={containerRef} />
-
           <div className="wavesurfer-container" />
-
           <div style={{ margin: "1em 2", display: "flex", gap: "1em" }}>
             <div>
               <p>BPM: {bpm}</p>
-
               <p>Duración : {length}</p>
-
               <p>Tonalidad: {tone}</p>
-
               <p>Género: {genre}</p>
             </div>
-
             <div>
               <p>Creador : {creator}</p>
-
               <p>Categoría : {category}</p>
             </div>
-
             <div className="wavesurfer-controls">
               <button onClick={onPlayPause} style={{ minWidth: "5em" }}>
                 {isPlaying ? <BsFillStopFill /> : <BsFillPlayFill />}
