@@ -9,7 +9,7 @@ const UploadAudio = () => {
     const [audioFile, setAudioFile] = useState<File | null>(null);
     const [audioData, setAudioData] = useState({
         ID: "",
-        creator_ID: "",  // Este campo debe ser proporcionado, verifica cómo obtener este valor
+        creator_ID: "",  
         audio_name: "",
         state: "",
         category: "",
@@ -18,7 +18,9 @@ const UploadAudio = () => {
         tone: "",
         length: "",
         size: "",
-        description: ""
+        description: "",
+        state_item: "",
+        price: ""
     });
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -62,6 +64,11 @@ const UploadAudio = () => {
                 <input type="text" name="creator_ID" onChange={handleInputChange} placeholder="Ingrese el ID del creador" style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc', backgroundColor: '#444', color: '#fff' }} />
             </div>
 
+            <div style={{ marginBottom: '15px' }}>
+                <label htmlFor="item_ID" style={{ display: 'block', marginBottom: '5px' }}>Item ID</label>
+                <input type="text" name="item_ID" onChange={handleInputChange} placeholder="Ingrese el ID del creador" style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc', backgroundColor: '#444', color: '#fff' }} />
+            </div>
+
             {/* Otros campos de audio */}
             <div style={{ marginBottom: '15px' }}>
                 <label htmlFor="audio_name" style={{ display: 'block', marginBottom: '5px' }}>Nombre del Audio</label>
@@ -71,6 +78,11 @@ const UploadAudio = () => {
             <div style={{ marginBottom: '15px' }}>
                 <label htmlFor="state" style={{ display: 'block', marginBottom: '5px' }}>Estado</label>
                 <input type="text" name="state" onChange={handleInputChange} placeholder="Estado del audio" style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc', backgroundColor: '#444', color: '#fff' }} />
+            </div>
+
+            <div style={{ marginBottom: '15px' }}>
+                <label htmlFor="state_item" style={{ display: 'block', marginBottom: '5px' }}>Estado</label>
+                <input type="text" name="state_item" onChange={handleInputChange} placeholder="Estado del item" style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc', backgroundColor: '#444', color: '#fff' }} />
             </div>
 
             <div style={{ marginBottom: '15px' }}>
@@ -104,14 +116,21 @@ const UploadAudio = () => {
             </div>
 
             <div style={{ marginBottom: '15px' }}>
+                <label htmlFor="price" style={{ display: 'block', marginBottom: '5px' }}>Duración</label>
+                <input type="number" name="price" onChange={handleInputChange} placeholder="$ Precio del audio" style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc', backgroundColor: '#444', color: '#fff' }} />
+            </div>
+
+            <div style={{ marginBottom: '15px' }}>
                 <label htmlFor="description" style={{ display: 'block', marginBottom: '5px' }}>Descripción</label>
                 <textarea name="description" onChange={handleInputChange} placeholder="Descripción del audio" style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc', backgroundColor: '#444', color: '#fff' }} />
             </div>
+            
 
             <div style={{ marginBottom: '15px' }}>
                 <label htmlFor="file" style={{ display: 'block', marginBottom: '5px' }}>Archivo de Audio</label>
                 <input type="file" onChange={handleFileChange} style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc', backgroundColor: '#444', color: '#fff' }} />
             </div>
+            
 
             <button type="submit" style={{ padding: '10px 15px', backgroundColor: '#007bff', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
                 Cargar Audio
