@@ -4,6 +4,7 @@ import AudioCard from '../audio/AudioCard';
 
 const audios = [
   {
+    id: 1,
     name: 'Sample Audio 1',
     creator: 'Creator A',
     bpm: 120,
@@ -14,6 +15,7 @@ const audios = [
     audioUrl: '../samples/sample1.wav',
   },
   {
+    id: 2,
     name: 'Sample Audio 2',
     creator: 'Creator A',
     bpm: 120,
@@ -29,11 +31,12 @@ const audios = [
 const AudioList: React.FC = () => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-2 m-2">
-      {audios.map((audio, index) => (
+      {audios.map((audio,index) => (
         <AudioCard
+        key={index}
           {...audio}
-          onAddToFavorites={() => console.log(`${audio.name} added to favorites`)}
-          onAddToCart={() => console.log(`${audio.name} added to cart`)}
+          onAddToFavorites={(id:number) => console.log(`${id} added to favorites`)}
+          onAddToCart={(id:number) => console.log(`${id} added to cart`)}
         />
       ))}
     </div>

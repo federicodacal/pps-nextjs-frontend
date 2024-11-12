@@ -12,6 +12,7 @@ import {
 } from "react-icons/bs";
 
 type AudioProps = {
+  id: number,
   name: string;
   creator: string;
   bpm: number;
@@ -20,11 +21,12 @@ type AudioProps = {
   category: string;
   duration: string;
   audioUrl: string;
-  onAddToFavorites: () => void;
-  onAddToCart: () => void;
+  onAddToFavorites: (id:number) => void;
+  onAddToCart: (id:number) => void;
 };
 
 const AudioCard: React.FC<AudioProps> = ({
+  id,
   name,
   creator,
   bpm,
