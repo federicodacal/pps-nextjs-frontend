@@ -1,9 +1,9 @@
 'use client'
 
+
 import React, { useState } from 'react';
 import CardGrid from '../../components/cards/CardGrid';
 import Header from '../../components/header/Header';
-
 
 const HomePage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');

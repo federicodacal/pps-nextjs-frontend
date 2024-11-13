@@ -1,3 +1,5 @@
+import React, { useEffect } from 'react';
+
 import Carousel from './components/carrousel/Carrousel';
 import CardGrid from './components/cards/CardGrid';
 import Footer from './components/footer/Footer';

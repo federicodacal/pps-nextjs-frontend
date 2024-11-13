@@ -1,26 +1,61 @@
 // components/AudioWavePlayer.tsx
 "use client";
 
-import React, { useRef, useEffect, useState } from "react";
+import React, {
+  useRef,
+  useEffect,
+  useState,
+  useMemo,
+  useCallback,
+} from "react";
+import { useWavesurfer } from "@wavesurfer/react";
+import { BsFillStopFill, BsFillPlayFill } from "react-icons/bs";
+import Timeline from "wavesurfer.js/dist/plugins/timeline.esm.js";
 
 interface AudioWavePlayerProps {
   audioFile: File | null;
 }
 
 const AudioWavePlayer: React.FC<AudioWavePlayerProps> = ({ audioFile }) => {
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const containerRef = useRef(null);
+  var url = undefined
+
+  const { wavesurfer, isPlaying } = useWavesurfer({
+    container: containerRef,
+    height: 100,
+    waveColor: "rgb(200, 0, 200)",
+    progressColor: "rgb(100, 0, 100)",
+    plugins: useMemo(() => [Timeline.create()], []),
+  });
 
   useEffect(() => {
-    if (audioFile && audioRef.current) {
-      const url = URL.createObjectURL(audioFile);
-      audioRef.current.src = url;
+    if (audioFile) {
+      url = URL.createObjectURL(audioFile);
+      wavesurfer?.load(url)
     }
   }, [audioFile]);
 
+
+
+  const onPlayPause = useCallback(() => {
+    wavesurfer && wavesurfer.playPause();
+  }, [wavesurfer]);
+
+
+
   return (
-    <div className="bg-dark p-4 rounded-lg">
-      <audio ref={audioRef} controls className="w-full mt-2" />
-      <p className="text-primary mt-4">Onda de audio aquí (pendiente de implementación visual)</p>
+    <div className="container">
+      <div className="sub-container">
+        <div ref={containerRef} />
+        <div className="wavesurfer-container" />
+        <div className="wavesurfer-controls">
+    
+  
+          <button onClick={onPlayPause} >
+            {isPlaying ? <BsFillStopFill /> : <BsFillPlayFill />}
+          </button>
+        </div>
+      </div>
     </div>
   );
 };
