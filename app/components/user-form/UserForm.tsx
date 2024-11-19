@@ -2,6 +2,22 @@
 
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
+import { createUser } from "@/app/services/users-service";
+import { useFormStatus, useFormState } from 'react-dom';
+
+const initialState = {
+  message: "initial",
+}
+
+function SubmitButton() {
+  const { pending } = useFormStatus()
+
+  return (
+    <button type="submit" aria-disabled={pending}> 
+      Continuar
+    </button>
+  )
+}
 
 type FormData = {
   email: string;
@@ -17,7 +33,7 @@ type FormData = {
 };
 
 export default function UserForm() {
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState({
     email: '',
     confirmEmail: '',
     username: '',
@@ -30,17 +46,17 @@ export default function UserForm() {
     termsAccepted: false,
   });
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
-  const handleChange = (e: {target: { checked: boolean; value: React.SetStateAction<string> };}) => {
-    const {  value, checked } = e.target;
-    setFormData((prevData) => ({
-      ...prevData, checked : value,
-    }));
-  };
 
-  const handleSubmit = (e: React.FormEvent) => {
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (formData.userType === 'Creador') {
@@ -48,6 +64,27 @@ export default function UserForm() {
         router.push('/select-plan');
       });
     } else {
+      try {
+        await createUser(formData);
+
+        console.log("Usuario creado exitosamente");
+
+        setFormData({ email: '',
+          confirmEmail: '',
+          username: '',
+          fullName: '',
+          dni: '',
+          phone: '',
+          password: '',
+          confirmPassword: '',
+          userType: 'Comprador',
+          termsAccepted: false, });
+      } catch (error) {
+
+        console.error("Error al crear usuario:", error);
+        alert("Ocurrió un error. Por favor intente nuevamente.");
+      }
+
       startTransition(async () => {
         await fetch('/api/usuarios', {
           method: 'POST',
@@ -60,16 +97,16 @@ export default function UserForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit}  className="bg-gray-800 p-5 rounded-lg w-full max-w-lg mx-auto text-white">
       {/* Email Section */}
       <div>
-        <label className="block text-gray-700 font-medium mb-1">Correo Electrónico</label>
+        <label className="block mb-2 text-sm font-medium ">Correo Electrónico</label>
         <input
           type="email"
           name="email"
           value={formData.email}
           onChange={handleChange}
-          className="w-full p-2 border text-gray-700 border-gray-300 rounded-md"
+          className="w-full p-3 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
           required
         />
         <input
@@ -77,7 +114,7 @@ export default function UserForm() {
           name="confirmEmail"
           value={formData.confirmEmail}
           onChange={handleChange}
-          className="w-full p-2 mt-2 border text-gray-700 border-gray-300 rounded-md"
+        className="w-full p-3 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 w-full" 
           placeholder="Confirmar correo electrónico"
           required
         />
@@ -85,7 +122,7 @@ export default function UserForm() {
 
       {/* User Details Section */}
       <div>
-        <label className="block text-gray-700 font-medium mb-1">Nombre de Usuario</label>
+        <label className="block mb-2 text-sm font-medium">Nombre de Usuario</label>
         <input
           type="text"
           name="username"

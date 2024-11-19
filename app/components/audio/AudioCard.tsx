@@ -63,7 +63,7 @@ const AudioCard: React.FC<AudioProps> = ({
           </div>
           <div ref={containerRef} />
           <div className="wavesurfer-container" />
-          <div style={{ margin: "1em ", display: "flex", gap: "1em" }}>
+          <div >
             <div>
               <p>BPM: {bpm}</p>
               <p>Duración : {duration}</p>

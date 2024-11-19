@@ -6,6 +6,65 @@ import { useRouter } from "next/navigation";
 import AudioWavePlayer from "../../components/audio/AudioPlayerWave";
 import { useWavesurfer } from "@wavesurfer/react";
 
+
+const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  if (e.target.files) {
+    setAudioFile(e.target.files[0]);
+  }
+};
+
+const formFields = [
+  { 
+    label: "ID",
+    type:"text",
+    name:"item_ID",
+    placeholder:"Ingrese el ID del creador"
+  },
+  { 
+    label: "ID Creador",
+    type:"text",
+    name:"item_ID",
+    placeholder:"Ingrese el ID del creador"
+  },
+  { 
+    label: "ID",
+    type:"text",
+    name:"item_ID",
+    placeholder:"Ingrese el ID del creador"
+  },
+  { 
+    label: "ID",
+    type:"text",
+    name:"item_ID",
+    placeholder:"Ingrese el ID del creador"
+  },
+  { 
+    label: "ID",
+    type:"text",
+    name:"item_ID",
+    placeholder:"Ingrese el ID del creador"
+  },
+  { 
+    label: "ID",
+    type:"text",
+    name:"item_ID",
+    placeholder:"Ingrese el ID del creador"
+  },
+  { 
+    label: "ID",
+    type:"text",
+    name:"item_ID",
+    placeholder:"Ingrese el ID del creador"
+  },
+  { 
+    label: "ID",
+    type:"text",
+    name:"item_ID",
+    placeholder:"Ingrese el ID del creador"
+  },
+]
+
+
 const AudioForm = () => {
   const router = useRouter();
   const [audioFile, setAudioFile] = useState<File | null>(null);
@@ -25,11 +84,7 @@ const AudioForm = () => {
     price: "",
   });
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setAudioFile(e.target.files[0]);
-    }
-  };
+
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
