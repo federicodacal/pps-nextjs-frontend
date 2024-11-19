@@ -7,12 +7,6 @@ import AudioWavePlayer from "../../components/audio/AudioPlayerWave";
 import { useWavesurfer } from "@wavesurfer/react";
 
 
-const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  if (e.target.files) {
-    setAudioFile(e.target.files[0]);
-  }
-};
-
 const formFields = [
   { 
     label: "ID",
@@ -84,7 +78,11 @@ const AudioForm = () => {
     price: "",
   });
 
-
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setAudioFile(e.target.files[0]);
+    }
+  };
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -97,15 +95,17 @@ const AudioForm = () => {
     if (!audioFile) return alert("Por favor, selecciona un archivo de audio");
 
     const formData = new FormData();
+
     Object.keys(audioData).forEach((key) =>
       formData.append(key, audioData[key as keyof typeof audioData])
     );
+    
     formData.append("file", audioFile);
 
     try {
       const response = await createAudio(formData);
       console.log("Audio creado:", response.data);
-      router.push("/home");
+      router.push("/pages/home");
     } catch (error) {
       console.error("Error al crear el audio:", error);
     }

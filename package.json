@@ -13,6 +13,7 @@
     "autoprefixer": "^10.4.20",
     "axios": "^1.7.7",
     "cors": "^2.8.5",
+    "local-storage-fallback": "^5.0.0",
     "next": "^14.2.14",
     "react": "^18",
     "react-dom": "^18",
