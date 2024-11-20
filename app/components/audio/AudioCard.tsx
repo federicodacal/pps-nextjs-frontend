@@ -2,6 +2,7 @@
 
 import * as React from "react";
 const { useMemo, useState, useCallback, useRef } = React;
+import storage from "local-storage-fallback";
 import { useWavesurfer } from "@wavesurfer/react";
 import Timeline from "wavesurfer.js/dist/plugins/timeline.esm.js";
 import {
@@ -9,10 +10,12 @@ import {
   BsFillPlayFill,
   BsSkipForward,
   BsSkipBackward,
+  BsPlusCircleFill,
+  BsHeartFill,
 } from "react-icons/bs";
 
 type AudioProps = {
-  id: number,
+  id: string,
   name: string;
   creator: string;
   bpm: number;
@@ -54,6 +57,23 @@ const AudioCard: React.FC<AudioProps> = ({
     wavesurfer && wavesurfer.playPause();
   }, [wavesurfer]);
 
+  const addToCart = (audioId: string) => {
+    let selectedAudios = storage.getItem("selected_audios")
+
+    console.log(selectedAudios)
+
+    if (selectedAudios == null) {
+      selectedAudios = ""
+    };
+
+    storage.setItem("selected_audios", selectedAudios += audioId.toString() +"," )
+  };
+
+  const addToFavorites = (audioId: string) => {
+    console.log(`Audio ${audioId} added to favourites`)
+  };
+
+
   return (
     <>
       <div className="container">
@@ -77,6 +97,16 @@ const AudioCard: React.FC<AudioProps> = ({
             <div className="wavesurfer-controls">
               <button onClick={onPlayPause} style={{ minWidth: "5em" }}>
                 {isPlaying ? <BsFillStopFill /> : <BsFillPlayFill />}
+              </button>
+              <button 
+               onClick={() => addToCart(id)}
+              >
+                <BsPlusCircleFill/>
+              </button>
+              <button 
+              onClick={() => addToFavorites(id)}
+              style={{ minWidth: "5em" }}>
+                 <BsHeartFill/>
               </button>
             </div>
           </div>

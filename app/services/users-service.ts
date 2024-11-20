@@ -5,6 +5,8 @@ import { User, UserPayload }  from '../types/users';
 
 // User Services
 export const createUser = async ( userData: UserPayload) => {
+    console.log(userData)
+
     const response = axios.post(`${PROXY}/users`, userData);
 };
 

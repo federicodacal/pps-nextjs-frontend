@@ -14,7 +14,6 @@ export default function UserForm() {
     confirmEmail: "",
     username: "",
     full_name: "",
-    dni: "",
     phone: "",
     pwd: "",
     confirmPassword: "",
@@ -50,10 +49,11 @@ export default function UserForm() {
     } else {
       try {
         await createUser(userData).then(() => {
-          //router.push("/pages/user-register");
+          console.log("Usuario creado exitosamente");
+          router.push("/pages/user-register");
         });
 
-        console.log("Usuario creado exitosamente");
+       
 
         setFormData({
           ID: "",
@@ -61,7 +61,6 @@ export default function UserForm() {
           confirmEmail: "",
           username: "",
           full_name: "",
-          dni: "",
           phone: "",
           pwd: "",
           confirmPassword: "",
@@ -70,6 +69,7 @@ export default function UserForm() {
           personal_ID: "",
           state: "",
           user_detail_ID: "",
+          plan_id: "",
         });
       } catch (error) {
         console.error("Error al crear usuario:", error);
@@ -144,8 +144,8 @@ export default function UserForm() {
           <label className="block text-sm font-medium">DNI</label>
           <input
             type="text"
-            name="dni"
-            value={userData.dni}
+            name="personal_ID"
+            value={userData.personal_ID}
             onChange={handleChange}
             className="mt-1 block w-full bg-gray-700 text-white border border-gray-600 rounded p-2"
             required
