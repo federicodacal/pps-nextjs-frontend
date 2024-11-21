@@ -9,19 +9,19 @@ export default function UserForm() {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [userData, setFormData] = useState({
-    ID: "999",
+    ID: "9999999",
     email: "",
     confirmEmail: "",
     username: "",
     full_name: "",
-    phone: "",
+    phone_number: "",
     pwd: "",
     confirmPassword: "",
-    type: "Comprador",
+    type: "buyer",
     termsAccepted: "false",
-    personal_ID: "999",
+    personal_ID: "9999999",
     state: "pending",
-    user_detail_ID: "999",
+    user_detail_ID: "9999999",
     plan_id: "0",
   });
 
@@ -53,15 +53,13 @@ export default function UserForm() {
           router.push("/pages/user-register");
         });
 
-       
-
         setFormData({
           ID: "",
           email: "",
           confirmEmail: "",
           username: "",
           full_name: "",
-          phone: "",
+          phone_number: "",
           pwd: "",
           confirmPassword: "",
           type: "Comprador",
@@ -156,8 +154,8 @@ export default function UserForm() {
           <label className="block text-sm font-medium">Teléfono</label>
           <input
             type="tel"
-            name="phone"
-            value={userData.phone}
+            name="phone_number"
+            value={userData.phone_number}
             onChange={handleChange}
             className="mt-1 block w-full bg-gray-700 text-white border border-gray-600 rounded p-2"
             required
@@ -192,28 +190,28 @@ export default function UserForm() {
           <div className="flex items-center mb-2">
             <input
               type="radio"
-              id="comprador"
+              id="buyer"
               name="role"
-              value="Comprador"
-              checked={userData.type === "Comprador"}
-              onChange={() => handleRoleChange("Comprador")}
+              value="buyer"
+              checked={userData.type === "buyer"}
+              onChange={() => handleRoleChange("buyer")}
               className="mr-2"
             />
-            <label htmlFor="comprador" className="text-sm">
+            <label htmlFor="buyer" className="text-sm">
               Comprador
             </label>
           </div>
           <div className="flex items-center">
             <input
               type="radio"
-              id="creador"
+              id="creator"
               name="role"
-              value="Creador"
-              checked={userData.type === "Creador"}
-              onChange={() => handleRoleChange("Creador")}
+              value="creator"
+              checked={userData.type === "creator"}
+              onChange={() => handleRoleChange("creator")}
               className="mr-2"
             />
-            <label htmlFor="creador" className="text-sm">
+            <label htmlFor="creator" className="text-sm">
               Creador
             </label>
           </div>

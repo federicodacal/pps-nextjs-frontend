@@ -1,10 +1,6 @@
-import AudioForm from "@/app/components/audio/AudioForm";
-import type { Metadata } from "next";
+"use client"
 
-export const metadata: Metadata = {
-    title: "Cargar audio",
-    description: "Cargar un nuevo audio",
-};
+import AudioForm from "@/app/components/audio/AudioForm";
 
 export default function Page() {
   return (

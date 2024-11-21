@@ -1,98 +1,48 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect   } from "react";
 import { createAudio } from "@/app/services/audio-service";
 import { useRouter } from "next/navigation";
 import AudioWavePlayer from "../../components/audio/AudioPlayerWave";
-import { useWavesurfer } from "@wavesurfer/react";
+import { Audio } from "../../types/audio"
 
-
-const formFields = [
-  { 
-    label: "ID",
-    type:"text",
-    name:"item_ID",
-    placeholder:"Ingrese el ID del creador"
-  },
-  { 
-    label: "ID Creador",
-    type:"text",
-    name:"item_ID",
-    placeholder:"Ingrese el ID del creador"
-  },
-  { 
-    label: "ID",
-    type:"text",
-    name:"item_ID",
-    placeholder:"Ingrese el ID del creador"
-  },
-  { 
-    label: "ID",
-    type:"text",
-    name:"item_ID",
-    placeholder:"Ingrese el ID del creador"
-  },
-  { 
-    label: "ID",
-    type:"text",
-    name:"item_ID",
-    placeholder:"Ingrese el ID del creador"
-  },
-  { 
-    label: "ID",
-    type:"text",
-    name:"item_ID",
-    placeholder:"Ingrese el ID del creador"
-  },
-  { 
-    label: "ID",
-    type:"text",
-    name:"item_ID",
-    placeholder:"Ingrese el ID del creador"
-  },
-  { 
-    label: "ID",
-    type:"text",
-    name:"item_ID",
-    placeholder:"Ingrese el ID del creador"
-  },
-]
-
+const newAudio = {
+  ID: "",
+  creator_ID: "",
+  audio_name: "",
+  state: "",
+  category: "",
+  genre: "",
+  BPM: "",
+  tone: "",
+  length: "",
+  size: "",
+  description: "",
+  state_item: "",
+  price: "",
+}
 
 const AudioForm = () => {
   const router = useRouter();
   const [audioFile, setAudioFile] = useState<File | null>(null);
-  const [audioData, setAudioData] = useState({
-    ID: "",
-    creator_ID: "",
-    audio_name: "",
-    state: "",
-    category: "",
-    genre: "",
-    BPM: "",
-    tone: "",
-    length: "",
-    size: "",
-    description: "",
-    state_item: "",
-    price: "",
-  });
+  const [audioData, setAudioData] = useState<Audio>(newAudio);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      setAudioFile(e.target.files[0]);
+      setAudioFile(e.target.files[0]); // Actualiza el estado con el archivo seleccionado
     }
   };
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    setAudioData({ ...audioData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setAudioData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!audioFile) return alert("Por favor, selecciona un archivo de audio");
+    //e.preventDefault();
+    if (!audioFile) return console.log("SELECCIONE AUDIO");
 
     const formData = new FormData();
 
@@ -110,6 +60,10 @@ const AudioForm = () => {
       console.error("Error al crear el audio:", error);
     }
   };
+
+  useEffect(() => {
+    console.log("El estado de audioData ha cambiado:", audioData);
+  }, [audioData, audioFile]);
 
   return (
     <>
