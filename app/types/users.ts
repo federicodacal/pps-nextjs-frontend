@@ -1,43 +1,54 @@
-export interface User {
-    ID: string;
-    email: string;
-    pwd: string;
-    type: 'Comprador' | 'Creador';
-    subscription_ID: string;
-    credits: number;
-    token: string;
-    state:string;
-    user_detail: UserDetail;
-}
-
-interface UserDetail{
-    ID:string;
-    username: string;
-    full_name:string;
-    personal_ID: string;
-    phone_number: string;
-}
-
 export interface UserPayload {
-    ID: string | null ;
-    username: string | null;
-    email: string | null;
-    full_name: string | null;
-    pwd: string | null;
-    personal_ID: string | null;
-    type: string | null;
-    state: string | null;
-    user_detail_ID: string | null;
-    plan_id: string | null;
+    ID: string
+    pwd: string
+    type: string
+    state: string
+    user_detail_ID: string
+    personal_ID: number
+    username: string
+    full_name: string
+    phone_number: string
+    creator_ID: string
+    profile: string
+    points: number
+    credits: number
+    subscription_ID: number
+    account_ID: string
+    personal_account_ID: string
+    account_type: string
 }
 
-export interface UserData {
-    ID: string | null ;
-    username: string | null;
-    full_name: string | null;
-    pwd: string | null;
-    personal_ID: string | null;
-    type: string | null;
-    state: string | null;
-    subscription_ID: string | null;
+export interface User {
+    ID: string
+    created_at: string
+    creator: Creator
+    email: string
+    modified_at: string
+    pwd: string
+    type: string
+    user_detail: UserDetail
+    user_detail_ID: string
+}
+
+export interface Creator {
+    ID: string
+    created_at: string
+    credits: number
+    modified_at: string
+    points: number
+    profile: string
+    state: string
+    subscription_ID: number
+    user_ID: string
+}
+
+export interface UserDetail {
+    ID: string
+    created_at: string
+    full_name: string
+    modified_at: string
+    personal_ID: number
+    phone_number: string
+    username: string
+    state: string
 }
