@@ -25,23 +25,23 @@ const AudioList: React.FC = () => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-    {audios.map((audio, index) => (
-      <AudioCard
-      key={index}
-      id={audio.ID}
-      name={audio.audio_name} 
-      creator={audio.creator_ID} 
-      bpm={audio.BPM} 
-      tone={audio.tone.toString()} 
-      genre={audio.genre} 
-      category={audio.category}
-duration={audio.length} 
-      audioUrl={audio.file_url}
-      onAddToFavorites={(id:number) => console.log(`${id} added to favorites`)}
-      onAddToCart={(id:number) => console.log(`${id} added to cart`)}
-      />
-    ))}
-  </div>
+      {audios.map((audio, index) => (
+        <AudioCard
+          key={index}
+          id={audio.ID}
+          name={audio.audio_name}
+          creator={audio.creator_ID}
+          bpm={audio.BPM}
+          tone={audio.tone.toString()}
+          genre={audio.genre}
+          category={audio.category}
+          duration={audio.length}
+          audioUrl={audio.file_url}
+          onAddToFavorites={(id: number) => console.log(`${id} added to favorites`)}
+          onAddToCart={(id: number) => console.log(`${id} added to cart`)}
+        />
+      ))}
+    </div>
   );
 };
 
