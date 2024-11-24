@@ -3,7 +3,7 @@ import { PROXY }  from './config';
 import { Audio, AudioPayload }  from '../types/audio';
 
 // Audio Services
-export const createAudio = async (audioData: AudioPayload) => {
+export const createAudio = async (audioData: FormData) => {
     return axios.post(`${PROXY}/audios`, audioData);
 };
 

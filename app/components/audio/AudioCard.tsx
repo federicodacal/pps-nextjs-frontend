@@ -1,20 +1,119 @@
-import { Audio } from '../../types/audio';
+"use client";
 
-interface AudioCardProps {
-    audio: Audio;
-}
+import * as React from "react";
+const { useMemo, useState, useCallback, useRef } = React;
+import storage from "local-storage-fallback";
+import { useWavesurfer } from "@wavesurfer/react";
+import Timeline from "wavesurfer.js/dist/plugins/timeline.esm.js";
+import {
+  BsFillStopFill,
+  BsFillPlayFill,
+  BsSkipForward,
+  BsSkipBackward,
+  BsPlusCircleFill,
+  BsHeartFill,
+} from "react-icons/bs";
 
-const AudioCard: React.FC<AudioCardProps> = ({ audio }) => {
-    return (
-        <div className="bg-gradient-to-br from-cardGradientStart to-cardGradientEnd rounded-lg p-4 text-white">
-            <h2 className="text-lg font-semibold">{audio.name}</h2>
-            <p>{audio.description}</p>
-            <p><strong>Tonalidad:</strong> {audio.tone}</p>
-            <p><strong>BPM:</strong> {audio.bpm}</p>
-            <p><strong>Género:</strong> {audio.genre}</p>
-            <p><strong>Categoría:</strong> {audio.category}</p>
+type AudioProps = {
+  id: string,
+  name: string;
+  creator: string;
+  bpm: number;
+  tone: string;
+  genre: string;
+  category: string;
+  duration: string;
+  audioUrl: string;
+  onAddToFavorites: (id:number) => void;
+  onAddToCart: (id:number) => void;
+};
+
+const AudioCard: React.FC<AudioProps> = ({
+  id,
+  name,
+  creator,
+  bpm,
+  tone,
+  genre,
+  category,
+  duration,
+  audioUrl,
+  onAddToFavorites,
+  onAddToCart,
+}) => {
+  const containerRef = useRef(null);
+  const [urlIndex, setUrlIndex] = useState(0);
+
+  const { wavesurfer, isPlaying, currentTime } = useWavesurfer({
+    container: containerRef,
+    height: 100,
+    waveColor: "rgb(200, 0, 200)",
+    progressColor: "rgb(100, 0, 100)",
+    url: audioUrl,
+    plugins: useMemo(() => [Timeline.create()], []),
+  });
+
+  const onPlayPause = useCallback(() => {
+    wavesurfer && wavesurfer.playPause();
+  }, [wavesurfer]);
+
+  const addToCart = (audioId: string) => {
+    let selectedAudios = storage.getItem("selected_audios")
+
+    console.log(selectedAudios)
+
+    if (selectedAudios == null) {
+      selectedAudios = ""
+    };
+
+    storage.setItem("selected_audios", selectedAudios += audioId.toString() +"," )
+  };
+
+  const addToFavorites = (audioId: string) => {
+    console.log(`Audio ${audioId} added to favourites`)
+  };
+
+
+  return (
+    <>
+      <div className="container">
+        <div className="sub-container">
+          <div>
+            <h1>{name}</h1>
+          </div>
+          <div ref={containerRef} />
+          <div className="wavesurfer-container" />
+          <div >
+            <div>
+              <p>BPM: {bpm}</p>
+              <p>Duración : {duration}</p>
+              <p>Tonalidad: {tone}</p>
+              <p>Género: {genre}</p>
+            </div>
+            <div>
+              <p>Creador : {creator}</p>
+              <p>Categoría : {category}</p>
+            </div>
+            <div className="wavesurfer-controls">
+              <button onClick={onPlayPause} style={{ minWidth: "5em" }}>
+                {isPlaying ? <BsFillStopFill /> : <BsFillPlayFill />}
+              </button>
+              <button 
+               onClick={() => addToCart(id)}
+              >
+                <BsPlusCircleFill/>
+              </button>
+              <button 
+              onClick={() => addToFavorites(id)}
+              style={{ minWidth: "5em" }}>
+                 <BsHeartFill/>
+              </button>
+            </div>
+          </div>
         </div>
-    );
+      </div>
+    </>
+  );
 };
 
 export default AudioCard;
