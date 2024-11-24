@@ -18,6 +18,7 @@ interface AudioWavePlayerProps {
 
 const AudioWavePlayer: React.FC<AudioWavePlayerProps> = ({ audioFile }) => {
   const containerRef = useRef(null);
+  const urlRef = useRef<string | null>(null);
   var url = undefined
 
   const { wavesurfer, isPlaying } = useWavesurfer({
@@ -30,8 +31,16 @@ const AudioWavePlayer: React.FC<AudioWavePlayerProps> = ({ audioFile }) => {
 
   useEffect(() => {
     if (audioFile) {
-      url = URL.createObjectURL(audioFile);
+      const url = URL.createObjectURL(audioFile);
+      urlRef.current = url;
       wavesurfer?.load(url)
+
+      return () => {
+        if (urlRef.current) {
+          URL.revokeObjectURL(urlRef.current);
+          urlRef.current = null;
+        }
+      };
     }
   }, [audioFile]);
 

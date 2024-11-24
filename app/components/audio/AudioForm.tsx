@@ -41,7 +41,7 @@ const AudioForm = () => {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    //e.preventDefault();
+    e.preventDefault();
     if (!audioFile) return console.log("SELECCIONE AUDIO");
 
     const formData = new FormData();
@@ -293,7 +293,6 @@ const AudioForm = () => {
       </form>
       <div>
         <div className="mt-6 w-full max-w-lg">
-          <AudioWavePlayer audioFile={audioFile} />
         </div>
       </div>
     </>
