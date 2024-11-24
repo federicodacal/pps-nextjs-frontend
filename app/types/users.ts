@@ -1,15 +1,21 @@
 export interface User {
     ID: string;
-    username: string;
-    full_name:string;
     email: string;
-    personal_ID: string;
     pwd: string;
     type: 'Comprador' | 'Creador';
     subscription_ID: string;
     credits: number;
     token: string;
     state:string;
+    user_detail: UserDetail;
+}
+
+interface UserDetail{
+    ID:string;
+    username: string;
+    full_name:string;
+    personal_ID: string;
+    phone_number: string;
 }
 
 export interface UserPayload {
