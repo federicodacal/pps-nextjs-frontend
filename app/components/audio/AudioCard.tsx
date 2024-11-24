@@ -44,6 +44,10 @@ const AudioCard: React.FC<AudioProps> = ({
   const containerRef = useRef(null);
   const [urlIndex, setUrlIndex] = useState(0);
 
+  console.log(id)
+  console.log(name)
+  console.log(audioUrl)
+
   const { wavesurfer, isPlaying, currentTime } = useWavesurfer({
     container: containerRef,
     height: 100,
