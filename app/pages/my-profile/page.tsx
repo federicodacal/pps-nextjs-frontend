@@ -17,7 +17,7 @@ const initUser = () => {
     pwd: "",
     credits: "",
     type: "",
-    subscription_ID: "",
+    subscription_ID: "1",
     bio: "",
     state: "",
   }
@@ -34,7 +34,7 @@ const buildUser = (response: any) => {
     pwd: response.data.pwd,
     credits: response.data.creator.credits,
     type: response.data.type,
-    subscription_ID: response.data.subscription_ID,
+    subscription_ID: "1",
     bio: "Enthusiastic developer and designer.",
     state: response.data.state,
   }
@@ -94,7 +94,7 @@ export default function MyProfile() {
         subscription_ID: Number(user.subscription_ID),
         account_ID: "N/A",
         personal_account_ID: "N/A",
-        account_type: "N/A",
+        account_type: "cbu",
 
       });
       console.log("Response:", response);
