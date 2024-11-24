@@ -50,3 +50,30 @@ export const AUDIOS: Audio[] = [
     
     // Agrega más audios según necesites
   ]
+
+
+  const hardcodedAudios = [
+    {
+      id: "ejemplo_01",
+      name: 'Sample Audio 1',
+      creator: 'Creator A',
+      bpm: 120,
+      tone: 'C',
+      genre: 'Pop',
+      category: 'Sample',
+      duration: '3:30',
+      audioUrl: '../samples/sample1.wav',
+    },
+    {
+      id: "nuevo_id_audio_55",
+      name: 'Sample Audio 2',
+      creator: 'Creator A',
+      bpm: 120,
+      tone: 'C',
+      genre: 'Pop',
+      category: 'Sample',
+      duration: '3:30',
+      audioUrl: '../samples/sample2.wav',
+    },
+    // Puedes agregar más audios mockeados aquí
+  ];
