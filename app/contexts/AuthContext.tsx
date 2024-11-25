@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, ReactNode, useEffect } from "react";
 import { useRouter } from "next/navigation";
-const jwt_decode = require('jwt-decode');
+import { logoutUser } from "../services/auth-service";
 
 interface AuthContextType {
   token: string | null;
@@ -53,7 +53,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem("token", newToken);
   };
 
-  const logout = () => {
+  const logout = async () => {
+    try {
+      const response = await logoutUser(token)
+      console.log(response); 
+    } catch (error:any) {
+      console.error("Error en logout:", error.response?.data?.message || "Error");
+    }
     setToken(null);
     localStorage.removeItem("token");
   };
