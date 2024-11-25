@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { getUserById, updateUser, deleteByID } from '@/app/services/users-service';
-import { User, UserDetail, UserPayload } from '../../types/users';
+import {  UserPayload } from '../../types/users';
 
 const hardcodedUser = 'user_003'
 
