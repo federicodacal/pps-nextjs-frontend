@@ -3,12 +3,11 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { createUser } from "@/app/services/users-service";
+import { User, UserDetail, UserPayload } from '../../types/users';
 import storage from "local-storage-fallback";
 
-export default function UserForm() {
-  const router = useRouter();
-  const [isPending, startTransition] = useTransition();
-  const [userData, setFormData] = useState({
+const initUser = () => {
+  return {
     ID: "9999999",
     email: "",
     confirmEmail: "",
@@ -23,7 +22,35 @@ export default function UserForm() {
     state: "pending",
     user_detail_ID: "9999999",
     plan_id: "0",
-  });
+  }
+}
+
+const buildUser = (userData: any) => {
+  return {
+    ID: userData.ID,
+    pwd: userData.pwd,
+    type: userData.type,
+    state: userData.state,
+    user_detail_ID: "N/A",
+    personal_ID: Number(userData.personal_ID),
+    username: userData.username,
+    full_name: userData.full_name,
+    phone_number: userData.phone_number,
+    creator_ID: "N/A",
+    profile: userData.bio,
+    points: 0,
+    credits: 0,
+    subscription_ID: Number(userData.subscription_ID),
+    account_ID: "N/A",
+    personal_account_ID: "N/A",
+    account_type: "cbu",
+  }
+}
+
+export default function UserForm() {
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+  const [userData, setFormData] = useState(initUser());
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -41,34 +68,19 @@ export default function UserForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (userData.type === "Creador") {
+    if (userData.type === "creator") {
       startTransition(() => {
         saveToStorage(userData);
         router.push("/pages/select-plan");
       });
     } else {
       try {
-        await createUser(userData).then(() => {
+        await createUser(buildUser(userData)).then(() => {
           console.log("Usuario creado exitosamente");
           router.push("/pages/user-register");
         });
 
-        setFormData({
-          ID: "",
-          email: "",
-          confirmEmail: "",
-          username: "",
-          full_name: "",
-          phone_number: "",
-          pwd: "",
-          confirmPassword: "",
-          type: "Comprador",
-          termsAccepted: "false",
-          personal_ID: "",
-          state: "",
-          user_detail_ID: "",
-          plan_id: "",
-        });
+        setFormData(initUser());
       } catch (error) {
         console.error("Error al crear usuario:", error);
         alert("Ocurrió un error. Por favor intente nuevamente.");
@@ -234,9 +246,8 @@ export default function UserForm() {
 
         <button
           type="submit"
-          className={`w-full py-2 rounded-md transition-colors ${
-            isPending ? "bg-gray-500" : "bg-green-500 hover:bg-green-600"
-          } text-white`}
+          className={`w-full py-2 rounded-md transition-colors ${isPending ? "bg-gray-500" : "bg-green-500 hover:bg-green-600"
+            } text-white`}
           disabled={isPending}
         >
           {isPending ? "Procesando..." : "Registrar"}
