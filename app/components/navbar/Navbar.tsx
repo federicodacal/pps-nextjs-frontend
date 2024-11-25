@@ -8,6 +8,7 @@ const pages = [
   { path: "/pages/acapellas", text: "Acapellas" },
   { path: "/pages/favorites", text: "Favorites" },
   { path: "/pages/cart", text: "Cart" },
+  { path: "/pages/checkout", text: "Checkout" },
 ];
 
 const userMenus = [
