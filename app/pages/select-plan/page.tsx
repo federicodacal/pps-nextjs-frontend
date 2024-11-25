@@ -30,6 +30,28 @@ const subscriptionPlans = [
   },
 ];
 
+const buildUser = (userData: any) => {
+  return {
+    ID: userData.ID,
+    pwd: userData.pwd,
+    type: userData.type,
+    state: userData.state,
+    user_detail_ID: "N/A",
+    personal_ID: Number(userData.personal_ID),
+    username: userData.username,
+    full_name: userData.full_name,
+    phone_number: userData.phone_number,
+    creator_ID: "N/A",
+    profile: userData.bio,
+    points: 0,
+    credits: 0,
+    subscription_ID: Number(userData.subscription_ID),
+    account_ID: "N/A",
+    personal_account_ID: "N/A",
+    account_type: "cbu",
+  }
+}
+
 const PlansPage = () => {
   const router = useRouter();
   const handleSelectPlan = (plan: (typeof subscriptionPlans)[0]) => {
@@ -55,7 +77,7 @@ const PlansPage = () => {
       plan_id: storage.getItem("selectedPlan"),
     }
     
-    await createUser(userData).then(() => {
+    await createUser(buildUser(userData)).then(() => {
       router.push("/pages/user-register");
     });
   };
