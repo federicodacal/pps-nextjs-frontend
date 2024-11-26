@@ -1,24 +1,26 @@
 import { Audio } from './audio';
 
 export interface Purchase {
-    id: string;
-    created_at: string;
-    total_price: number;
-    payment_method: string;
-    status: string;
-    audios: Audio[];
-}
+    ID: string
+    buyer_ID: string
+    created_at: string
+    flow_type: string
+    modified_at: string
+    payment_method: string
+    state: string
+    total: number
+  }
 
-export interface Item {
-    id: string;
-    audio_id: string;
-    price: number;
-    status: string;
-}
-
-export interface PurchasePayload {
-    buyer_id: string;
-    flow_type: string;
-    payment_method: string;
-    items: Item[];
-}
+  export interface PurchasePayload {
+    buyer_ID: string
+    flow_type: string
+    payment_method: string
+    items: Item[]
+  }
+  
+  export interface Item {
+    item_ID: string
+    audio_ID: string
+    creator_ID: string
+    price: number
+  }
