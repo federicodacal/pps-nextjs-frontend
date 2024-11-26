@@ -80,7 +80,7 @@ const AudioCard: React.FC<AudioProps> = ({
 
   return (
     <>
-      <div className="container">
+      <div className="container ">
         <div className="sub-container">
           <div>
             <h1>{name}</h1>
