@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import storage from "local-storage-fallback";
 import { Audio } from "../../types/audio";
@@ -57,7 +57,7 @@ export default function Cart() {
     // Obtener los audios desde la API al cargar el componente
     const fetchAudios = async () => {
       let audios: Audio[] = [];
-      const audioIDs = retrieveAudios();
+      /*const audioIDs = retrieveAudios();
 
       try {
         audioIDs.forEach(async (id) => {
@@ -71,7 +71,7 @@ export default function Cart() {
         setAudios(audios); // Guardamos los audios de la API en el estado
       } catch (error) {
         console.error("Error al obtener los audios:", error);
-      }
+      }*/
     };
 
     fetchAudios();
@@ -86,6 +86,9 @@ export default function Cart() {
   };
 
 
+  const handleCheckout = () => {
+    router.push("/pages/checkout");
+  };
 
   return (
     <>

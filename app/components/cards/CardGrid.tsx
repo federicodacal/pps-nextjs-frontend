@@ -3,8 +3,6 @@ import React, { useEffect, useState } from 'react';
 import AudioCard from '../audio/AudioCard';
 import { getAllAudios } from '@/app/services/audio-service';
 
-
-
 const AudioList: React.FC = () => {
   const [audios, setAudios] = useState<any[]>([]); // any[] en lugar de audio[] para probar mapeo
 

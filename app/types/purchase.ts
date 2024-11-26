@@ -1,6 +1,7 @@
 import { Audio } from './audio';
 
 export interface Purchase {
+<<<<<<< HEAD
     ID: string
     buyer_ID: string
     created_at: string
@@ -12,6 +13,8 @@ export interface Purchase {
   }
 
   export interface PurchasePayload {
+=======
+>>>>>>> develop
     buyer_ID: string
     flow_type: string
     payment_method: string
@@ -23,4 +26,14 @@ export interface Purchase {
     audio_ID: string
     creator_ID: string
     price: number
+<<<<<<< HEAD
   }
+=======
+  }
+export interface PurchasePayload {
+    buyer_id: string;
+    flow_type: string;
+    payment_method: string;
+    items: Item[];
+}
+>>>>>>> develop
