@@ -18,7 +18,7 @@ type AudioProps = {
   id: string,
   name: string;
   creator: string;
-  bpm: number;
+  bpm: string;
   tone: string;
   genre: string;
   category: string;
@@ -80,7 +80,7 @@ const AudioCard: React.FC<AudioProps> = ({
 
   return (
     <>
-      <div className="container">
+      <div className="container ">
         <div className="sub-container">
           <div>
             <h1>{name}</h1>
@@ -99,7 +99,7 @@ const AudioCard: React.FC<AudioProps> = ({
               <p>Categoría : {category}</p>
             </div>
             <div className="wavesurfer-controls">
-              <button onClick={onPlayPause} style={{ minWidth: "5em" }}>
+              <button onClick={onPlayPause} >
                 {isPlaying ? <BsFillStopFill /> : <BsFillPlayFill />}
               </button>
               <button 
@@ -109,7 +109,7 @@ const AudioCard: React.FC<AudioProps> = ({
               </button>
               <button 
               onClick={() => addToFavorites(id)}
-              style={{ minWidth: "5em" }}>
+              >
                  <BsHeartFill/>
               </button>
             </div>
