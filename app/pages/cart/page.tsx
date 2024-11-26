@@ -6,11 +6,14 @@ import Purchase from "../../components/cart/PurchaseResume";
 import { getAudioById } from "@/app/services/audio-service";
 import { createPurchase } from "@/app/services/purchases-service";
 import React, { useEffect, useState } from 'react';
+import { useRouter } from "next/navigation";
 import { User } from "@/app/types/users";
 import { Item, PurchasePayload } from "@/app/types/purchase";
-import { USER }  from '../../mocks/User';
+import { USER } from '../../mocks/User';
+import { AUDIOS } from '../../mocks/Audio';
 
 const mockUser: User = USER
+const mockAudios = AUDIOS
 
 const retrieveAudios = () => {
   let audiosIDs = storage.getItem("selected_audios");
@@ -25,10 +28,12 @@ const retrieveAudios = () => {
 const buildPayload = (audios: any[], ID: string): PurchasePayload => {
   let purchase = {
     buyer_ID: ID,
-    flow_type: "",
+    flow_type: "credit",
     payment_method: "mercadopago",
     items: buildItems(audios)
   }
+
+  console.log(purchase)
 
   return purchase
 }
@@ -38,10 +43,10 @@ const buildItems = (audios: Audio[]) => {
 
   audios.forEach(audio => {
     items.push({
-      item_ID: "",
+      item_ID: "1",
       audio_ID: audio.ID,
       creator_ID: audio.creator_ID,
-      price: Number(audio.price)
+      price: parseInt(audio.price, 10),
     })
   });
 
@@ -50,15 +55,17 @@ const buildItems = (audios: Audio[]) => {
 
 
 export default function Cart() {
-  const [audios, setAudios] = useState<any[]>([]); //
+  const [audios, setAudios] = useState<any[]>(mockAudios); //
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     // Obtener los audios desde la API al cargar el componente
     const fetchAudios = async () => {
       let audios: Audio[] = [];
-      /*const audioIDs = retrieveAudios();
+      const audioIDs = retrieveAudios();
 
+      /*
       try {
         audioIDs.forEach(async (id) => {
           let response = await getAudioById(id);
@@ -74,11 +81,10 @@ export default function Cart() {
       }*/
     };
 
-    fetchAudios();
   }, []);
 
   const handlePurchase = async () => {
-    const response = createPurchase(buildPayload(audios, mockUser.ID))
+    const response = await createPurchase(buildPayload(audios, mockUser.ID))
 
     console.log(response)
 
@@ -91,28 +97,29 @@ export default function Cart() {
   };
 
   return (
-    <>
-      <div>
-
-      </div>
-      <Purchase items={audios}></Purchase>
-      <div>
+    <div className="container" >
+      <div className="flex items-center grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
+        <Purchase items={audios}></Purchase>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="bg-red-600 hover:bg-red-700 text-white py-2 px-6 rounded-lg"
+          className="max-h-12 bg-yellow-600 hover:bg-yellow-400 text-black py-2 px-6 "
         >
-          Baja de usuario
+          Realizar compra
         </button>
+
+      </div>
+      <div>
+        
       </div>
       <div>
         {isModalOpen && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
             <div className="bg-gray-800 p-6 rounded-lg text-center">
-              <p className="text-lg mb-4">¿Estás seguro de eliminar tu cuenta?</p>
+              <p className="text-lg mb-4">¿Desea continuar con la compra?</p>
               <div className="flex justify-center space-x-4">
                 <button
                   onClick={handlePurchase}
-                  className="bg-red-600 hover:bg-red-700 text-white py-2 px-6 rounded-lg"
+                  className="bg-yellow-600 hover:bg-yellow-700 text-white py-2 px-6 rounded-lg"
                 >
                   Confirmar
                 </button>
@@ -127,7 +134,7 @@ export default function Cart() {
           </div>
         )}
       </div>
-    </>
+    </div>
   );
 }
 
