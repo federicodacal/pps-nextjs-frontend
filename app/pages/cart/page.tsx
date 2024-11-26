@@ -4,11 +4,16 @@ import storage from "local-storage-fallback";
 import { Audio } from "../../types/audio";
 import Purchase from "../../components/cart/PurchaseResume";
 import { getAudioById } from "@/app/services/audio-service";
+import { createPurchase } from "@/app/services/purchases-service";
 import React, { useEffect, useState } from 'react';
 import { useRouter } from "next/navigation";
+import { User } from "@/app/types/users";
+import { Item, PurchasePayload } from "@/app/types/purchase";
+import { USER } from '../../mocks/User';
 import { AUDIOS } from '../../mocks/Audio';
 
-const audiosMock = AUDIOS;
+const mockUser: User = USER
+const mockAudios = AUDIOS
 
 const retrieveAudios = () => {
   let audiosIDs = storage.getItem("selected_audios");
@@ -20,16 +25,47 @@ const retrieveAudios = () => {
   return audiosIDs.split(",");
 };
 
+const buildPayload = (audios: any[], ID: string): PurchasePayload => {
+  let purchase = {
+    buyer_ID: ID,
+    flow_type: "credit",
+    payment_method: "mercadopago",
+    items: buildItems(audios)
+  }
+
+  console.log(purchase)
+
+  return purchase
+}
+
+const buildItems = (audios: Audio[]) => {
+  const items: Item[] = []
+
+  audios.forEach(audio => {
+    items.push({
+      item_ID: "1",
+      audio_ID: audio.ID,
+      creator_ID: audio.creator_ID,
+      price: parseInt(audio.price, 10),
+    })
+  });
+
+  return items
+}
+
+
 export default function Cart() {
-  const [audios, setAudios] = useState<any[]>(audiosMock);
+  const [audios, setAudios] = useState<any[]>(mockAudios); //
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
     // Obtener los audios desde la API al cargar el componente
     const fetchAudios = async () => {
       let audios: Audio[] = [];
-      /*const audioIDs = retrieveAudios();
+      const audioIDs = retrieveAudios();
 
+      /*
       try {
         audioIDs.forEach(async (id) => {
           let response = await getAudioById(id);
@@ -45,35 +81,63 @@ export default function Cart() {
       }*/
     };
 
-    fetchAudios();
   }, []);
+
+  const handlePurchase = async () => {
+    const response = await createPurchase(buildPayload(audios, mockUser.ID))
+
+    console.log(response)
+
+    setIsModalOpen(false);
+  };
+
 
   const handleCheckout = () => {
     router.push("/pages/checkout");
   };
 
   return (
-    <>
-      <div className="min-h-screen bg-black text-violet-200 flex flex-col items-center w-full">
-        <div>
-          <h1 className="text-3xl font-bold ">Carrito</h1>
-        </div>
-        <div className="flex justify-between mt-10">
-          <Purchase items={audios}></Purchase>
-        </div>
-
-
-      </div>
-
-      <div className="flex justify-between mt-5">
+    <div className="container" >
+      <div className="flex items-center grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
+        <Purchase items={audios}></Purchase>
         <button
-          className="bg-green-600 hover:bg-green-700 text-white py-2 px-6 "
-          onClick={() => handleCheckout()}
+          onClick={() => setIsModalOpen(true)}
+          className="max-h-12 bg-yellow-600 hover:bg-yellow-400 text-black py-2 px-6 "
         >
-          Confirmar
+          Realizar compra
         </button>
-      </div>
 
-    </>
+      </div>
+      <div>
+        
+      </div>
+      <div>
+        {isModalOpen && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+            <div className="bg-gray-800 p-6 rounded-lg text-center">
+              <p className="text-lg mb-4">¿Desea continuar con la compra?</p>
+              <div className="flex justify-center space-x-4">
+                <button
+                  onClick={handlePurchase}
+                  className="bg-yellow-600 hover:bg-yellow-700 text-white py-2 px-6 rounded-lg"
+                >
+                  Confirmar
+                </button>
+                <button
+                  onClick={() => setIsModalOpen(false)}
+                  className="bg-gray-600 hover:bg-gray-700 text-white py-2 px-6 rounded-lg"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
+
+
+
+
