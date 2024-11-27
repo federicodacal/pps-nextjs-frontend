@@ -1,7 +1,7 @@
 'use client'
 
 import storage from "local-storage-fallback";
-import { Audio } from "../../types/audio";
+import { AudioDB } from "../../types/audio";
 import Header from '../../components/header/Header';
 import Footer from '../../components/footer/Footer';
 import Purchase from "../../components/cart/PurchaseResume";
@@ -40,15 +40,17 @@ const buildPayload = (audios: any[], ID: string): PurchasePayload => {
   return purchase
 }
 
-const buildItems = (audios: Audio[]) => {
+const buildItems = (audios: AudioDB[]) => {
   const items: Item[] = []
+
+  console.log(audios)
 
   audios.forEach(audio => {
     items.push({
-      item_ID: "1",
+      item_ID: audio.item.ID,
       audio_ID: audio.ID,
-      creator_ID: audio.creator_ID,
-      price: parseInt(audio.price, 10),
+      creator_ID: audio.item.creator_ID,
+      price: audio.item.price,
     })
   });
 
@@ -57,14 +59,14 @@ const buildItems = (audios: Audio[]) => {
 
 
 export default function Cart() {
-  const [audios, setAudios] = useState<any[]>(mockAudios); //
+  const [audios, setAudios] = useState<AudioDB[]>(mockAudios); //
   const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
     // Obtener los audios desde la API al cargar el componente
     const fetchAudios = async () => {
-      let audios: Audio[] = [];
+      let audios: AudioDB[] = [];
       const audioIDs = retrieveAudios();
 
       /*
@@ -91,6 +93,8 @@ export default function Cart() {
     console.log(response)
 
     setIsModalOpen(false);
+
+    router.push("/pages/checkout");
   };
 
 
@@ -121,13 +125,13 @@ export default function Cart() {
                 <div className="grid grid-cols-2">
 
                   <span className="text-xl">No. Productos</span>
-                  <span className="text-right">N audios</span>
+                  <span className="text-right">{audios.length}</span>
 
                   <span className="text-xl">Subtotal</span>
-                  <span className="text-right">$ 100</span>
+                  <span className="text-right">{audios.length}</span>
 
                   <span className="mt-5 text-2xl">Total</span>
-                  <span className="mt-5 text-2xl">$ 100</span>
+                  <span className="text-right mt-5 text-2xl">$ 100</span>
 
                 </div>
                 <div className="mt-5 mb-2 w-full p-5 ">
@@ -139,21 +143,9 @@ export default function Cart() {
                   </button>
                 </div>
 
-
-
               </div>
 
-
-
-
-
-
-
-
-
             </div>
-
-
 
             {/*Checkout*/}
 
