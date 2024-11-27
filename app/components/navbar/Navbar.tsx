@@ -9,6 +9,7 @@ const pages = [
   { path: "/pages/favorites", text: "Favorites" },
   { path: "/pages/cart", text: "Cart" },
   { path: "/pages/checkout", text: "Checkout" },
+  { path: "/pages/admin", text: "Admin" },
 ];
 
 const userMenus = [

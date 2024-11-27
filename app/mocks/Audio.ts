@@ -2,10 +2,10 @@ import { Audio } from "@/app/types/audio"
 
 export const AUDIOS: Audio[] = [
     { 
-      ID: '1',
+      ID: '0f4e6f7f-1e60-4bc3-84c1-57cecb9fb3cd',
       audio_name: 'Audio 1', 
       description: 'Audio 1',
-      creator_ID: 'Creador 1', 
+      creator_ID: 'creator_003', 
       BPM: "120", 
       tone: 'C', 
       length: "320", 
@@ -18,10 +18,10 @@ export const AUDIOS: Audio[] = [
 
     },
     { 
-      ID: '2',
+      ID: 'caff3de6-ae3c-453d-808d-ed3a30afbdb7',
       audio_name: 'Audio 2', 
       description: 'Audio 2',
-      creator_ID: 'Creador 2', 
+      creator_ID: 'creator_003', 
       BPM: "89", 
       tone: 'D', 
       length:"320", 
@@ -33,10 +33,10 @@ export const AUDIOS: Audio[] = [
       price: "9",
     },
     { 
-      ID: '3',
+      ID: '7f65344c-0988-4146-a6dd-0e202fb4e9c5',
       audio_name: 'Audio 3', 
       description: 'Audio 3',
-      creator_ID: 'Creador 3', 
+      creator_ID: 'creator_003', 
       BPM: "100", 
       tone: 'F', 
       length: "280", 
@@ -48,7 +48,6 @@ export const AUDIOS: Audio[] = [
       price: "9",
     },
     
-    // Agrega más audios según necesites
   ]
 
 

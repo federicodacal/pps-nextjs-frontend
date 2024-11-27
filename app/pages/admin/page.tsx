@@ -42,7 +42,7 @@ const buildUser = (response: any) => {
   }
 }
 
-export default function MyProfile() {
+export default function AdminPage() {
   const [user, setUserData] = useState(initUser());
   const [isEditing, setIsEditing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -127,85 +127,12 @@ export default function MyProfile() {
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100 flex flex-col">
       {/* Title */}
-      <Header title="Mi perfil"/>
+      <Header title="Admin"/>
 
       {/* Form */}
       <div className="bg-gray-800 rounded-lg p-6 shadow-md max-w-4xl mx-auto relative">
-        {/* Credits */}
-        <div className="absolute mb-5 mr-5 top-1 right-1 bg-yellow-500 text-gray-900 font-bold py-2 px-4 rounded-lg text-lg">
-          Créditos: {user.credits}
-        </div>
+      
 
-        <form className="grid grid-cols-2 gap-6">
-          {/* Form Fields */}
-          {Object.entries(user).map(([key, value]) => {
-            if (key === "personal_ID" || key === "state" || key === "user_detail" || key === "credits" || key === "ID") return null; // Hidden fields
-
-            const isTextArea = key === "bio";
-            const isPassword = key === "pwd";
-            const isDropdown = key === "type";
-
-            return (
-              <div
-                key={key}
-                className={`flex flex-col col-span-1 ${key === "bio" ? "col-span-2" : ""
-                  }`}
-              >
-                <label className="text-sm font-semibold text-gray-400 capitalize">
-                  {key === "pwd" ? "Password" : key.replace("_", " ")}
-                </label>
-                {isTextArea ? (
-                  <textarea
-                    value={value}
-                    maxLength={100}
-                    readOnly={!isEditing}
-                    className={`mt-1 px-4 py-2 rounded-lg bg-gray-700 text-gray-100 ${isEditing ? "border border-purple-500" : "border-none"
-                      }`}
-                    rows={4}
-                    onChange={(e) =>
-                      setUserData({ ...user, [key]: e.target.value })
-                    }
-                  />
-                ) : isPassword ? (
-                  <input
-                    type="password"
-                    value={value}
-                    readOnly={!isEditing}
-                    className={`mt-1 px-4 py-2 rounded-lg bg-gray-700 text-gray-100 ${isEditing ? "border border-purple-500" : "border-none"
-                      }`}
-                    onChange={(e) =>
-                      setUserData({ ...user, [key]: e.target.value })
-                    }
-                  />
-                ) : isDropdown ? (
-                  <select
-                    value={value}
-                    disabled={!isEditing}
-                    className={`mt-1 px-4 py-2 rounded-lg bg-gray-700 text-gray-100 ${isEditing ? "border border-purple-500" : "border-none"
-                      }`}
-                    onChange={(e) =>
-                      setUserData({ ...user, [key]: e.target.value })
-                    }
-                  >
-                    <option value="Comprador">Comprador</option>
-                    <option value="Creador">Creador</option>
-                  </select>
-                ) : (
-                  <input
-                    type="text"
-                    value={value}
-                    readOnly={!isEditing}
-                    className={`mt-1 px-4 py-2 rounded-lg bg-gray-700 text-gray-100 ${isEditing ? "border border-purple-500" : "border-none"
-                      }`}
-                    onChange={(e) =>
-                      setUserData({ ...user, [key]: e.target.value })
-                    }
-                  />
-                )}
-              </div>
-            );
-          })}
-        </form>
 
         {/* Buttons */}
         <div className="flex justify-between mt-10">

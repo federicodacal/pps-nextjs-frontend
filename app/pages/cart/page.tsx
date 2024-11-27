@@ -2,6 +2,8 @@
 
 import storage from "local-storage-fallback";
 import { Audio } from "../../types/audio";
+import Header from '../../components/header/Header';
+import Footer from '../../components/footer/Footer';
 import Purchase from "../../components/cart/PurchaseResume";
 import { getAudioById } from "@/app/services/audio-service";
 import { createPurchase } from "@/app/services/purchases-service";
@@ -97,42 +99,95 @@ export default function Cart() {
   };
 
   return (
-    <div className="container" >
-      <div className="flex items-center grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
-        <Purchase items={audios}></Purchase>
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="max-h-12 bg-yellow-600 hover:bg-yellow-400 text-black py-2 px-6 "
-        >
-          Realizar compra
-        </button>
+    <div>
+      <div>
+        <Header title="Carrito" />
+      </div>
+      <div className="flex justify-center items-center mb-72 px-10 sm:px-0" >
+        <div className="flex flex-col w-[1000px]">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
+            {/*Carrito*/}
+            <div className="flex flex-col mt-5">
 
+              <Purchase items={audios}></Purchase>
+
+            </div>
+
+            <div>
+              {/*Items*/}
+              <div className="bg-white rounded-xl shadow-xl p-7 text-black">
+                <h2 className="text-2xl mb-2">Resumen de orden</h2>
+
+                <div className="grid grid-cols-2">
+
+                  <span className="text-xl">No. Productos</span>
+                  <span className="text-right">N audios</span>
+
+                  <span className="text-xl">Subtotal</span>
+                  <span className="text-right">$ 100</span>
+
+                  <span className="mt-5 text-2xl">Total</span>
+                  <span className="mt-5 text-2xl">$ 100</span>
+
+                </div>
+                <div className="mt-5 mb-2 w-full p-5 ">
+                  <button
+                    onClick={() => setIsModalOpen(true)}
+                    className="flex justify-center bg-yellow-500 hover:bg-yellow-400 text-black w-full p-3"
+                  >
+                    Realizar compra
+                  </button>
+                </div>
+
+
+
+              </div>
+
+
+
+
+
+
+
+
+
+            </div>
+
+
+
+            {/*Checkout*/}
+
+
+          </div>
+        </div>
       </div>
       <div>
-        
-      </div>
-      <div>
-        {isModalOpen && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-            <div className="bg-gray-800 p-6 rounded-lg text-center">
-              <p className="text-lg mb-4">¿Desea continuar con la compra?</p>
-              <div className="flex justify-center space-x-4">
-                <button
-                  onClick={handlePurchase}
-                  className="bg-yellow-600 hover:bg-yellow-700 text-white py-2 px-6 rounded-lg"
-                >
-                  Confirmar
-                </button>
-                <button
-                  onClick={() => setIsModalOpen(false)}
-                  className="bg-gray-600 hover:bg-gray-700 text-white py-2 px-6 rounded-lg"
-                >
-                  Cancelar
-                </button>
+
+
+        <div>
+          {isModalOpen && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+              <div className="bg-gray-800 p-6 rounded-lg text-center">
+                <p className="text-lg mb-4">¿Desea continuar con la compra?</p>
+                <div className="flex justify-center space-x-4">
+                  <button
+                    onClick={handlePurchase}
+                    className="bg-yellow-600 hover:bg-yellow-700 text-white py-2 px-6 rounded-lg"
+                  >
+                    Confirmar
+                  </button>
+                  <button
+                    onClick={() => setIsModalOpen(false)}
+                    className="bg-gray-600 hover:bg-gray-700 text-white py-2 px-6 rounded-lg"
+                  >
+                    Cancelar
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
+        <Footer />
       </div>
     </div>
   );
