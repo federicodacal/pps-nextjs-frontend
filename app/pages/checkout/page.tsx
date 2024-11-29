@@ -8,6 +8,8 @@ export const dynamic = "force-static";
 export default async function Checkout() {
   const messages = await api.message.list();
 
+
+
   async function add(formData: FormData) {
     "use server";
 
@@ -33,7 +35,6 @@ export default async function Checkout() {
       <ul className="grid gap-2">
         {messages.map((message) => (
           <li key={message.id} className="rounded bg-blue-400/10 p-4">
-            {message.text}
           </li>
         ))}
       </ul>

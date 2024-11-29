@@ -47,16 +47,18 @@ const buildItems = (audios: AudioDB[]) => {
 
   audios.forEach(audio => {
     items.push({
-      item_ID: audio.item.ID,
+      ID: audio.item.ID,
       audio_ID: audio.ID,
       creator_ID: audio.item.creator_ID,
       price: audio.item.price,
+      created_at: "",
+      modified_at: "",
+      state: ""
     })
   });
 
   return items
 }
-
 
 export default function Cart() {
   const [audios, setAudios] = useState<AudioDB[]>(mockAudios); //

@@ -1,30 +1,58 @@
 import {readFileSync, writeFileSync} from "node:fs";
 
+import { Item, Purchase, PurchaseDetail } from "@/app/types/purchase";
 import {MercadoPagoConfig, Preference} from "mercadopago";
+import { getPurchaseById } from "@/app/services/purchases-service"
+import storage from "local-storage-fallback";
 
 interface Message {
   id: number;
   text: string;
 }
 
+interface CheckoutItem {
+  id: string;
+  price: number;
+}
+
+const retrievePurchaseID = () => {
+  let purchaseID = storage.getItem("purchase_ID");
+
+  if (purchaseID == null) {
+    purchaseID = "";
+  }
+
+  return purchaseID
+};
+
+const buildCheckoutItems = (purchase:Purchase) => {
+  let items: CheckoutItem[] = []
+
+  purchase.purchase_details.forEach(item => {
+    items.push({
+      id: item.ID,
+      price: item.item.price,
+    })
+  });
+
+  return items
+}
+
 export const mercadopago = new MercadoPagoConfig({accessToken: process.env.MP_ACCESS_TOKEN!});
 
 const api = {
   message: {
-    async list(): Promise<Message[]> {
-      return [{id:1, text:"UNO"},{id:2, text:"DOS"}]
+    async list(): Promise<CheckoutItem[]> {
+      let purchaseID = retrievePurchaseID()
+      const response = await getPurchaseById(purchaseID)
+      return buildCheckoutItems(response.data)
     },
 
     async add(message: Message): Promise<void> {
       const db = await api.message.list();
 
-      if (db.some((_message) => _message.id === message.id)) {
-        throw new Error("Message already added");
-      }
 
-      const draft = db.concat(message);
 
-      writeFileSync("db/message.db", JSON.stringify(draft, null, 2));
     },
 
     async submit(text: Message["text"]) {
