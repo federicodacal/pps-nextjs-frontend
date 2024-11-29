@@ -21,7 +21,7 @@ export interface UserPayload {
 export interface User {
     ID: string
     created_at: string
-    creator: Creator
+    creator: Creator 
     email: string
     modified_at: string
     pwd: string

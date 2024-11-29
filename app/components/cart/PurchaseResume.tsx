@@ -1,7 +1,7 @@
-import { Audio } from "../../types/audio"
+import { AudioDB } from "../../types/audio"
 
 interface AudioItemProps {
-    items: Audio[];
+    items: AudioDB[];
 }
 
 const PurchaseResume: React.FC<AudioItemProps> = ({ items }) => {
@@ -17,7 +17,7 @@ const PurchaseResume: React.FC<AudioItemProps> = ({ items }) => {
                     <p>Nombre: {audio.audio_name}</p>
                     <p>Categoría: {audio.category}</p>
                     <p>Genero: {audio.genre}</p>
-                    <p>Price: {audio.price}</p>
+                    <p>Price: {audio.item.price}</p>
 
                     <button
                         onClick={() => removeItem(index)}

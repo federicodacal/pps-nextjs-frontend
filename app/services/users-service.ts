@@ -16,6 +16,10 @@ export const getUserById = async (id: string) => {
     return axios.get<User>(`${PROXY}/users/${id}`);
 };
 
+export const getUsers = async () => {
+    return axios.get<User[]>(`${PROXY}/users`);
+};
+
 export const updateUser = async (userData: UserPayload) => {
     console.log(userData)
 
