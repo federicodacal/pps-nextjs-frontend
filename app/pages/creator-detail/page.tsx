@@ -4,41 +4,86 @@ import React, { useEffect, useState } from 'react';
 import { getUserById, updateUser, deleteByID } from '@/app/services/users-service';
 import Header from '../../components/header/Header';
 import Footer from '../../components/footer/Footer';
-import {  UserPayload } from '../../types/users';
+import UserDetail from '../../components/detail/UserDetail';
+import { UserPayload } from '../../types/users';
 
 const hardcodedUser = 'user_003'
 
 const initUser = () => {
   return {
     ID: "",
-    full_name: "",
-    personal_ID: "",
-    username: "",
     email: "",
-    phone_number: "",
     pwd: "",
-    credits: "",
     type: "",
-    subscription_ID: "1",
-    bio: "",
+    user_detail: initUserDetail(),
+    creator: initCreator(),
+    created_at: '',
+    modified_at: '',
+    user_detail_ID: "",
+  }
+}
+
+const initUserDetail = () => {
+  return {
+    ID: "",
+    username: "",
+    full_name: "",
+    personal_ID: 0,
+    phone_number: "",
+    created_at: "",
+    modified_at: "",
     state: "",
+  }
+}
+
+const initCreator = () => {
+  return {
+    ID: "",
+    created_at: "",
+    credits: 0,
+    modified_at: "",
+    points: 0,
+    profile: "",
+    state: "",
+    subscription_ID: 0,
+    user_ID: "",
+  }
+}
+
+const buildCreator = (response: any) => {
+  return {
+    ID: response.creator.ID,
+    created_at: response.creator.created_at,
+    credits: response.creator.credits,
+    modified_at: response.creator.modified_at,
+    points: response.creator.points,
+    profile: response.creator.profile,
+    state: response.creator.state,
+    subscription_ID: response.creator.subscription_ID,
+    user_ID: response.creator.user_ID,
   }
 }
 
 const buildUser = (response: any) => {
   return {
-    ID: response.data.ID,
-    full_name: response.data.user_detail.full_name,
-    personal_ID: response.data.user_detail.personal_ID,
-    username: response.data.user_detail.username,
-    email: response.data.email,
-    phone_number: response.data.user_detail.phone_number,
-    pwd: response.data.pwd,
-    credits: response.data.creator.credits,
-    type: response.data.type,
-    subscription_ID: "1",
-    bio: "Enthusiastic developer and designer.",
-    state: response.data.state,
+    ID: response.ID,
+    email: response.email,
+    pwd: response.pwd,
+    type: response.type,
+    user_detail: {
+      ID: response.user_detail.ID,
+      username: response.user_detail.username,
+      full_name: response.user_detail.full_name,
+      personal_ID: response.user_detail.personal_ID,
+      phone_number: response.user_detail.phone_number,
+      created_at: response.user_detail.created_at,
+      modified_at: response.user_detail.modified_at,
+      state: response.user_detail.state,
+    },
+    creator: buildCreator(response),
+    created_at: response.user_detail.created_at,
+    modified_at: response.user_detail.modified_at,
+    user_detail_ID: response.user_detail.user_detail_ID,
   }
 }
 
@@ -46,6 +91,7 @@ export default function CreatorDetail() {
   const [user, setUserData] = useState(initUser());
   const [isEditing, setIsEditing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -57,11 +103,22 @@ export default function CreatorDetail() {
         setUserData(buildUser(response));
       } catch (error) {
         console.error("Error al obtener datos del usuario:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchUserData();
   }, []);
+
+
+  if (loading) {
+    return <div className="text-white text-center">Cargando...</div>;
+  }
+
+  if (!user) {
+    return <div className="text-red-500 text-center">No se encontró el usuario.</div>;
+  }
 
   const handleEdit = () => {
     setIsEditing((prev) => !prev);
@@ -83,17 +140,17 @@ export default function CreatorDetail() {
         ID: user.ID,
         pwd: user.pwd,
         type: user.type,
-        state: user.state,
+        state: user.user_detail.state,
         user_detail_ID: "N/A",
-        personal_ID: Number(user.personal_ID),
-        username: user.username,
-        full_name: user.full_name,
-        phone_number: user.phone_number,
+        personal_ID: Number(user.user_detail.personal_ID),
+        username: user.user_detail.username,
+        full_name: user.user_detail.full_name,
+        phone_number: user.user_detail.phone_number,
         creator_ID: "N/A",
-        profile: user.bio,
+        profile: user.creator.profile,
         points: 0,
-        credits: Number(user.credits),
-        subscription_ID: Number(user.subscription_ID),
+        credits: Number(user.creator.credits),
+        subscription_ID: Number(user.creator.subscription_ID),
         account_ID: "N/A",
         personal_account_ID: "N/A",
         account_type: "cbu",
@@ -109,7 +166,6 @@ export default function CreatorDetail() {
   const modifyUser = async (user: UserPayload | undefined) => {
     if (user != undefined) {
       const userPayload = user
-
       const response = await updateUser(userPayload)
 
       console.log(response)
@@ -127,85 +183,16 @@ export default function CreatorDetail() {
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100 flex flex-col">
       {/* Title */}
-      <Header title="Mi perfil"/>
+      <Header title="Mi perfil" />
 
       {/* Form */}
       <div className="bg-gray-800 rounded-lg p-6 shadow-md max-w-4xl mx-auto relative">
         {/* Credits */}
         <div className="absolute mb-5 mr-5 top-1 right-1 bg-yellow-500 text-gray-900 font-bold py-2 px-4 rounded-lg text-lg">
-          Créditos: {user.credits}
+          Créditos: {user.creator.credits}
         </div>
 
-        <form className="grid grid-cols-2 gap-6">
-          {/* Form Fields */}
-          {Object.entries(user).map(([key, value]) => {
-            if (key === "personal_ID" || key === "state" || key === "user_detail" || key === "credits" || key === "ID") return null; // Hidden fields
-
-            const isTextArea = key === "bio";
-            const isPassword = key === "pwd";
-            const isDropdown = key === "type";
-
-            return (
-              <div
-                key={key}
-                className={`flex flex-col col-span-1 ${key === "bio" ? "col-span-2" : ""
-                  }`}
-              >
-                <label className="text-sm font-semibold text-gray-400 capitalize">
-                  {key === "pwd" ? "Password" : key.replace("_", " ")}
-                </label>
-                {isTextArea ? (
-                  <textarea
-                    value={value}
-                    maxLength={100}
-                    readOnly={!isEditing}
-                    className={`mt-1 px-4 py-2 rounded-lg bg-gray-700 text-gray-100 ${isEditing ? "border border-purple-500" : "border-none"
-                      }`}
-                    rows={4}
-                    onChange={(e) =>
-                      setUserData({ ...user, [key]: e.target.value })
-                    }
-                  />
-                ) : isPassword ? (
-                  <input
-                    type="password"
-                    value={value}
-                    readOnly={!isEditing}
-                    className={`mt-1 px-4 py-2 rounded-lg bg-gray-700 text-gray-100 ${isEditing ? "border border-purple-500" : "border-none"
-                      }`}
-                    onChange={(e) =>
-                      setUserData({ ...user, [key]: e.target.value })
-                    }
-                  />
-                ) : isDropdown ? (
-                  <select
-                    value={value}
-                    disabled={!isEditing}
-                    className={`mt-1 px-4 py-2 rounded-lg bg-gray-700 text-gray-100 ${isEditing ? "border border-purple-500" : "border-none"
-                      }`}
-                    onChange={(e) =>
-                      setUserData({ ...user, [key]: e.target.value })
-                    }
-                  >
-                    <option value="Comprador">Comprador</option>
-                    <option value="Creador">Creador</option>
-                  </select>
-                ) : (
-                  <input
-                    type="text"
-                    value={value}
-                    readOnly={!isEditing}
-                    className={`mt-1 px-4 py-2 rounded-lg bg-gray-700 text-gray-100 ${isEditing ? "border border-purple-500" : "border-none"
-                      }`}
-                    onChange={(e) =>
-                      setUserData({ ...user, [key]: e.target.value })
-                    }
-                  />
-                )}
-              </div>
-            );
-          })}
-        </form>
+        <UserDetail user={user} />
 
         {/* Buttons */}
         <div className="flex justify-between mt-10">
