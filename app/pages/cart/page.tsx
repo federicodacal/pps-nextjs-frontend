@@ -13,6 +13,7 @@ import { User } from "@/app/types/users";
 import { Item, PurchasePayload } from "@/app/types/purchase";
 import { USER } from '../../mocks/User';
 import { AUDIOS } from '../../mocks/Audio';
+import withAuth from "@/app/hoc/withAuth";
 
 const mockUser: User = USER
 const mockAudios = AUDIOS
@@ -58,7 +59,7 @@ const buildItems = (audios: AudioDB[]) => {
 }
 
 
-export default function Cart() {
+const Cart = () => {
   const [audios, setAudios] = useState<AudioDB[]>(mockAudios); //
   const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
@@ -184,6 +185,8 @@ export default function Cart() {
     </div>
   );
 }
+
+export default withAuth(Cart, ["creator", "buyer"]);
 
 
 

@@ -5,6 +5,7 @@ import { getUserById, updateUser, deleteByID } from '@/app/services/users-servic
 import Header from '../../components/header/Header';
 import Footer from '../../components/footer/Footer';
 import {  UserPayload } from '../../types/users';
+import withAuth from '@/app/hoc/withAuth';
 
 const hardcodedUser = 'user_003'
 
@@ -42,7 +43,7 @@ const buildUser = (response: any) => {
   }
 }
 
-export default function MyProfile() {
+const MyProfile = () => {
   const [user, setUserData] = useState(initUser());
   const [isEditing, setIsEditing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -267,3 +268,5 @@ export default function MyProfile() {
     </div>
   );
 }
+
+export default withAuth(MyProfile, ["creator", "buyer"]);
