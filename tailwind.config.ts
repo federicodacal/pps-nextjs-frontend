@@ -18,9 +18,14 @@ const config: Config = {
         gradientEnd: '#000000',
         cardGradientStart: '#CC00CC',
         cardGradientEnd: '#4C0099',
+        dark: "#121212",
+        dim: "#1e1e1e",
+        accent: "#4f46e5",
+        lightText: "#e5e7eb",
       },
     },
   },
+  darkMode: "class",
   plugins: [],
 };
 export default config;

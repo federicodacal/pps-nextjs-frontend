@@ -1,14 +1,13 @@
-import type { Metadata } from "next";
+"use client"
 
-export const metadata: Metadata = {
-    title: "Cargar audio",
-    description: "Cargar un nuevo audio",
-};
+import AudioForm from "@/app/components/audio/AudioForm";
+import Header from '../../components/header/Header';
 
-export default function UploadAudio() {
-    return (
-        <main className="flex flex-col items-center p-24">
-          <span className="text-5xl">Cargar nuevo audio</span>
-        </main>
-      );
+export default function Page() {
+  return (
+    <div>
+      <Header title="Carga nuevo audio"/>
+      <AudioForm />  
+    </div>
+  );
 }

@@ -1,9 +1,13 @@
 import React from 'react';
 
-export default function Header() {
+interface HeaderProps{
+  title: string;
+}
+
+export default function Header({ title }: HeaderProps) {
   return (
-    <header className="w-full bg-gradient-to-r from-[#B266FF] to-[#E5CCFF] py-4 text-center">
-      <h1 className="text-2xl font-bold text-white">AudioLibre</h1>
+    <header className="h-screen max-h-48 mb-10 w-screen  bg-gradient-to-b from-[#7040A1] to-[#E5CCFF] flex items-center grid justify-items-center  text-center">
+      <h1 className="text-4xl font-bold text-black">{title}</h1>
     </header>
   );
 }

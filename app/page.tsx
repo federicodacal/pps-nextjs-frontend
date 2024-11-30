@@ -1,14 +1,89 @@
+'use client'
+
+import { useEffect, useState } from 'react';
+import Carousel from './components/carrousel/Carrousel';
+import CardGrid from './components/cards/CardGrid';
+import Footer from './components/footer/Footer';
+import Header from './components/header/Header';
+import { getAllAudios } from '../app/services/audio-service';
+import { Audio } from '../app/types/audio';
+import AudioCard from '../app/components/audio/AudioCard';
+
+const images = [
+  { image: "/image_1.jpg" },
+  { image: "/image_2.jpg" },
+  { image: "/image_3.jpg" },
+];
 
 
-export default function Home() {
-  return (
-    <main className="bg-gradient-to-b from-gradientStart to-gradientEnd min-h-screen flex flex-col items-center">
-    <header className="py-6 text-center text-white">
-      <h1 className="text-3xl font-bold">Galería de Audios</h1>
-    </header>
+const Home = () => {
+  const [audios, setAudios] = useState<any[]>([]);
+  const [search, setSearch] = useState("");
 
-  
-  </main>
+  useEffect(() => {
+    const fetchAudios = async () => {
+      // const mockData:Audio[] = AUDIOS
+      try {
+        const response = await getAllAudios();
+        console.log("Audios obtenidos de la API:", response.data); // Verifica que los datos de la API estén bien
+        setAudios(response.data); // Guardamos los audios de la API en el estado
+      } catch (error) {
+        console.error("Error al obtener los audios:", error);
+      }
+    };
+    fetchAudios();
+  }, []);
+
+ 
+
+  const filteredAudios = audios.filter(
+    (audio) =>
+      audio.audio_name.toLowerCase().includes(search.toLowerCase()) ||
+      audio.category.toLowerCase().includes(search.toLowerCase()) ||
+      audio.BPM.toString() === search
   );
-}
 
+  return (
+    <div className="min-h-screen bg-dark text-lightText p-6">
+
+      <Header title="AudioLibre" />
+        <Carousel data={images} />
+
+      <input
+        type="text"
+        placeholder="Buscar por nombre, categoría o BPM..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        className="w-full p-3 rounded-md bg-dim text-lightText placeholder-gray-400 focus:outline-none mb-6"
+      />
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {filteredAudios.map((audio, index) => (
+          <AudioCard
+            key={index}
+            id={audio.ID}
+            name={audio.audio_name}
+            creator={audio.creator_ID}
+            bpm={audio.BPM}
+            tone={audio.tone.toString()}
+            genre={audio.genre}
+            category={audio.category}
+            duration={audio.length}
+            audioUrl={audio.file_url}
+            onAddToFavorites={(id: number) => console.log(`${id} added to favorites`)}
+            onAddToCart={(id: number) => console.log(`${id} added to cart`)}
+          />
+        ))}
+      </div>
+
+      {filteredAudios.length === 0 && (
+        <p className="text-center text-gray-500 mt-6">
+          No se encontraron resultados.
+        </p>
+      )}
+      <Footer />
+    </div>
+  );
+};
+
+export default Home;

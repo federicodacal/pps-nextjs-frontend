@@ -1,18 +1,24 @@
 export interface Audio {
-    id: string;
-    name: string;
-    description: string;
-    tone: string;
-    bpm: number;
-    genre: string;
-    category: string;
+    ID: string,
+    creator_ID: string,
+    audio_name: string,
+    state: string,
+    category: string,
+    genre: string,
+    BPM: string,
+    tone: string,
+    length: string,
+    size: string,
+    description: string,
+    state_item: string,
+    price: string,
 }
 
 export interface AudioPayload {
     name: string;
     description: string;
     tone: string;
-    bpm: number;
+    BPM: number;
     genre: string;
     category: string;
 }

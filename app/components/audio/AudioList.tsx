@@ -42,7 +42,7 @@ export default function AudioList() {
 
   return (
     <div>
-      <SearchBar setSearchTerm={setSearchTerm} />
+      <SearchBar/>
       <ul>
         {filteredAudios.map((audio) => (
           <AudioItem
