@@ -39,3 +39,9 @@ export interface PurchasePayload {
   items: Item[]
 }
 
+export interface CheckoutItem {
+  id: string;
+  price: number;
+}
+
+

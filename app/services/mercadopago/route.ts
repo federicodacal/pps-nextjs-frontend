@@ -1,6 +1,7 @@
 import {Payment} from "mercadopago";
 import {revalidatePath} from "next/cache";
 
+import { getPurchaseById } from "@/app/services/purchases-service"
 import api, {mercadopago} from "../mercadopago-api";
 
 export async function POST(request: Request) {
@@ -9,7 +10,8 @@ export async function POST(request: Request) {
   const payment = await new Payment(mercadopago).get({id: body.data.id});
 
   if (payment.status === "approved") {
-    await api.message.add({id: payment.id!, text: payment.metadata.text});
+    // Actualizar Purchase en DB
+    //await api.message.add({id: payment.id!, text: payment.metadata.text});
 
     revalidatePath("/");
   }
