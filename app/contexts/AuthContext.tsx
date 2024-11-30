@@ -9,6 +9,7 @@ interface AuthContextType {
   setAuthToken: (token: string) => void;
   logout: () => void;
   userType: string | null;
+  userId: string | null;
   loading: boolean;
 }
 
@@ -18,6 +19,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
   const [token, setToken] = useState<string | null>(null);
   const [userType, setUserType] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -41,12 +43,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       try {
         const decoded = JSON.parse(atob(token.split(".")[1]));
         setUserType(decoded.sub.type);
+        setUserId(decoded.sub.ID);
       } catch {
         setUserType(null);
+        setUserId(null);
       } 
     }
     else {
       setUserType(null);
+      setUserId(null);
     }
     setLoading(false);
   }, [token]); 
@@ -81,7 +86,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ token, setAuthToken, logout, userType, loading }}>
+    <AuthContext.Provider value={{ token, setAuthToken, logout, userType, userId, loading }}>
       {children}
     </AuthContext.Provider>
   );
