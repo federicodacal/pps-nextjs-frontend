@@ -42,7 +42,7 @@ const buildUser = (response: any) => {
   }
 }
 
-export default function MyProfile() {
+export default function CreatorDetail() {
   const [user, setUserData] = useState(initUser());
   const [isEditing, setIsEditing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);

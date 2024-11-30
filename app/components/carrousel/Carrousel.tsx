@@ -29,9 +29,10 @@ const Carousel = ({data,}: {data: {image: string;}[];
   }, []);
 
   return (
-    <div>
+    <div  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
       {/* Carousel container */}
-      <div className="relative h-60 w-80 overflow-hidden rounded-md">
+      
+      <div className="relative h-96 w-full  overflow-hidden rounded-md">
         {/* Image container */}
         <div
           ref={carouselRef}

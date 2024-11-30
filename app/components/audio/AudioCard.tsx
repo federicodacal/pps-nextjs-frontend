@@ -18,14 +18,14 @@ type AudioProps = {
   id: string,
   name: string;
   creator: string;
-  bpm: number;
+  bpm: string;
   tone: string;
   genre: string;
   category: string;
   duration: string;
   audioUrl: string;
-  onAddToFavorites: (id:number) => void;
-  onAddToCart: (id:number) => void;
+  onAddToFavorites: (id: number) => void;
+  onAddToCart: (id: number) => void;
 };
 
 const AudioCard: React.FC<AudioProps> = ({
@@ -43,11 +43,6 @@ const AudioCard: React.FC<AudioProps> = ({
 }) => {
   const containerRef = useRef(null);
   const [urlIndex, setUrlIndex] = useState(0);
-
-  console.log(id)
-  console.log(name)
-  console.log(audioUrl)
-
   const { wavesurfer, isPlaying, currentTime } = useWavesurfer({
     container: containerRef,
     height: 100,
@@ -56,6 +51,15 @@ const AudioCard: React.FC<AudioProps> = ({
     url: audioUrl,
     plugins: useMemo(() => [Timeline.create()], []),
   });
+  const [alertMessage, setAlertMessage] = useState<string | null>(null);
+  let textoAlerta = ""
+
+  const handleClick = (message: string) => {
+    setAlertMessage(message);
+    setTimeout(() => {
+      setAlertMessage(null);
+    }, 1000); // La alerta desaparece después de 1 segundo
+  };
 
   const onPlayPause = useCallback(() => {
     wavesurfer && wavesurfer.playPause();
@@ -70,17 +74,25 @@ const AudioCard: React.FC<AudioProps> = ({
       selectedAudios = ""
     };
 
-    storage.setItem("selected_audios", selectedAudios += audioId.toString() +"," )
+    handleClick("Se ha agregado al carrito")
+
+    storage.setItem("selected_audios", selectedAudios += audioId.toString() + ",")
   };
 
   const addToFavorites = (audioId: string) => {
+    let favAudios = storage.getItem("favorites_audios")
+
+    storage.setItem("favorites_audios", favAudios += audioId.toString() + ",")
+
+    handleClick("Se ha agregado a favoritos")
+
     console.log(`Audio ${audioId} added to favourites`)
   };
 
 
   return (
     <>
-      <div className="container">
+      <div className="container ">
         <div className="sub-container">
           <div>
             <h1>{name}</h1>
@@ -99,21 +111,32 @@ const AudioCard: React.FC<AudioProps> = ({
               <p>Categoría : {category}</p>
             </div>
             <div className="wavesurfer-controls">
-              <button onClick={onPlayPause} style={{ minWidth: "5em" }}>
+              <button onClick={onPlayPause} >
                 {isPlaying ? <BsFillStopFill /> : <BsFillPlayFill />}
               </button>
-              <button 
-               onClick={() => addToCart(id)}
+              <button
+                onClick={() => addToCart(id)}
               >
-                <BsPlusCircleFill/>
+                <BsPlusCircleFill />
               </button>
-              <button 
-              onClick={() => addToFavorites(id)}
-              style={{ minWidth: "5em" }}>
-                 <BsHeartFill/>
+              <button
+                onClick={() => addToFavorites(id)}
+              >
+                <BsHeartFill />
               </button>
             </div>
           </div>
+
+        </div>
+        <div>
+          {alertMessage && (
+            <div
+              className="fixed bottom-0 left-0 right-0 mx-auto mb-4 w-11/12 max-w-xl bg-yellow-500 text-black text-lg font-semibold px-6 py-4 rounded-lg shadow-lg animate-fade-in-out"
+              style={{ zIndex: 50 }}
+            >
+              {alertMessage}
+            </div>
+          )}
         </div>
       </div>
     </>

@@ -56,8 +56,8 @@ const AudioForm = () => {
       const response = await createAudio(formData);
       console.log("Audio creado:", response.data);
       router.push("/pages/home");
-    } catch (error) {
-      console.error("Error al crear el audio:", error);
+    } catch (error:any) {
+      console.error("Error al crear el audio:", error.message);
     }
   };
 
@@ -71,19 +71,6 @@ const AudioForm = () => {
         onSubmit={handleSubmit}
         className="bg-gray-800 p-5 rounded-lg w-full max-w-lg mx-auto text-white"
       >
-        {/* Campos para los datos del audio */}
-        <div style={{ marginBottom: "15px" }}>
-          <label htmlFor="ID" className="block mb-2 text-sm font-medium">
-            ID
-          </label>
-          <input
-            type="text"
-            name="ID"
-            onChange={handleInputChange}
-            placeholder="Ingrese el ID del audio"
-            className="w-full p-3 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
 
         <div style={{ marginBottom: "15px" }}>
           <label
@@ -95,19 +82,6 @@ const AudioForm = () => {
           <input
             type="text"
             name="creator_ID"
-            onChange={handleInputChange}
-            placeholder="Ingrese el ID del creador"
-            className="w-full p-3 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-
-        <div style={{ marginBottom: "15px" }}>
-          <label htmlFor="item_ID" className="block mb-2 text-sm font-medium">
-            Item ID
-          </label>
-          <input
-            type="text"
-            name="item_ID"
             onChange={handleInputChange}
             placeholder="Ingrese el ID del creador"
             className="w-full p-3 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -127,35 +101,6 @@ const AudioForm = () => {
             name="audio_name"
             onChange={handleInputChange}
             placeholder="Nombre del audio"
-            className="w-full p-3 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-
-        <div style={{ marginBottom: "15px" }}>
-          <label htmlFor="state" className="block mb-2 text-sm font-medium">
-            Estado
-          </label>
-          <input
-            type="text"
-            name="state"
-            onChange={handleInputChange}
-            placeholder="Estado del audio"
-            className="w-full p-3 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-
-        <div style={{ marginBottom: "15px" }}>
-          <label
-            htmlFor="state_item"
-            className="block mb-2 text-sm font-medium"
-          >
-            Estado
-          </label>
-          <input
-            type="text"
-            name="state_item"
-            onChange={handleInputChange}
-            placeholder="Estado del item"
             className="w-full p-3 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>

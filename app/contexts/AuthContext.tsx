@@ -8,6 +8,7 @@ interface AuthContextType {
   token: string | null;
   setAuthToken: (token: string) => void;
   logout: () => void;
+  userType: string | null;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -15,6 +16,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
   const [token, setToken] = useState<string | null>(null);
+  const [userType, setUserType] = useState<string | null>(null);
 
   useEffect(() => {
     const savedToken = localStorage.getItem("token");
@@ -33,6 +35,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (token) {
       console.log("Token guardado correctamente en el estado: ", token);
       localStorage.setItem("token", token); 
+      try {
+        const decoded = JSON.parse(atob(token.split(".")[1]));
+        setUserType(decoded.sub.type);
+      } catch {
+        setUserType(null);
+      } 
+    }
+    else {
+      setUserType(null);
     }
   }, [token]); 
   
@@ -56,6 +67,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const logout = async () => {
     try {
       const response = await logoutUser(token)
+      router.push("/");
       console.log(response); 
     } catch (error:any) {
       console.error("Error en logout:", error.response?.data?.message || "Error");
@@ -65,7 +77,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ token, setAuthToken, logout }}>
+    <AuthContext.Provider value={{ token, setAuthToken, logout, userType }}>
       {children}
     </AuthContext.Provider>
   );
