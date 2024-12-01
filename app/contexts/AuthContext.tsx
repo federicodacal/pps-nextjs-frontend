@@ -42,8 +42,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       localStorage.setItem("token", token); 
       try {
         const decoded = JSON.parse(atob(token.split(".")[1]));
-        setUserType(decoded.sub.type);
-        setUserId(decoded.sub.ID);
+        if (decoded.sub) {
+          setUserType(decoded.sub.type);
+          setUserId(decoded.sub.ID);
+        }
+        else {
+          throw new Error("Token invalido");
+        }
       } catch {
         setUserType(null);
         setUserId(null);

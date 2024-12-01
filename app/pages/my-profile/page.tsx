@@ -6,6 +6,7 @@ import Header from '../../components/header/Header';
 import Footer from '../../components/footer/Footer';
 import {  UserPayload } from '../../types/users';
 import withAuth from '@/app/hoc/withAuth';
+import { useAuth } from '@/app/contexts/AuthContext';
 
 const hardcodedUser = 'user_003'
 
@@ -20,7 +21,7 @@ const initUser = () => {
     pwd: "",
     credits: "",
     type: "",
-    subscription_ID: "1",
+    subscription_ID: "",
     bio: "",
     state: "",
   }
@@ -28,18 +29,18 @@ const initUser = () => {
 
 const buildUser = (response: any) => {
   return {
-    ID: response.data.ID,
-    full_name: response.data.user_detail.full_name,
-    personal_ID: response.data.user_detail.personal_ID,
-    username: response.data.user_detail.username,
-    email: response.data.email,
-    phone_number: response.data.user_detail.phone_number,
-    pwd: response.data.pwd,
-    credits: response.data.creator.credits,
-    type: response.data.type,
-    subscription_ID: "1",
-    bio: "Enthusiastic developer and designer.",
-    state: response.data.state,
+    ID: response.ID,
+    full_name: response.user_detail.full_name,
+    personal_ID: response.user_detail.personal_ID,
+    username: response.user_detail.username,
+    email: response.email,
+    phone_number: response.user_detail.phone_number,
+    pwd: response.pwd,
+    credits: response.creator.credits,
+    type: response.type,
+    subscription_ID: response.creator.subscription_ID,
+    bio: response.creator.profile,
+    state: response.state,
   }
 }
 
@@ -47,22 +48,46 @@ const MyProfile = () => {
   const [user, setUserData] = useState(initUser());
   const [isEditing, setIsEditing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { userId } = useAuth(); 
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const userID = (user != undefined) ? user.ID : ""
-        const response = await getUserById(hardcodedUser);
+        if (userId) {
+          //const userID = (user != undefined) ? user.ID : ""
+          const response = await getUserById(userId);
+          console.log("Datos del usuario:", response.data);
+          const userData = response.data;
+          
+          const user = {
+            ID: userData.ID,
+            email: userData.email,
+            type: userData.type,
+            state: userData.state,
+            created_at: userData.created_at,
+            modified_at: userData.modified_at,
+            pwd: userData.pwd,
+            creator: userData.creator ?? { }, 
+            credits: userData.creator ? userData.creator.credits : 0, 
+            subscription_ID: userData.creator ? userData.creator.subscription_ID : 0, 
+            bio: userData.creator ? userData.creator.profile : '',
+            user_detail: {
+                ...userData.user_detail,
+                username: userData.user_detail?.username ?? '', 
+            },
+          };
+          //console.log("El user:");
+          //console.log(user);
 
-        console.log("Datos del usuario:", response.data);
-        setUserData(buildUser(response));
+          setUserData(buildUser(user));
+        }
       } catch (error) {
         console.error("Error al obtener datos del usuario:", error);
       }
     };
 
     fetchUserData();
-  }, []);
+  }, [userId]);
 
   const handleEdit = () => {
     setIsEditing((prev) => !prev);
@@ -91,10 +116,10 @@ const MyProfile = () => {
         full_name: user.full_name,
         phone_number: user.phone_number,
         creator_ID: "N/A",
-        profile: user.bio,
+        profile: "",
         points: 0,
-        credits: Number(user.credits),
-        subscription_ID: Number(user.subscription_ID),
+        credits: 0,
+        subscription_ID: 0,
         account_ID: "N/A",
         personal_account_ID: "N/A",
         account_type: "cbu",
@@ -133,9 +158,11 @@ const MyProfile = () => {
       {/* Form */}
       <div className="bg-gray-800 rounded-lg p-6 shadow-md max-w-4xl mx-auto relative">
         {/* Credits */}
-        <div className="absolute mb-5 mr-5 top-1 right-1 bg-yellow-500 text-gray-900 font-bold py-2 px-4 rounded-lg text-lg">
-          Créditos: {user.credits}
-        </div>
+        {user?.credits !== undefined ? (
+          <p>Créditos: {user.credits}</p>
+          ) : (
+          <p>Créditos no disponibles</p>
+        )}
 
         <form className="grid grid-cols-2 gap-6">
           {/* Form Fields */}
@@ -180,16 +207,13 @@ const MyProfile = () => {
                   />
                 ) : isDropdown ? (
                   <select
-                    value={value}
+                    value={user.type}
                     disabled={!isEditing}
-                    className={`mt-1 px-4 py-2 rounded-lg bg-gray-700 text-gray-100 ${isEditing ? "border border-purple-500" : "border-none"
-                      }`}
-                    onChange={(e) =>
-                      setUserData({ ...user, [key]: e.target.value })
-                    }
-                  >
-                    <option value="Comprador">Comprador</option>
-                    <option value="Creador">Creador</option>
+                    className={`mt-1 px-4 py-2 rounded-lg bg-gray-700 text-gray-100 ${isEditing ? "border border-purple-500" : "border-none"}`}
+                    onChange={(e) => setUserData({ ...user, type: e.target.value })}
+                    >
+                    <option value="buyer">Comprador</option>
+                    <option value="creator">Creador</option>
                   </select>
                 ) : (
                   <input

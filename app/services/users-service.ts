@@ -13,7 +13,7 @@ export const createUser = async ( userData: UserPayload) => {
 };
 
 export const getUserById = async (id: string) => {
-    return axios.get<User>(`${PROXY}/users/${id}`);
+    return axios.get<User>(`http://127.0.0.1:5000/users/${id}`);
 };
 
 export const getUsers = async () => {
@@ -21,9 +21,9 @@ export const getUsers = async () => {
 };
 
 export const updateUser = async (userData: UserPayload) => {
-    console.log(userData)
+    console.log('Update user: ', userData)
 
-    const response = axios.put(`${PROXY}/users/${userData.ID}`, userData);
+    const response = axios.put(`http://127.0.0.1:5000/users/${userData.ID}`, userData);
 
     return response
 };
