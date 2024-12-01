@@ -1,27 +1,16 @@
 import { redirect } from "next/navigation";
 
 import api from "@/app/services/mercadopago-api";
+import { cookies } from 'next/headers';
 import { getPurchaseById } from "@/app/services/purchases-service"
 import storage from "local-storage-fallback";
-import { Item, Purchase, CheckoutItem } from "@/app/types/purchase";
+import { Item, Purchase, CheckoutItem, CheckoutData } from "@/app/types/purchase";
 import { PURCHASE } from '../../mocks/Purchase';
 import React, { useEffect, useState } from 'react';
+import { useSessionStorage } from '@/app/hooks/useSessionStorage';
 
 
 const mockPurchase = PURCHASE
-
-const buildCheckoutItems = (purchase: Purchase) => {
-  let items: CheckoutItem[] = []
-
-  purchase.purchase_details.forEach(item => {
-    items.push({
-      id: item.ID,
-      price: item.item.price,
-    })
-  });
-
-  return items
-}
 
 /*async function add(purchase: Purchase) {
 
@@ -35,21 +24,7 @@ const buildCheckoutItems = (purchase: Purchase) => {
   redirect(url);
 }*/
 
-const buildMetadata = (purchase: Purchase) => {
-  let metadata: string = ""
 
-  metadata = metadata.concat(`$BUYER_ID:${purchase.buyer_ID},`)
-  metadata = metadata.concat(`$PAYMENT_METHOD:${purchase.payment_method},`)
-  metadata = metadata.concat(`$TOTAL:${purchase.total},`)
-
-  purchase.purchase_details.forEach(item => {
-    metadata = metadata.concat(`{$AUDIO_ID:${item.item.audio_ID},`)
-    metadata = metadata.concat(`{$CREATOR_ID:${item.item.creator_ID},`)
-    metadata = metadata.concat(`{$PRICE:${item.item.price}},`)
-  });
-
-  return metadata
-}
 
 const retrievePurchaseID = () => {
   let purchaseID = storage.getItem("purchase_ID");
@@ -61,16 +36,25 @@ const retrievePurchaseID = () => {
   return purchaseID
 };
 
-// Page
 
+
+
+// Page
 export default async function Checkout() {
+  const cookieStore = cookies();
+  const data = cookieStore.get('itemsData')?.value;
+  const itemsData = data ? JSON.parse(data) : { userId: 'N/A', name: 'N/A' };
+  //const [metadata] = useSessionStorage<string>('purchase_metadata', "");
 
   async function add(formData: FormData) {
     "use server";
 
+    console.log(data)
+    console.log(itemsData)
+
     const url = await api.message.submit(
-      buildCheckoutItems(mockPurchase), 
-      buildMetadata(mockPurchase)
+      itemsData, 
+      ""
     );
 
     redirect(url);
@@ -89,7 +73,7 @@ export default async function Checkout() {
           Enviar
         </button>
       </form>
-      
+
     </section>
   );
 }

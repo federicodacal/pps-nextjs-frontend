@@ -4,18 +4,21 @@ import storage from "local-storage-fallback";
 import { AudioDB } from "../../types/audio";
 import Header from '../../components/header/Header';
 import Footer from '../../components/footer/Footer';
-import Purchase from "../../components/cart/PurchaseResume";
 import { getAudioById } from "@/app/services/audio-service";
 import { createPurchase } from "@/app/services/purchases-service";
 import React, { useEffect, useState } from 'react';
 import { useRouter } from "next/navigation";
 import { User } from "@/app/types/users";
-import { ItemPayload, PurchasePayload } from "@/app/types/purchase";
+import { ItemPayload, PurchasePayload, CheckoutItem, CheckoutData, Purchase } from "@/app/types/purchase";
 import { USER } from '../../mocks/User';
 import { AUDIOS } from '../../mocks/Audio';
+import { PURCHASE } from '../../mocks/Purchase';
+import { useSessionStorage } from '@/app/hooks/useSessionStorage';
+import PurchaseResume from "@/app/components/cart/PurchaseResume";
 
 const mockUser: User = USER
 const mockAudios = AUDIOS
+const mockPurchase = PURCHASE
 
 const retrieveAudios = () => {
   let audiosIDs = storage.getItem("selected_audios");
@@ -55,9 +58,41 @@ const buildItems = (audios: AudioDB[]) => {
   return items
 }
 
+const buildCheckoutItems = (audios: AudioDB[]) => {
+  let items: CheckoutItem[] = []
+
+  audios.forEach(audio => {
+    items.push({
+      id: audio.item.ID,
+      price: audio.item.price,
+      audio_name: audio.audio_name
+    })
+  });
+
+  return { items: items }
+}
+
+const buildMetadata = (purchase: Purchase) => {
+  let metadata: string = ""
+
+  metadata = metadata.concat(`$BUYER_ID:${purchase.buyer_ID},`)
+  metadata = metadata.concat(`$PAYMENT_METHOD:${purchase.payment_method},`)
+  metadata = metadata.concat(`$TOTAL:${purchase.total},`)
+
+  purchase.purchase_details.forEach(item => {
+    metadata = metadata.concat(`{$AUDIO_ID:${item.item.audio_ID},`)
+    metadata = metadata.concat(`{$CREATOR_ID:${item.item.creator_ID},`)
+    metadata = metadata.concat(`{$PRICE:${item.item.price}},`)
+  });
+
+  return metadata
+}
+
 export default function Cart() {
   const [audios, setAudios] = useState<AudioDB[]>(mockAudios); //
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [, setItemsData] = useSessionStorage('items_data', {});
+  const [, setMetadata] = useSessionStorage('purchase_metadata', {});
   const router = useRouter();
 
   useEffect(() => {
@@ -91,12 +126,13 @@ export default function Cart() {
 
     storage.setItem("purchase_ID",response.data.purchase_id)
 
+    document.cookie = `itemsData=${JSON.stringify(buildCheckoutItems(audios))}; path=/`;
+
+    setItemsData(buildCheckoutItems(audios));
+    setMetadata(buildMetadata(mockPurchase))
+
     setIsModalOpen(false);
 
-    router.push("/pages/checkout");
-  };
-
-  const handleCheckout = () => {
     router.push("/pages/checkout");
   };
 
@@ -111,7 +147,7 @@ export default function Cart() {
             {/*Carrito*/}
             <div className="flex flex-col mt-5">
 
-              <Purchase items={audios}></Purchase>
+              <PurchaseResume items={audios}></PurchaseResume>
 
             </div>
 

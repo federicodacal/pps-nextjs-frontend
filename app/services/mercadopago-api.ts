@@ -1,5 +1,5 @@
 import { MercadoPagoConfig, Preference } from "mercadopago";
-import { Item, Purchase, CheckoutItem } from "@/app/types/purchase";
+import { Item, Purchase, CheckoutItem, CheckoutData } from "@/app/types/purchase";
 
 export const mercadopago = new MercadoPagoConfig({ accessToken: process.env.MP_ACCESS_TOKEN! });
 
@@ -13,10 +13,10 @@ interface PaymentPayload {
 const api = {
   message: {
 
-    async submit(items: CheckoutItem[], metadata: string) {
+    async submit(checkoutdata: CheckoutData, metadata: string) {
       const payload: PaymentPayload[] = []
 
-      items.forEach((item,index)=> {
+      checkoutdata.items.forEach((item,index)=> {
         payload.push({
           id: item.id,
           unit_price: item.price,
@@ -25,7 +25,7 @@ const api = {
         })
       });
 
-      console.log(items)
+      console.log(checkoutdata)
       console.log(process.env.MP_ACCESS_TOKEN)
       console.log(mercadopago)
 

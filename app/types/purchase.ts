@@ -46,8 +46,13 @@ export interface PurchasePayload {
   items: ItemPayload[]
 }
 
+export interface CheckoutData {
+  items: CheckoutItem[]
+}
+
 export interface CheckoutItem {
   id: string;
+  audio_name:string;
   price: number;
 }
 
