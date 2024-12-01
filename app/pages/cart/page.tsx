@@ -10,7 +10,7 @@ import { createPurchase } from "@/app/services/purchases-service";
 import React, { useEffect, useState } from 'react';
 import { useRouter } from "next/navigation";
 import { User } from "@/app/types/users";
-import { Item, PurchasePayload } from "@/app/types/purchase";
+import { ItemPayload, PurchasePayload } from "@/app/types/purchase";
 import { USER } from '../../mocks/User';
 import { AUDIOS } from '../../mocks/Audio';
 
@@ -35,25 +35,20 @@ const buildPayload = (audios: any[], ID: string): PurchasePayload => {
     items: buildItems(audios)
   }
 
-  console.log(purchase)
-
   return purchase
 }
 
 const buildItems = (audios: AudioDB[]) => {
-  const items: Item[] = []
+  const items: ItemPayload[] = []
 
   console.log(audios)
 
   audios.forEach(audio => {
     items.push({
-      ID: audio.item.ID,
+      item_ID: audio.item.ID,
       audio_ID: audio.ID,
       creator_ID: audio.item.creator_ID,
       price: audio.item.price,
-      created_at: "",
-      modified_at: "",
-      state: ""
     })
   });
 
@@ -87,18 +82,19 @@ export default function Cart() {
       }*/
     };
 
+    fetchAudios()
+
   }, []);
 
   const handlePurchase = async () => {
     const response = await createPurchase(buildPayload(audios, mockUser.ID))
 
-    console.log(response)
+    storage.setItem("purchase_ID",response.data.purchase_id)
 
     setIsModalOpen(false);
 
     router.push("/pages/checkout");
   };
-
 
   const handleCheckout = () => {
     router.push("/pages/checkout");
@@ -156,8 +152,6 @@ export default function Cart() {
         </div>
       </div>
       <div>
-
-
         <div>
           {isModalOpen && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">

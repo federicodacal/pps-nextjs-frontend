@@ -4,6 +4,7 @@ import { Purchase, PurchasePayload }  from '../types/purchase';
 
 // Audio Services
 export const createPurchase = async (purchaseData: PurchasePayload) => {
+    console.log(purchaseData)
     return axios.post(`${PROXY}/purchases`, purchaseData);
 };
 
@@ -12,5 +13,11 @@ export const getAllPurchases = async () => {
 };
 
 export const getPurchaseById = async (id: string) => {
-    return axios.get<Purchase>(`${PROXY}/purchases/${id}`);
+    console.log(id)
+
+    const url = `https://pps-flask-api.vercel.app/purchases/${id}`
+
+    console.log(url)
+
+    return axios.get<Purchase>(url);
 };

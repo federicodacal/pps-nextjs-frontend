@@ -25,10 +25,18 @@ const api = {
         })
       });
 
+      console.log(items)
+      console.log(process.env.MP_ACCESS_TOKEN)
+      console.log(mercadopago)
+
 
       const preference = await new Preference(mercadopago).create({
         body: {
           items: payload,
+          auto_return:"approved",
+          back_urls: {
+            success: "https://4nctst49-3000.brs.devtunnels.ms/pages/checkout",
+          },
           metadata: {
             metadata,
           },

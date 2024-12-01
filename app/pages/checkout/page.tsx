@@ -4,20 +4,11 @@ import api from "@/app/services/mercadopago-api";
 import { getPurchaseById } from "@/app/services/purchases-service"
 import storage from "local-storage-fallback";
 import { Item, Purchase, CheckoutItem } from "@/app/types/purchase";
+import { PURCHASE } from '../../mocks/Purchase';
+import React, { useEffect, useState } from 'react';
 
-// Queremos que esta página sea estática, nos encargaremos de revalidar los datos cuando agreguemos un nuevo mensaje
-export const dynamic = "force-static";
 
-const retrievePurchaseID = () => {
-  let purchaseID = storage.getItem("purchase_ID");
-
-  if (purchaseID == null) {
-    purchaseID = "";
-  }
-
-  return purchaseID
-};
-
+const mockPurchase = PURCHASE
 
 const buildCheckoutItems = (purchase: Purchase) => {
   let items: CheckoutItem[] = []
@@ -31,6 +22,18 @@ const buildCheckoutItems = (purchase: Purchase) => {
 
   return items
 }
+
+/*async function add(purchase: Purchase) {
+
+  let items = buildCheckoutItems(purchase)
+  let metadata = buildMetadata(purchase)
+
+  const url = await api.message.submit(items, metadata)
+
+  console.log(url)
+
+  redirect(url);
+}*/
 
 const buildMetadata = (purchase: Purchase) => {
   let metadata: string = ""
@@ -48,17 +51,27 @@ const buildMetadata = (purchase: Purchase) => {
   return metadata
 }
 
+const retrievePurchaseID = () => {
+  let purchaseID = storage.getItem("purchase_ID");
+
+  if (purchaseID == null) {
+    purchaseID = "";
+  }
+
+  return purchaseID
+};
+
+// Page
+
 export default async function Checkout() {
 
   async function add(formData: FormData) {
     "use server";
 
-    let purchaseID = retrievePurchaseID()
-    const response = await getPurchaseById(purchaseID)
-    let items = buildCheckoutItems(response.data)
-    let metadata = buildMetadata(response.data)
-
-    const url = await api.message.submit(items, metadata);
+    const url = await api.message.submit(
+      buildCheckoutItems(mockPurchase), 
+      buildMetadata(mockPurchase)
+    );
 
     redirect(url);
   }
@@ -76,6 +89,7 @@ export default async function Checkout() {
           Enviar
         </button>
       </form>
+      
     </section>
   );
 }
