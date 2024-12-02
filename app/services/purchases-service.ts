@@ -1,21 +1,22 @@
 import axios from 'axios';
-import { PROXY }  from './config';
+import { NEXT_PUBLIC_PROXY }  from './config';
 import { Purchase, PurchasePayload }  from '../types/purchase';
 
 // Audio Services
 export const createPurchase = async (purchaseData: PurchasePayload) => {
-    console.log(purchaseData)
-    return axios.post(`${PROXY}/purchases`, purchaseData);
+    console.log("NEW PURCHASE")
+    console.log(`${NEXT_PUBLIC_PROXY}/purchases/`)
+    return axios.post(`https://pps-flask-api.vercel.app/purchases`, purchaseData);
 };
 
 export const getAllPurchases = async () => {
-    return axios.get<Purchase[]>(`${PROXY}/purchases`);
+    return axios.get<Purchase[]>(`${NEXT_PUBLIC_PROXY}/purchases`);
 };
 
 export const getPurchaseById = async (id: string) => {
     console.log(id)
 
-    const url = `https://pps-flask-api.vercel.app/purchases/${id}`
+    const url = `${NEXT_PUBLIC_PROXY}/purchases/${id}`
 
     console.log(url)
 

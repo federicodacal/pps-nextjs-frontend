@@ -34,8 +34,6 @@ const Home = () => {
     fetchAudios();
   }, []);
 
- 
-
   const filteredAudios = audios.filter(
     (audio) =>
       audio.audio_name.toLowerCase().includes(search.toLowerCase()) ||

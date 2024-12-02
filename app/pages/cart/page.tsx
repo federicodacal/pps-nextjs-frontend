@@ -5,7 +5,6 @@ import { AudioDB } from "../../types/audio";
 import Header from '../../components/header/Header';
 import Footer from '../../components/footer/Footer';
 import { getAudioById } from "@/app/services/audio-service";
-import { createPurchase } from "@/app/services/purchases-service";
 import React, { useEffect, useState } from 'react';
 import { useRouter } from "next/navigation";
 import { User } from "@/app/types/users";
@@ -27,13 +26,13 @@ const retrieveAudios = () => {
     audiosIDs = "";
   }
 
-  return audiosIDs.split(",");
+  return audiosIDs.split(",").sort().slice(-1);
 };
 
 const buildPayload = (audios: any[], ID: string): PurchasePayload => {
   let purchase = {
     buyer_ID: ID,
-    flow_type: "credit",
+    flow_type: "standard",
     payment_method: "mercadopago",
     items: buildItems(audios)
   }
@@ -89,32 +88,36 @@ const buildMetadata = (purchase: Purchase) => {
 }
 
 export default function Cart() {
-  const [audios, setAudios] = useState<AudioDB[]>(mockAudios); //
+  const [audios, setAudios] = useState<AudioDB[]>([]); //
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [, setItemsData] = useSessionStorage('items_data', {});
   const [, setMetadata] = useSessionStorage('purchase_metadata', {});
+  const audioIDs = retrieveAudios();
   const router = useRouter();
+  const itemsList = audios
+
+  console.log(audios)
 
   useEffect(() => {
-    // Obtener los audios desde la API al cargar el componente
     const fetchAudios = async () => {
-      let audios: AudioDB[] = [];
-      const audioIDs = retrieveAudios();
+      let audiosDB: AudioDB[] = [];
 
-      /*
       try {
         audioIDs.forEach(async (id) => {
-          let response = await getAudioById(id);
-          audios.push(response.data);
+          if (id != "") {
+            let response = await getAudioById(id);
+            console.log(response.data)
+            audiosDB.push(response.data);
+
+            setAudios(audiosDB);
+          }
 
         });
 
         console.log(audios)
-
-        setAudios(audios); // Guardamos los audios de la API en el estado
       } catch (error) {
         console.error("Error al obtener los audios:", error);
-      }*/
+      }
     };
 
     fetchAudios()
@@ -122,14 +125,10 @@ export default function Cart() {
   }, []);
 
   const handlePurchase = async () => {
-    const response = await createPurchase(buildPayload(audios, mockUser.ID))
+    document.cookie = `itemsData=${JSON.stringify(buildPayload(audios, mockUser.ID))}; path=/`;
 
-    storage.setItem("purchase_ID",response.data.purchase_id)
-
-    document.cookie = `itemsData=${JSON.stringify(buildCheckoutItems(audios))}; path=/`;
-
-    setItemsData(buildCheckoutItems(audios));
-    setMetadata(buildMetadata(mockPurchase))
+    //setItemsData(buildCheckoutItems(audios));
+    //setMetadata(buildMetadata(mockPurchase))
 
     setIsModalOpen(false);
 
@@ -143,46 +142,48 @@ export default function Cart() {
       </div>
       <div className="flex justify-center items-center mb-72 px-10 sm:px-0" >
         <div className="flex flex-col w-[1000px]">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
+          <div >
             {/*Carrito*/}
-            <div className="flex flex-col mt-5">
+            {
+              audios.length > 0 ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
+                  <div className="flex flex-col mt-5">
+                    <PurchaseResume items={itemsList}></PurchaseResume>
+                  </div>
+                  <div>
+                    {/*Items*/}
+                    <div className="bg-white rounded-xl shadow-xl p-7 text-black">
+                      <h2 className="text-2xl mb-2">Resumen de orden</h2>
 
-              <PurchaseResume items={audios}></PurchaseResume>
+                      <div className="grid grid-cols-2">
 
-            </div>
+                        <span className="text-xl">No. Productos</span>
+                        <span className="text-right">{audios.length}</span>
 
-            <div>
-              {/*Items*/}
-              <div className="bg-white rounded-xl shadow-xl p-7 text-black">
-                <h2 className="text-2xl mb-2">Resumen de orden</h2>
+                        <span className="text-xl">Subtotal</span>
+                        <span className="text-right">{audios.length}</span>
 
-                <div className="grid grid-cols-2">
+                        <span className="mt-5 text-2xl">Total</span>
+                        <span className="text-right mt-5 text-2xl">$ 100</span>
 
-                  <span className="text-xl">No. Productos</span>
-                  <span className="text-right">{audios.length}</span>
-
-                  <span className="text-xl">Subtotal</span>
-                  <span className="text-right">{audios.length}</span>
-
-                  <span className="mt-5 text-2xl">Total</span>
-                  <span className="text-right mt-5 text-2xl">$ 100</span>
-
+                      </div>
+                      <div className="mt-5 mb-2 w-full p-5 ">
+                        <button
+                          onClick={() => setIsModalOpen(true)}
+                          className="flex justify-center bg-yellow-500 hover:bg-yellow-400 text-black w-full p-3"
+                        >
+                          Realizar compra
+                        </button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div className="mt-5 mb-2 w-full p-5 ">
-                  <button
-                    onClick={() => setIsModalOpen(true)}
-                    className="flex justify-center bg-yellow-500 hover:bg-yellow-400 text-black w-full p-3"
-                  >
-                    Realizar compra
-                  </button>
-                </div>
-
+              ) : <div>
+                <h1>Su carrito se encuentra vacío</h1>
               </div>
 
-            </div>
-
+            }
             {/*Checkout*/}
-
 
           </div>
         </div>

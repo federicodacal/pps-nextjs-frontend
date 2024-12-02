@@ -1,5 +1,5 @@
 import { MercadoPagoConfig, Preference } from "mercadopago";
-import { Item, Purchase, CheckoutItem, CheckoutData } from "@/app/types/purchase";
+import { Item, Purchase, CheckoutItem, CheckoutData, PurchasePayload } from "@/app/types/purchase";
 
 export const mercadopago = new MercadoPagoConfig({ accessToken: process.env.MP_ACCESS_TOKEN! });
 
@@ -10,8 +10,19 @@ interface PaymentPayload {
   title: string,
 }
 
+interface Message {
+  id: number;
+  text: string;
+}
+
 const api = {
   message: {
+
+    async add(payment: PurchasePayload): Promise<void> {
+      // Obtenemos los mensajes
+      // Crear Purchase
+ 
+    },
 
     async submit(checkoutdata: CheckoutData, metadata: string) {
       const payload: PaymentPayload[] = []
@@ -25,17 +36,13 @@ const api = {
         })
       });
 
-      console.log(checkoutdata)
-      console.log(process.env.MP_ACCESS_TOKEN)
-      console.log(mercadopago)
-
-
       const preference = await new Preference(mercadopago).create({
         body: {
           items: payload,
           auto_return:"approved",
           back_urls: {
-            success: "https://4nctst49-3000.brs.devtunnels.ms/pages/checkout",
+            success: "http://localhost:3000//pages/payment",
+          
           },
           metadata: {
             metadata,
