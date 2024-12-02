@@ -10,6 +10,7 @@ interface AuthContextType {
   logout: () => void;
   userType: string | null;
   userId: string | null;
+  creatorId: string | null;
   loading: boolean;
 }
 
@@ -20,6 +21,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [token, setToken] = useState<string | null>(null);
   const [userType, setUserType] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
+  const [creatorId, setCreatorId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -45,6 +47,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         if (decoded.sub) {
           setUserType(decoded.sub.type);
           setUserId(decoded.sub.ID);
+          if(decoded.sub.creator_ID){
+            setCreatorId(decoded.sub.creator_ID);
+          }
         }
         else {
           throw new Error("Token invalido");
@@ -52,11 +57,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       } catch {
         setUserType(null);
         setUserId(null);
+        setCreatorId(null);
       } 
     }
     else {
       setUserType(null);
       setUserId(null);
+      setCreatorId(null);
     }
     setLoading(false);
   }, [token]); 
@@ -91,7 +98,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ token, setAuthToken, logout, userType, userId, loading }}>
+    <AuthContext.Provider value={{ token, setAuthToken, logout, userType, userId, creatorId, loading }}>
       {children}
     </AuthContext.Provider>
   );
