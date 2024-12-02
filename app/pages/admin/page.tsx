@@ -5,6 +5,7 @@ import { getUsers, updateUser, deleteByID } from '@/app/services/users-service';
 import Header from '../../components/header/Header';
 import Footer from '../../components/footer/Footer';
 import { User, UserPayload } from '../../types/users';
+import UserList from '@/app/components/user-form/UserList';
 
 const hardcodedUser = 'user_003'
 
@@ -48,6 +49,8 @@ const initCreator = () => {
 const buildUsers = (response: any) => {
   const usersDB = response.data
   let users: User[] = []
+
+  console.log(response.data)
 
   usersDB.map((user: User) => {
     users.push({
@@ -97,7 +100,7 @@ export default function AdminPage() {
         const response = await getUsers();
 
         console.log("Usuarios:", response.data);
-        setUserData(buildUsers(response.data));
+        setUserData(buildUsers(response));
       } catch (error) {
         console.error("Error al obtener datos del usuario:", error);
       }
@@ -136,84 +139,30 @@ export default function AdminPage() {
     <div className="min-h-screen bg-gray-900 text-gray-100 flex flex-col">
       {/* Title */}
       <Header title="Admin" />
-
       {/* Listados */}
       <div className="flex justify-center items-center mb-72 px-10 sm:px-0" >
         <div className="flex flex-col w-[1000px]">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-10">
             {/*Usuarios pendientes*/}
             <div className="flex flex-col mt-5">
-              {users.map((user, index) => (
-
-                <div>
-                  <p>{user.ID}</p>
-                  <p>{user.user_detail.username}</p>
-                  <p>{user.user_detail.state}</p>
-                  <p>{user.type}</p>
-                  <p>{user.created_at}</p>
-
-                </div>
-              ))}
+             
+              <UserList users={users} title="Nuevos usuarios" />
 
 
+               
             </div>
-
             <div>
               {/*Audios pendientes*/}
               <div className="flex flex-col mt-5">
-                {users.map((user, index) => (
-
-                  <div>
-                    <p>{user.ID}</p>
-                    <p>{user.user_detail.username}</p>
-                    <p>{user.user_detail.state}</p>
-                    <p>{user.type}</p>
-                    <p>{user.created_at}</p>
-
-                  </div>
-                ))}
-
-
+              <UserList users={users} title="Audios pendientes" />
               </div>
-
             </div>
-
             {/*Usuarios suscripcion vencida*/}
             <div className="flex flex-col mt-5">
-              {users.map((user, index) => (
-
-                <div>
-                  <p>{user.ID}</p>
-                  <p>{user.user_detail.username}</p>
-                  <p>{user.user_detail.state}</p>
-                  <p>{user.type}</p>
-                  <p>{user.created_at}</p>
-
-                  <div className="mt-5 mb-2 w-full p-5 ">
-                    <button
-                      onClick={() => setIsModalOpen(true)}
-                      className="flex justify-center bg-yellow-500 hover:bg-yellow-400 text-black w-full p-3"
-                    >
-                      Realizar compra
-                    </button>
-                  </div>
-
-                </div>
-
-              ))}
-
-
-
-
+            <UserList users={users} title="Creadores por vencer" />
             </div>
-
-
           </div>
-
-
         </div>
-
-
       </div>
 
     {/* Modal */ }

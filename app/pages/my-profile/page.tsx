@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import React, { useEffect, useState } from 'react';
 import { getUserById, updateUser, deleteByID } from '@/app/services/users-service';
@@ -7,8 +7,26 @@ import Footer from '../../components/footer/Footer';
 import { UserPayload } from '../../types/users';
 import { getPurchasesAudioByBuyer } from '@/app/services/purchases-service';
 import { Purchase, PurchaseDetail } from '@/app/types/purchase';
+import UserDetail from '@/app/components/user-form/UserDetail';
+import { profile } from 'console';
+import DownloadList from '@/app/components/audio/DownloableAudio';
 
-const hardcodedUser = 'user_003'
+const hardcodedUser = 'caa20840-36bd-4e7e-8599-f32ed1c2d646'
+
+interface UserForm {
+  ID: string,
+  full_name: string,
+  personal_ID: number,
+  username: string,
+  email: string,
+  phone_number: string,
+  pwd: string,
+  credits: number,
+  type: string,
+  subscription_ID: number,
+  profile: string,
+  state: string,
+}
 
 interface DownloableAudio {
   ID: string;
@@ -24,21 +42,29 @@ const initUser = () => {
   return {
     ID: "",
     full_name: "",
-    personal_ID: "",
+    personal_ID: 0,
     username: "",
     email: "",
     phone_number: "",
     pwd: "",
-    credits: "",
+    credits: 0,
     type: "",
-    subscription_ID: "1",
-    bio: "",
+    subscription_ID: 0,
+    profile: "",
     state: "",
   }
 }
 
 const initAudio = () => {
-  return {}
+  return [{
+    ID: "",
+    audio_name: "",
+    file_url: "",
+    genre: "",
+    BPM: 0,
+    category: "",
+    size: 0,
+  }]
 }
 
 const buildUser = (response: any) => {
@@ -52,8 +78,8 @@ const buildUser = (response: any) => {
     pwd: response.data.pwd,
     credits: response.data.creator.credits,
     type: response.data.type,
-    subscription_ID: "1",
-    bio: "Enthusiastic developer and designer.",
+    subscription_ID: response.data.creator.subscription_ID,
+    profile: "Enthusiastic developer and designer.",
     state: response.data.state,
   }
 }
@@ -82,7 +108,7 @@ const getAudios = (purchases: Purchase[]) => {
   let audios: DownloableAudio[] = []
 
   purchases.forEach((purchase) => {
-    purchase.purchase_details.forEach((detail:PurchaseDetail) => {
+    purchase.purchase_details.forEach((detail: PurchaseDetail) => {
       audios.push({
         ID: detail.item.audio_ID,
         audio_name: detail.item.audio?.audio_name,
@@ -99,8 +125,8 @@ const getAudios = (purchases: Purchase[]) => {
 }
 
 export default function MyProfile() {
-  const [user, setUserData] = useState(initUser());
-  const [audios, setAudioData] = useState(initAudio());
+  const [user, setUserData] = useState<UserForm>(initUser());
+  const [audios, setAudioData] = useState<DownloableAudio[]>(initAudio());
   const [isEditing, setIsEditing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -113,7 +139,7 @@ export default function MyProfile() {
 
         console.log("Datos del usuario:", response.data);
         setUserData(buildUser(response));
-        setAudioData(getAudios(buildPurchases(response)));
+        setAudioData(getAudios(buildPurchases(responsePurchases)));
       } catch (error) {
         console.error("Error al obtener datos del usuario:", error);
       }
@@ -149,7 +175,7 @@ export default function MyProfile() {
         full_name: user.full_name,
         phone_number: user.phone_number,
         creator_ID: "N/A",
-        profile: user.bio,
+        profile: user.profile,
         points: 0,
         credits: Number(user.credits),
         subscription_ID: Number(user.subscription_ID),
@@ -188,140 +214,12 @@ export default function MyProfile() {
       {/* Title */}
       <Header title="Mi perfil" />
 
-      {/* Form */}
-      <div className="bg-gray-800 rounded-lg p-6 shadow-md max-w-4xl mx-auto relative">
-        {/* Credits */}
-        <div className="absolute mb-5 mr-5 top-1 right-1 bg-yellow-500 text-gray-900 font-bold py-2 px-4 rounded-lg text-lg">
-          Créditos: {user.credits}
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <UserDetail userForm={user} />
 
-        <form className="grid grid-cols-2 gap-6">
-          {/* Form Fields */}
-          {Object.entries(user).map(([key, value]) => {
-            if (key === "personal_ID" || key === "state" || key === "user_detail" || key === "credits" || key === "ID") return null; // Hidden fields
+        <DownloadList audios={audios} />
 
-            const isTextArea = key === "bio";
-            const isPassword = key === "pwd";
-            const isDropdown = key === "type";
-
-            return (
-              <div
-                key={key}
-                className={`flex flex-col col-span-1 ${key === "bio" ? "col-span-2" : ""
-                  }`}
-              >
-                <label className="text-sm font-semibold text-gray-400 capitalize">
-                  {key === "pwd" ? "Password" : key.replace("_", " ")}
-                </label>
-                {isTextArea ? (
-                  <textarea
-                    value={value}
-                    maxLength={100}
-                    readOnly={!isEditing}
-                    className={`mt-1 px-4 py-2 rounded-lg bg-gray-700 text-gray-100 ${isEditing ? "border border-purple-500" : "border-none"
-                      }`}
-                    rows={4}
-                    onChange={(e) =>
-                      setUserData({ ...user, [key]: e.target.value })
-                    }
-                  />
-                ) : isPassword ? (
-                  <input
-                    type="password"
-                    value={value}
-                    readOnly={!isEditing}
-                    className={`mt-1 px-4 py-2 rounded-lg bg-gray-700 text-gray-100 ${isEditing ? "border border-purple-500" : "border-none"
-                      }`}
-                    onChange={(e) =>
-                      setUserData({ ...user, [key]: e.target.value })
-                    }
-                  />
-                ) : isDropdown ? (
-                  <select
-                    value={value}
-                    disabled={!isEditing}
-                    className={`mt-1 px-4 py-2 rounded-lg bg-gray-700 text-gray-100 ${isEditing ? "border border-purple-500" : "border-none"
-                      }`}
-                    onChange={(e) =>
-                      setUserData({ ...user, [key]: e.target.value })
-                    }
-                  >
-                    <option value="Comprador">Comprador</option>
-                    <option value="Creador">Creador</option>
-                  </select>
-                ) : (
-                  <input
-                    type="text"
-                    value={value}
-                    readOnly={!isEditing}
-                    className={`mt-1 px-4 py-2 rounded-lg bg-gray-700 text-gray-100 ${isEditing ? "border border-purple-500" : "border-none"
-                      }`}
-                    onChange={(e) =>
-                      setUserData({ ...user, [key]: e.target.value })
-                    }
-                  />
-                )}
-              </div>
-            );
-          })}
-        </form>
-
-        {/* Buttons */}
-        <div className="flex justify-between mt-10">
-          {isEditing ? (
-            <div className="flex gap-4">
-              <button
-                onClick={handleConfirm}
-                className="bg-purple-600 hover:bg-purple-700 text-white py-2 px-6 rounded-lg"
-              >
-                Confirmar
-              </button>
-              <button
-                onClick={handleCancel}
-                className="bg-gray-600 hover:bg-gray-700 text-white py-2 px-6 rounded-lg"
-              >
-                Cancelar
-              </button>
-            </div>
-          ) : (
-            <button
-              onClick={handleEdit}
-              className="bg-purple-600 hover:bg-purple-700 text-white py-2 px-6 rounded-lg"
-            >
-              Modificar
-            </button>
-          )}
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="bg-red-600 hover:bg-red-700 text-white py-2 px-6 rounded-lg"
-          >
-            Baja de usuario
-          </button>
-        </div>
       </div>
-
-      {/* Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-gray-800 p-6 rounded-lg text-center">
-            <p className="text-lg mb-4">¿Estás seguro de eliminar tu cuenta?</p>
-            <div className="flex justify-center space-x-4">
-              <button
-                onClick={handleDelete}
-                className="bg-red-600 hover:bg-red-700 text-white py-2 px-6 rounded-lg"
-              >
-                Confirmar
-              </button>
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="bg-gray-600 hover:bg-gray-700 text-white py-2 px-6 rounded-lg"
-              >
-                Cancelar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
       <Footer />
     </div>
   );
