@@ -4,9 +4,21 @@ import React, { useEffect, useState } from 'react';
 import { getUserById, updateUser, deleteByID } from '@/app/services/users-service';
 import Header from '../../components/header/Header';
 import Footer from '../../components/footer/Footer';
-import {  UserPayload } from '../../types/users';
+import { UserPayload } from '../../types/users';
+import { getPurchasesAudioByBuyer } from '@/app/services/purchases-service';
+import { Purchase, PurchaseDetail } from '@/app/types/purchase';
 
 const hardcodedUser = 'user_003'
+
+interface DownloableAudio {
+  ID: string;
+  audio_name: string | undefined;
+  file_url: string | undefined;
+  genre: string | undefined;
+  BPM: number | undefined;
+  category: string | undefined;
+  size: number | undefined;
+}
 
 const initUser = () => {
   return {
@@ -23,6 +35,10 @@ const initUser = () => {
     bio: "",
     state: "",
   }
+}
+
+const initAudio = () => {
+  return {}
 }
 
 const buildUser = (response: any) => {
@@ -42,8 +58,49 @@ const buildUser = (response: any) => {
   }
 }
 
+const buildPurchases = (response: any) => {
+  let purchases: Purchase[] = []
+
+  response.data.forEach((purchase: Purchase) => {
+    purchases.push({
+      ID: purchase.ID,
+      buyer_ID: purchase.buyer_ID,
+      created_at: purchase.created_at,
+      flow_type: purchase.flow_type,
+      modified_at: purchase.modified_at,
+      payment_method: purchase.payment_method,
+      purchase_details: purchase.purchase_details,
+      state: purchase.state,
+      total: purchase.total
+    })
+  });
+
+  return purchases
+}
+
+const getAudios = (purchases: Purchase[]) => {
+  let audios: DownloableAudio[] = []
+
+  purchases.forEach((purchase) => {
+    purchase.purchase_details.forEach((detail:PurchaseDetail) => {
+      audios.push({
+        ID: detail.item.audio_ID,
+        audio_name: detail.item.audio?.audio_name,
+        file_url: detail.item.audio?.file_url,
+        genre: detail.item.audio?.genre,
+        BPM: detail.item.audio?.BPM,
+        category: detail.item.audio?.category,
+        size: detail.item.audio?.size,
+      })
+    })
+  });
+
+  return audios
+}
+
 export default function MyProfile() {
   const [user, setUserData] = useState(initUser());
+  const [audios, setAudioData] = useState(initAudio());
   const [isEditing, setIsEditing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -52,9 +109,11 @@ export default function MyProfile() {
       try {
         const userID = (user != undefined) ? user.ID : ""
         const response = await getUserById(hardcodedUser);
+        const responsePurchases = await getPurchasesAudioByBuyer(hardcodedUser)
 
         console.log("Datos del usuario:", response.data);
         setUserData(buildUser(response));
+        setAudioData(getAudios(buildPurchases(response)));
       } catch (error) {
         console.error("Error al obtener datos del usuario:", error);
       }
@@ -127,7 +186,7 @@ export default function MyProfile() {
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100 flex flex-col">
       {/* Title */}
-      <Header title="Mi perfil"/>
+      <Header title="Mi perfil" />
 
       {/* Form */}
       <div className="bg-gray-800 rounded-lg p-6 shadow-md max-w-4xl mx-auto relative">

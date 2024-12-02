@@ -25,6 +25,7 @@ export interface PurchaseDetail {
 export interface Item {
   ID: string
   audio_ID: string
+  audio: Audio | undefined;
   created_at: string
   creator_ID: string
   modified_at: string

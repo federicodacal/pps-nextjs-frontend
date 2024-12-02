@@ -22,3 +22,7 @@ export const getPurchaseById = async (id: string) => {
 
     return axios.get<Purchase>(url);
 };
+
+export const getPurchasesAudioByBuyer = async (id: string) => {
+    return axios.get<Purchase>(`${NEXT_PUBLIC_PROXY}/purchases/buyer/${id}`);
+};
