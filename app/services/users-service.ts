@@ -2,10 +2,11 @@ import axios from 'axios';
 import { NEXT_PUBLIC_PROXY }  from './config';
 import { User, UserPayload }  from '../types/users';
 
+const DEV_URL = 'http://127.0.0.1:5000';
 
 // User Services
 export const createUser = async ( userData: UserPayload) => {
-    console.log(userData)
+    console.log('User data desde service: ', userData)
 
     const response = axios.post(`${NEXT_PUBLIC_PROXY}/users`, userData);
 

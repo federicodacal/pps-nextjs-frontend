@@ -2,8 +2,9 @@
 
 import AudioForm from "@/app/components/audio/AudioForm";
 import Header from '../../components/header/Header';
+import withAuth from "@/app/hoc/withAuth";
 
-export default function Page() {
+const Page = () => {
   return (
     <div>
       <Header title="Carga nuevo audio"/>
@@ -11,3 +12,5 @@ export default function Page() {
     </div>
   );
 }
+
+export default withAuth(Page, ["creator"]);

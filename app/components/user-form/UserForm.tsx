@@ -8,7 +8,7 @@ import storage from "local-storage-fallback";
 
 const initUser = () => {
   return {
-    ID: "9999999",
+    ID: "",
     email: "",
     confirmEmail: "",
     username: "",
@@ -18,9 +18,9 @@ const initUser = () => {
     confirmPassword: "",
     type: "buyer",
     termsAccepted: "false",
-    personal_ID: "9999999",
-    state: "pending",
-    user_detail_ID: "9999999",
+    personal_ID: "",
+    state: "",
+    user_detail_ID: "",
     plan_id: "0",
   }
 }
@@ -28,6 +28,7 @@ const initUser = () => {
 const buildUser = (userData: any) => {
   return {
     ID: userData.ID,
+    email: userData.email,
     pwd: userData.pwd,
     type: userData.type,
     state: userData.state,
@@ -37,13 +38,13 @@ const buildUser = (userData: any) => {
     full_name: userData.full_name,
     phone_number: userData.phone_number,
     creator_ID: "N/A",
-    profile: userData.bio,
+    profile: "N/A",
     points: 0,
     credits: 0,
     subscription_ID: Number(userData.subscription_ID),
     account_ID: "N/A",
     personal_account_ID: "N/A",
-    account_type: "cbu",
+    account_type: "N/A",
   }
 }
 

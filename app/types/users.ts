@@ -28,6 +28,7 @@ export interface User {
     type: string
     user_detail: UserDetail
     user_detail_ID: string
+    state: string
 }
 
 export interface Creator {
@@ -50,5 +51,4 @@ export interface UserDetail {
     personal_ID: number
     phone_number: string
     username: string
-    state: string
 }

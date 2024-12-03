@@ -1,39 +1,26 @@
-"use client";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 
-type Image = {
-  url: string;
-  text: string;
-};
-
-
-
-const Carousel = ({data,}: {data: {image: string;}[];
+const Carousel = ({
+  data,
+}: {
+  data: { image: string; title: string; description: string }[];
 }) => {
-  // State and Ref initialization
   const [currentImg, setCurrentImg] = useState(0);
   const [carouselSize, setCarouselSize] = useState({ width: 0, height: 0 });
-  const carouselRef = useRef(null);
+  const carouselRef = useRef<HTMLDivElement>(null);
 
-  // useEffect to get the initial carousel size
   useEffect(() => {
-    let elem = carouselRef.current as unknown as HTMLDivElement;
-    let { width, height } = elem.getBoundingClientRect();
     if (carouselRef.current) {
-      setCarouselSize({
-        width,
-        height,
-      });
+      const { width, height } = carouselRef.current.getBoundingClientRect();
+      setCarouselSize({ width, height });
     }
   }, []);
 
   return (
-    <div  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
       {/* Carousel container */}
-      
-      <div className="relative h-96 w-full  overflow-hidden rounded-md">
-        {/* Image container */}
+      <div className="relative h-96 w-full overflow-hidden rounded-md">
         <div
           ref={carouselRef}
           style={{
@@ -41,22 +28,23 @@ const Carousel = ({data,}: {data: {image: string;}[];
           }}
           className="absolute flex h-full w-full transition-all duration-300"
         >
-          {/* Map through data to render images */}
-          {data.map((v, i) => (
+          {data.map((item, i) => (
             <div key={i} className="relative h-full w-full shrink-0">
               <Image
                 className="pointer-events-none"
                 alt={`carousel-image-${i}`}
                 fill
-                src={v.image || "https://random.imagecdn.app/500/500"}
+                src={item.image}
               />
             </div>
           ))}
         </div>
       </div>
 
+      {/* Description */}
       <div>
-        <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Laborum maxime, doloribus maiores debitis atque quae porro amet reprehenderit, dicta quibusdam officia? Repellendus aliquid minima consequuntur animi quibusdam voluptates, totam a.</p>
+        <h2 className="text-xl font-bold">{data[currentImg]?.title}</h2>
+        <p className="mt-2">{data[currentImg]?.description}</p>
       </div>
 
       {/* Navigation buttons */}
@@ -72,7 +60,7 @@ const Carousel = ({data,}: {data: {image: string;}[];
         </button>
         <button
           disabled={currentImg === data.length - 1}
-          onClick={() => setCurrentImg((prev) => prev + 1)}
+          onClick={() => setCurrentImg((prev:any) => prev + 1)}
           className={`border px-4 py-2 font-bold ${
             currentImg === data.length - 1 && "opacity-50"
           }`}

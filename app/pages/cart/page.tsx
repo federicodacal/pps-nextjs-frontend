@@ -14,6 +14,7 @@ import { AUDIOS } from '../../mocks/Audio';
 import { PURCHASE } from '../../mocks/Purchase';
 import { useSessionStorage } from '@/app/hooks/useSessionStorage';
 import PurchaseResume from "@/app/components/cart/PurchaseResume";
+import withAuth from "@/app/hoc/withAuth";
 
 const mockUser: User = USER
 const mockAudios = AUDIOS
@@ -87,7 +88,7 @@ const buildMetadata = (purchase: Purchase) => {
   return metadata
 }
 
-export default function Cart() {
+const Cart = () => {
   const [audios, setAudios] = useState<AudioDB[]>([]); //
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [, setItemsData] = useSessionStorage('items_data', {});
@@ -217,6 +218,8 @@ export default function Cart() {
     </div>
   );
 }
+
+export default withAuth(Cart, ["creator", "buyer"]);
 
 
 

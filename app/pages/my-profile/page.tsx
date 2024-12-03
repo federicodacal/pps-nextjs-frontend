@@ -5,6 +5,8 @@ import { getUserById, updateUser, deleteByID } from '@/app/services/users-servic
 import Header from '../../components/header/Header';
 import Footer from '../../components/footer/Footer';
 import { UserPayload } from '../../types/users';
+import withAuth from '@/app/hoc/withAuth';
+import { useAuth } from '@/app/contexts/AuthContext';
 import { getPurchasesAudioByBuyer } from '@/app/services/purchases-service';
 import { Purchase, PurchaseDetail } from '@/app/types/purchase';
 import UserDetail from '@/app/components/user-form/UserDetail';
@@ -124,29 +126,34 @@ const getAudios = (purchases: Purchase[]) => {
   return audios
 }
 
-export default function MyProfile() {
+const MyProfile = ()  => {
   const [user, setUserData] = useState<UserForm>(initUser());
   const [audios, setAudioData] = useState<DownloableAudio[]>(initAudio());
   const [isEditing, setIsEditing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { userId } = useAuth(); 
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         const userID = (user != undefined) ? user.ID : ""
+        if (userId) {
         const response = await getUserById(hardcodedUser);
         const responsePurchases = await getPurchasesAudioByBuyer(hardcodedUser)
 
         console.log("Datos del usuario:", response.data);
         setUserData(buildUser(response));
         setAudioData(getAudios(buildPurchases(responsePurchases)));
+        }
+        setUserData(user);
+      
       } catch (error) {
         console.error("Error al obtener datos del usuario:", error);
       }
     };
 
     fetchUserData();
-  }, []);
+  }, [userId]);
 
   const handleEdit = () => {
     setIsEditing((prev) => !prev);
@@ -177,8 +184,8 @@ export default function MyProfile() {
         creator_ID: "N/A",
         profile: user.profile,
         points: 0,
-        credits: Number(user.credits),
-        subscription_ID: Number(user.subscription_ID),
+        credits: 0,
+        subscription_ID: 0,
         account_ID: "N/A",
         personal_account_ID: "N/A",
         account_type: "cbu",
@@ -215,7 +222,22 @@ export default function MyProfile() {
       <Header title="Mi perfil" />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {/* Credits */}
+        {user?.credits !== undefined ? (
+          <p>Créditos: {user.credits}</p>
+          ) : (
+          <p>Créditos no disponibles</p>
+        )}
         <UserDetail userForm={user} />
+        <select
+                    value={user.type}
+                    disabled={!isEditing}
+                    className={`mt-1 px-4 py-2 rounded-lg bg-gray-700 text-gray-100 ${isEditing ? "border border-purple-500" : "border-none"}`}
+                    onChange={(e) => setUserData({ ...user, type: e.target.value })}
+                    >
+                    <option value="buyer">Comprador</option>
+                    <option value="creator">Creador</option>
+                  </select>
 
         <DownloadList audios={audios} />
 
@@ -224,3 +246,5 @@ export default function MyProfile() {
     </div>
   );
 }
+
+export default withAuth(MyProfile, ["creator", "buyer"]);
