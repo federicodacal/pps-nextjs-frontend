@@ -18,14 +18,19 @@ const config: Config = {
         gradientEnd: '#000000',
         cardGradientStart: '#CC00CC',
         cardGradientEnd: '#4C0099',
-        dark: "#121212",
+        dark: "#212f3c",
         dim: "#1e1e1e",
         accent: "#4f46e5",
         lightText: "#e5e7eb",
+        purpleDark: '#5A189A',
+        purpleLight: '#9D4EDD',
+        backgroundDark: '#1A1A2E',
       },
     },
   },
   darkMode: "class",
-  plugins: [],
+  plugins: [
+    require('tailwind-scrollbar'),
+  ],
 };
 export default config;

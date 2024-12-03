@@ -41,7 +41,7 @@ const EffectsPage = () => {
   );
 
   return (
-    <div className="min-h-screen bg-dark text-lightText p-6">
+    <div className="min-h-screen bg-gray-900 text-lightText ">
       <Header title="Listado de efectos"/>
 
       <input
@@ -65,8 +65,8 @@ const EffectsPage = () => {
            category={audio.category}
            duration={audio.length}
            audioUrl={audio.file_url}
-           onAddToFavorites={(id: number) => console.log(`${id} added to favorites`)}
-           onAddToCart={(id: number) => console.log(`${id} added to cart`)}
+           onAddToFavorites={(id: string) => console.log(`${id} added to favorites`)}
+           onAddToCart={(id: string) => console.log(`${id} added to cart`)}
          />
         ))}
       </div>
@@ -76,6 +76,7 @@ const EffectsPage = () => {
           No se encontraron resultados.
         </p>
       )}
+       <Footer/>
     </div>
   );
 };

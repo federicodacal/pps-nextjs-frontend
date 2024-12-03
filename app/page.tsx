@@ -8,17 +8,20 @@ import Header from './components/header/Header';
 import { getAllAudios } from '../app/services/audio-service';
 import { Audio } from '../app/types/audio';
 import AudioCard from '../app/components/audio/AudioCard';
+import { getCarrousel } from './services/carrousel-service';
 
+/*
 const images = [
   { image: "/image_1.jpg" },
   { image: "/image_2.jpg" },
   { image: "/image_3.jpg" },
-];
+]; */
 
 
 const Home = () => {
   const [audios, setAudios] = useState<any[]>([]);
   const [search, setSearch] = useState("");
+  const [carouselImages, setCarouselImages] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchAudios = async () => {
@@ -31,7 +34,24 @@ const Home = () => {
         console.error("Error al obtener los audios:", error);
       }
     };
+
+    const fetchCarousel = async () => {
+      try {
+        const response = await getCarrousel();
+        const images = response.data.map((item: any) => ({
+          image: item.imgUrl,
+          title: item.titulo,
+          description: item.descripcion,
+        }));
+        setCarouselImages(images);
+      }
+      catch (error) {
+        console.error("Error al obtener el carrusel:", error);
+      }
+    }
+
     fetchAudios();
+    fetchCarousel();
   }, []);
 
   const filteredAudios = audios.filter(
@@ -42,18 +62,21 @@ const Home = () => {
   );
 
   return (
-    <div className="min-h-screen bg-dark text-lightText p-6">
+    <div className="min-h-screen min-w-screen bg-gray-900 text-lightText place-items-center">
 
       <Header title="AudioLibre" />
-        <Carousel data={images} />
+      <Carousel data={carouselImages} />
 
-      <input
-        type="text"
-        placeholder="Buscar por nombre, categoría o BPM..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="w-full p-3 rounded-md bg-dim text-lightText placeholder-gray-400 focus:outline-none mb-6"
-      />
+      <div className="min-w-screen  text-lightText">
+
+        <input
+          type="text"
+          placeholder="Buscar por nombre, categoría o BPM..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-72 p-3  bg-dim text-lightText placeholder-gray-400 focus:outline-none mb-6 mt-2"
+        />
+      </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {filteredAudios.map((audio, index) => (
@@ -68,8 +91,8 @@ const Home = () => {
             category={audio.category}
             duration={audio.length}
             audioUrl={audio.file_url}
-            onAddToFavorites={(id: number) => console.log(`${id} added to favorites`)}
-            onAddToCart={(id: number) => console.log(`${id} added to cart`)}
+            onAddToCart={(id) => console.log(`Agregado al carrito: ${id}`)}
+            onAddToFavorites={(id) => console.log(`Agregado a favoritos: ${id}`)}
           />
         ))}
       </div>

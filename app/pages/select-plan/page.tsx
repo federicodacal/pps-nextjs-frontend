@@ -1,38 +1,23 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import storage from "local-storage-fallback";
 import { useRouter } from "next/navigation";
 import { createUser } from "@/app/services/users-service";
-import { UserPayload } from '../../types/users';
+import { getSubscriptions } from "@/app/services/subscriptions-service"; 
 
-const subscriptionPlans = [
-  {
-    id: 1,
-    name: "Plan Básico",
-    detail: "Ideal para usuarios individuales.",
-    periodicity: "Mensual",
-    value: "$10",
-  },
-  {
-    id: 2,
-    name: "Plan Profesional",
-    detail: "Perfecto para pequeñas empresas.",
-    periodicity: "Mensual",
-    value: "$30",
-  },
-  {
-    id: 3,
-    name: "Plan Corporativo",
-    detail: "Diseñado para grandes organizaciones.",
-    periodicity: "Anual",
-    value: "$300",
-  },
-];
+type SubscriptionPlan = {
+  id: number;
+  name: string;
+  detail: string;
+  //periodicity: string;
+  value: string;
+};
 
-const buildUser = (userData: any) => {
+const buildUser = (userData:any) => {
   return {
     ID: userData.ID,
+    email: userData.email,
     pwd: userData.pwd,
     type: userData.type,
     state: userData.state,
@@ -42,87 +27,180 @@ const buildUser = (userData: any) => {
     full_name: userData.full_name,
     phone_number: userData.phone_number,
     creator_ID: "N/A",
-    profile: userData.bio,
+    profile: userData.profile,
     points: 0,
     credits: 0,
     subscription_ID: Number(userData.subscription_ID),
     account_ID: "N/A",
-    personal_account_ID: "N/A",
-    account_type: "cbu",
-  }
-}
+    personal_account_ID: userData.personal_account_ID,
+    account_type: userData.account_type,
+  };
+};
 
 const PlansPage = () => {
   const router = useRouter();
-  const handleSelectPlan = (plan: (typeof subscriptionPlans)[0]) => {
+  const [subscriptionPlans, setSubscriptionPlans] = React.useState<SubscriptionPlan[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedPlanId, setSelectedPlanId] = useState<number | null>(null);
+  const [accountType, setAccountType] = useState("cbu");
+  const [accountId, setAccountId] = useState("");
+  const [confirmAccountId, setConfirmAccountId] = useState("");
+  const [bio, setBio] = useState("");
+  
+  useEffect(() => {
+    const fetchSubscriptions = async () => {
+      try {
+        const response = await getSubscriptions();
+        const plans = response.data.map((plan) => ({
+          id: plan.id,
+          name: plan.titulo,
+          detail: `Duración: ${plan.duracion_dias} días`,
+          value: `$${plan.precio}`,
+        }));
+        setSubscriptionPlans(plans);
+      } catch (error) {
+        console.error("Error al obtener los planes de suscripción:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSubscriptions();
+  }, []);
+
+  const handleSelectPlan = (plan:any) => {
+    setSelectedPlanId(plan.id); 
     storage.setItem("selectedPlan", plan.id.toString());
-    console.log(`Has seleccionado el ${plan.name}`);
+    console.log(`Has seleccionado el ${plan.name}, id: ${plan.id}`);
   };
 
   const handlePlanSelection = async () => {
-    let dataPrefix = "user_"
+    if (!selectedPlanId || !accountId || !confirmAccountId || !bio) {
+      alert("Por favor, complete todos los campos antes de confirmar.");
+      return;
+    }
+
+    if (accountId !== confirmAccountId) {
+      alert("El CBU/CVU no coincide.");
+      return;
+    }
+
+    const dataPrefix = "user_";
 
     const userData = {
-      ID: storage.getItem(`${dataPrefix}ID`),
+      //ID: storage.getItem(`${dataPrefix}ID`),
       email: storage.getItem(`${dataPrefix}email`),
       username: storage.getItem(`${dataPrefix}username`),
       full_name: storage.getItem(`${dataPrefix}full_name`),
-      dni: storage.getItem(`${dataPrefix}dni`),
-      phone: storage.getItem(`${dataPrefix}phone`),
+      //dni: storage.getItem(`${dataPrefix}dni`),
+      phone_number: storage.getItem(`${dataPrefix}phone`),
       pwd: storage.getItem(`${dataPrefix}pwd`),
       type: storage.getItem(`${dataPrefix}type`),
       personal_ID: storage.getItem(`${dataPrefix}personal_ID`),
-      state: storage.getItem(`${dataPrefix}state`),
-      user_detail_ID: storage.getItem(`${dataPrefix}user_detail_ID`),
-      plan_id: storage.getItem("selectedPlan"),
-    }
-    
+      //state: storage.getItem(`${dataPrefix}state`),
+      //user_detail_ID: storage.getItem(`${dataPrefix}user_detail_ID`),
+      subscription_ID: selectedPlanId,
+      account_type: accountType,
+      personal_account_ID: accountId,
+      //confirm_account_id: confirmAccountId,
+      profile: bio,
+    };
+
+    console.log('User data:');
+    console.log(userData);
+
     await createUser(buildUser(userData)).then(() => {
       router.push("/pages/user-register");
     });
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
+        <p>Cargando planes...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center">
       <h1 className="text-3xl font-bold my-8">Planes de Suscripción</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full px-4 max-w-5xl">
-        {subscriptionPlans.map((plan, index) => (
+        {subscriptionPlans.map((plan) => (
           <div
-            key={index}
+            key={plan.id}
             className="bg-gray-800 rounded-lg shadow-md p-6 flex flex-col justify-between"
           >
             <div>
               <h2 className="text-xl font-bold mb-2">{plan.name}</h2>
-              <p className="text-gray-400 mb-2">{plan.detail}</p>
-              <p className="mb-2">
-                <span className="font-semibold">Periodicidad:</span>{" "}
-                {plan.periodicity}
-              </p>
+              <p className="font-semibold mb-2">{plan.detail}</p>
               <p>
                 <span className="font-semibold">Valor:</span> {plan.value}
               </p>
             </div>
             <button
               onClick={() => handleSelectPlan(plan)}
-              className="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              className={`mt-4 font-bold py-2 px-4 rounded ${
+                selectedPlanId === plan.id
+                  ? "bg-green-600 hover:bg-green-700"
+                  : "bg-blue-600 hover:bg-blue-700"
+              } text-white`}
             >
-              Seleccionar Plan
+              {selectedPlanId === plan.id ? "Seleccionado" : "Seleccionar Plan"}
             </button>
           </div>
         ))}
       </div>
-      <div className="min-h-screen bg-gray-900 text-white flex flex-rows items-center">
-        <button
-          onClick={() => router.back}
-          className="mt-4 bg-gray-600 hover:bg-purple-700 text-white font-bold py-5 px-6 rounded"
+      <div className="w-full max-w-md mt-8">
+        <label className="block mb-2 font-bold">Seleccione un medio de cobro:</label>
+        <select
+          value={accountType}
+          onChange={(e) => setAccountType(e.target.value)}
+          className="w-full p-2 rounded bg-gray-800 text-white mb-4"
         >
-          Cancelar
-        </button>
+          <option value="cbu">CBU</option>
+          <option value="cvu">CVU</option>
+        </select>
+
+        <label className="block mb-2 font-bold">
+          Ingrese {accountType.toUpperCase()}:
+        </label>
+        <input
+          type="text"
+          value={accountId}
+          onChange={(e) => setAccountId(e.target.value)}
+          className="w-full p-2 rounded bg-gray-800 text-white mb-4"
+        />
+
+        <label className="block mb-2 font-bold">
+          Confirme {accountType.toUpperCase()}:
+        </label>
+        <input
+          type="text"
+          value={confirmAccountId}
+          onChange={(e) => setConfirmAccountId(e.target.value)}
+          className="w-full p-2 rounded bg-gray-800 text-white mb-4"
+        />
+
+        <label className="block mb-2 font-bold">Biografía de usuario:</label>
+        <textarea
+          value={bio}
+          onChange={(e) => setBio(e.target.value)}
+          className="w-full p-2 rounded bg-gray-800 text-white mb-4"
+          rows={4}
+        />
+
         <button
-          onClick={() => handlePlanSelection()}
-          className="mt-4 bg-green-600 hover:bg-green-700 text-white font-bold py-5 px-6 rounded"
+          onClick={handlePlanSelection}
+          className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
         >
           Confirmar
+        </button>
+        <button
+          onClick={() => router.back()}
+          className="w-full bg-gray-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-2 mb-2"
+        >
+          Cancelar
         </button>
       </div>
     </div>
@@ -130,3 +208,4 @@ const PlansPage = () => {
 };
 
 export default PlansPage;
+

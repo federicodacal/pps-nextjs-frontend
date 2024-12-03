@@ -12,7 +12,9 @@ import {
   BsSkipBackward,
   BsPlusCircleFill,
   BsHeartFill,
+  BsHeart,
 } from "react-icons/bs";
+import { useFavorites } from "@/app/contexts/FavoritesContext";
 
 type AudioProps = {
   id: string,
@@ -24,8 +26,8 @@ type AudioProps = {
   category: string;
   duration: string;
   audioUrl: string;
-  onAddToFavorites: (id: number) => void;
-  onAddToCart: (id: number) => void;
+  onAddToCart: (id: string) => void;
+  onAddToFavorites: (id: string) => void;
 };
 
 const AudioCard: React.FC<AudioProps> = ({
@@ -38,20 +40,20 @@ const AudioCard: React.FC<AudioProps> = ({
   category,
   duration,
   audioUrl,
-  onAddToFavorites,
-  onAddToCart,
+  onAddToCart
 }) => {
   const containerRef = useRef(null);
   const [urlIndex, setUrlIndex] = useState(0);
   const { wavesurfer, isPlaying, currentTime } = useWavesurfer({
     container: containerRef,
     height: 100,
-    waveColor: "rgb(200, 0, 200)",
+    waveColor: "rgb(255, 200, 255)",
     progressColor: "rgb(100, 0, 100)",
     url: audioUrl,
     plugins: useMemo(() => [Timeline.create()], []),
   });
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
+  const { isFavorite, toggleFavorite } = useFavorites();
   let textoAlerta = ""
 
   const handleClick = (message: string) => {
@@ -77,16 +79,6 @@ const AudioCard: React.FC<AudioProps> = ({
     handleClick("Se ha agregado al carrito")
 
     storage.setItem("selected_audios", selectedAudios += audioId.toString() + ",")
-  };
-
-  const addToFavorites = (audioId: string) => {
-    let favAudios = storage.getItem("favorites_audios")
-
-    storage.setItem("favorites_audios", favAudios += audioId.toString() + ",")
-
-    handleClick("Se ha agregado a favoritos")
-
-    console.log(`Audio ${audioId} added to favourites`)
   };
 
 
@@ -119,10 +111,8 @@ const AudioCard: React.FC<AudioProps> = ({
               >
                 <BsPlusCircleFill />
               </button>
-              <button
-                onClick={() => addToFavorites(id)}
-              >
-                <BsHeartFill />
+              <button onClick={() => toggleFavorite(id)}>
+                {isFavorite(id) ? <BsHeartFill /> : <BsHeart />}
               </button>
             </div>
           </div>

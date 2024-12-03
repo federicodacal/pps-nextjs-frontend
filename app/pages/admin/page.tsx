@@ -6,6 +6,8 @@ import Header from '../../components/header/Header';
 import Footer from '../../components/footer/Footer';
 import { User, UserPayload } from '../../types/users';
 import UserList from '@/app/components/user-form/UserList';
+import { getAllAudios } from '@/app/services/audio-service';
+import AudioAdminList from '@/app/components/audio/AudioAdminList';
 
 const hardcodedUser = 'user_003'
 
@@ -15,6 +17,7 @@ const initUser = () => {
     email: "",
     pwd: "",
     type: "",
+    state: "",
     user_detail: {
       ID: "",
       username: "",
@@ -23,7 +26,6 @@ const initUser = () => {
       phone_number: "",
       created_at: "",
       modified_at: "",
-      state: "",
     },
     creator: initCreator(),
     created_at: '',
@@ -58,6 +60,7 @@ const buildUsers = (response: any) => {
       email: user.email,
       pwd: user.pwd,
       type: user.type,
+      state: user.state,
       user_detail: {
         ID: user.user_detail.ID,
         username: user.user_detail.username,
@@ -66,7 +69,6 @@ const buildUsers = (response: any) => {
         phone_number: user.user_detail.phone_number,
         created_at: user.user_detail.created_at,
         modified_at: user.user_detail.modified_at,
-        state: user.user_detail.state,
       },
       creator: user.creator != null ? {
         ID: user.creator.ID,
@@ -91,6 +93,7 @@ const buildUsers = (response: any) => {
 
 export default function AdminPage() {
   const [users, setUserData] = useState(initUser());
+  const [audios, setAudioData] = useState<any[]>([]);
   const [isEditing, setIsEditing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -99,6 +102,7 @@ export default function AdminPage() {
       try {
         const response = await getUsers();
 
+
         console.log("Usuarios:", response.data);
         setUserData(buildUsers(response));
       } catch (error) {
@@ -106,89 +110,72 @@ export default function AdminPage() {
       }
     };
 
+    const fetchAudioData = async () => {
+      try {
+        const response = await getAllAudios();
+
+        console.log("Audios:", response.data);
+        setAudioData(response.data);
+      } catch (error) {
+        console.error("Error al obtener datos del usuario:", error);
+      }
+    };
+
     fetchUserData();
+    fetchAudioData();
   }, []);
 
-  const handleEdit = () => {
-    setIsEditing((prev) => !prev);
-  };
-
-  const handleCancel = () => {
-    setIsEditing(false);
-  };
-
-  const modifyUser = async (user: UserPayload | undefined) => {
-    if (user != undefined) {
-      const userPayload = user
-
-      const response = await updateUser(userPayload)
-
-      console.log(response)
-    }
-  }
-
-  const deleteUser = async (userID: string) => {
-    const response = await deleteByID(userID)
-
-    console.log(response)
-    // Solo se ejecuta una vez al montar el componente
-
-  }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-100 flex flex-col">
+    <div className="min-h-screen max-w-screen bg-gray-900 text-gray-100 flex flex-col">
       {/* Title */}
       <Header title="Admin" />
       {/* Listados */}
-      <div className="flex justify-center items-center mb-72 px-10 sm:px-0" >
-        <div className="flex flex-col w-[1000px]">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-10">
+      <div className="flex justify-center items-center mb-72 px-10 sm:px-0 " >
+        <div className="flex flex-auto flex-col w-[1000px] p-16">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 w-full">
             {/*Usuarios pendientes*/}
-            <div className="flex flex-col mt-5">
-             
+            <div>
               <UserList users={users} title="Nuevos usuarios" />
-
-
-               
+            </div>
+            {/*Usuarios suscripcion vencida*/}
+            <div >
+              <UserList users={users} title="Creadores por vencer" />
             </div>
             <div>
               {/*Audios pendientes*/}
-              <div className="flex flex-col mt-5">
-              <UserList users={users} title="Audios pendientes" />
+              <div >
+                <AudioAdminList audios={audios} title="Audios pendientes" />
               </div>
-            </div>
-            {/*Usuarios suscripcion vencida*/}
-            <div className="flex flex-col mt-5">
-            <UserList users={users} title="Creadores por vencer" />
             </div>
           </div>
         </div>
       </div>
 
-    {/* Modal */ }
-  {
-    isModalOpen && (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-        <div className="bg-gray-800 p-6 rounded-lg text-center">
-          <p className="text-lg mb-4">¿Estás seguro de eliminar tu cuenta?</p>
-          <div className="flex justify-center space-x-4">
-            <button
-              className="bg-red-600 hover:bg-red-700 text-white py-2 px-6 rounded-lg"
-            >
-              Confirmar
-            </button>
-            <button
-              onClick={() => setIsModalOpen(false)}
-              className="bg-gray-600 hover:bg-gray-700 text-white py-2 px-6 rounded-lg"
-            >
-              Cancelar
-            </button>
+      {/* Modal */}
+      {
+        isModalOpen && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+            <div className="bg-gray-800 p-6 rounded-lg text-center">
+              <p className="text-lg mb-4">¿Estás seguro de eliminar tu cuenta?</p>
+              <div className="flex justify-center space-x-4">
+                <button
+                  className="bg-red-600 hover:bg-red-700 text-white py-2 px-6 rounded-lg"
+                >
+                  Confirmar
+                </button>
+                <button
+                  onClick={() => setIsModalOpen(false)}
+                  className="bg-gray-600 hover:bg-gray-700 text-white py-2 px-6 rounded-lg"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-    )
-  }
-  <Footer />
+        )
+      }
+      <Footer />
     </div >
   );
 }

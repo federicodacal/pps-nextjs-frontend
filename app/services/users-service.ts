@@ -2,10 +2,11 @@ import axios from 'axios';
 import { NEXT_PUBLIC_PROXY }  from './config';
 import { User, UserPayload }  from '../types/users';
 
+const DEV_URL = 'http://127.0.0.1:5000';
 
 // User Services
 export const createUser = async ( userData: UserPayload) => {
-    console.log(userData)
+    console.log('User data desde service: ', userData)
 
     const response = axios.post(`${NEXT_PUBLIC_PROXY}/users`, userData);
 
@@ -13,7 +14,7 @@ export const createUser = async ( userData: UserPayload) => {
 };
 
 export const getUserById = async (id: string) => {
-    return axios.get<User>(`${NEXT_PUBLIC_PROXY}/users/${id}`);
+    return axios.get<User>(`https://pps-flask-api.vercel.app/users/${id}`);
 };
 
 export const getUsers = async () => {
@@ -28,6 +29,30 @@ export const updateUser = async (userData: UserPayload) => {
 
 export const deleteByID = async (userId: string) => {
     const response = axios.delete(`${NEXT_PUBLIC_PROXY}/users/${userId}`);
+
+    return response
+};
+
+export const refuseByID = async (userId: string) => {
+    const response = axios.delete(`${NEXT_PUBLIC_PROXY}/users/approval/${userId}`);
+
+    return response
+};
+
+export const approveByID = async (userId: string) => {
+    const response = axios.post(`${NEXT_PUBLIC_PROXY}/users/approval/${userId}`);
+
+    return response
+};
+
+export const inactiveCreatorByID = async (userId: string) => {
+    const response = axios.delete(`${NEXT_PUBLIC_PROXY}/users/creator/${userId}`);
+
+    return response
+};
+
+export const activeCreatorByID = async (userId: string) => {
+    const response = axios.post(`${NEXT_PUBLIC_PROXY}/users/creator/${userId}`);
 
     return response
 };
