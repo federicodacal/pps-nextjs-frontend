@@ -1,36 +1,33 @@
 
-import { GetServerSideProps } from 'next';
 import React, { useEffect, useState } from 'react';
-import { getUserById, updateUser, deleteByID } from '@/app/services/users-service';
 import Header from '../../../components/header/Header';
 import Footer from '../../../components/footer/Footer';
-import { UserPayload } from '../../../types/users';
 import UserCard from '@/app/components/user-form/UserCard';
+import { getAudioById } from '@/app/services/audio-service';
+import AudioDetailCard from '@/app/components/audio/AudioDetailCard';
 
 interface Props {
   params: any
 }
 
 const UserDetail: React.FC<Props> = async ({ params }) => {
-  const fetchUser = async (ID: string) => {
-    const response = await getUserById(ID);
+  const fetchAudio = async (ID: string) => {
+    const response = await getAudioById(ID);
 
     console.log(response.data)
 
     return response.data
   }
 
-  const user = await fetchUser(params.ID as string)
+  const audio = await fetchAudio(params.ID as string)
 
   return (<>
     <div>
-      <Header title="Detalles del usuario" />
+      <Header title="Detalles de audio" />
     </div>
     <div className="h-full bg-gray-900 flex items-center justify-center">
-      <UserCard user={user} />
+      <AudioDetailCard audio={audio} />
     </div>
-
-
     <div className='w-screen'>
       <Footer />
     </div>

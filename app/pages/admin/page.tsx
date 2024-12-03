@@ -6,6 +6,8 @@ import Header from '../../components/header/Header';
 import Footer from '../../components/footer/Footer';
 import { User, UserPayload } from '../../types/users';
 import UserList from '@/app/components/user-form/UserList';
+import { getAllAudios } from '@/app/services/audio-service';
+import AudioAdminList from '@/app/components/audio/AudioAdminList';
 
 const hardcodedUser = 'user_003'
 
@@ -91,6 +93,7 @@ const buildUsers = (response: any) => {
 
 export default function AdminPage() {
   const [users, setUserData] = useState(initUser());
+  const [audios, setAudioData] = useState<any[]>([]);
   const [isEditing, setIsEditing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -99,6 +102,7 @@ export default function AdminPage() {
       try {
         const response = await getUsers();
 
+
         console.log("Usuarios:", response.data);
         setUserData(buildUsers(response));
       } catch (error) {
@@ -106,34 +110,21 @@ export default function AdminPage() {
       }
     };
 
+    const fetchAudioData = async () => {
+      try {
+        const response = await getAllAudios();
+
+        console.log("Audios:", response.data);
+        setAudioData(response.data);
+      } catch (error) {
+        console.error("Error al obtener datos del usuario:", error);
+      }
+    };
+
     fetchUserData();
+    fetchAudioData();
   }, []);
 
-  const handleEdit = () => {
-    setIsEditing((prev) => !prev);
-  };
-
-  const handleCancel = () => {
-    setIsEditing(false);
-  };
-
-  const modifyUser = async (user: UserPayload | undefined) => {
-    if (user != undefined) {
-      const userPayload = user
-
-      const response = await updateUser(userPayload)
-
-      console.log(response)
-    }
-  }
-
-  const deleteUser = async (userID: string) => {
-    const response = await deleteByID(userID)
-
-    console.log(response)
-    // Solo se ejecuta una vez al montar el componente
-
-  }
 
   return (
     <div className="min-h-screen max-w-screen bg-gray-900 text-gray-100 flex flex-col">
@@ -147,15 +138,15 @@ export default function AdminPage() {
             <div>
               <UserList users={users} title="Nuevos usuarios" />
             </div>
-            <div>
-              {/*Audios pendientes*/}
-              <div >
-                <UserList users={users} title="Audios pendientes" />
-              </div>
-            </div>
             {/*Usuarios suscripcion vencida*/}
             <div >
               <UserList users={users} title="Creadores por vencer" />
+            </div>
+            <div>
+              {/*Audios pendientes*/}
+              <div >
+                <AudioAdminList audios={audios} title="Audios pendientes" />
+              </div>
             </div>
           </div>
         </div>
