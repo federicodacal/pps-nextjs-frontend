@@ -1,7 +1,7 @@
-import { Audio } from '../../types/audio';
+import { AudioDB } from '../../types/audio';
 
 interface AudioCardProps {
-  audio: Audio;
+  audio: AudioDB;
 }
 
 const AudioCard = ({ audio }: AudioCardProps) => (

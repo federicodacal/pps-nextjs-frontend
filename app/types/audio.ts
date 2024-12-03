@@ -8,7 +8,7 @@ export interface Audio {
     BPM: number,
     tone: string,
     length: string,
-    file_url: string | undefined,
+    file_url: string,
     size: number,
     description: string,
     state_item: string,
