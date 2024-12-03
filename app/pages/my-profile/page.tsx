@@ -69,20 +69,20 @@ const initAudio = () => {
   }]
 }
 
-const buildUser = (response: any) => {
+const buildUser = (userData: any) => {
   return {
-    ID: response.data.ID,
-    full_name: response.data.user_detail.full_name,
-    personal_ID: response.data.user_detail.personal_ID,
-    username: response.data.user_detail.username,
-    email: response.data.email,
-    phone_number: response.data.user_detail.phone_number,
-    pwd: response.data.pwd,
-    credits: response.data.creator.credits,
-    type: response.data.type,
-    subscription_ID: response.data.creator.subscription_ID,
-    profile: "Enthusiastic developer and designer.",
-    state: response.data.state,
+    ID: userData.ID,
+    full_name: userData.user_detail?.full_name,
+    personal_ID: userData.user_detail?.personal_ID,
+    username: userData.user_detail?.username,
+    email: userData.email,
+    phone_number: userData.user_detail?.phone_number,
+    pwd: userData.pwd,
+    credits: userData.creator?.credits,
+    type: userData.type || "", 
+    subscription_ID: userData.creator?.subscription_ID,
+    profile: userData.creator?.profile,
+    state: userData.state,
   }
 }
 
@@ -131,21 +131,21 @@ const MyProfile = ()  => {
   const [audios, setAudioData] = useState<DownloableAudio[]>(initAudio());
   const [isEditing, setIsEditing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { userId } = useAuth(); 
+  const { userId, userType } = useAuth(); 
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const userID = (user != undefined) ? user.ID : ""
+        //const userID = (user != undefined) ? user.ID : ""
         if (userId) {
-        const response = await getUserById(hardcodedUser);
-        const responsePurchases = await getPurchasesAudioByBuyer(hardcodedUser)
+        const response = await getUserById(userId);
+        //const responsePurchases = await getPurchasesAudioByBuyer(userId)
 
-        console.log("Datos del usuario:", response.data);
-        setUserData(buildUser(response));
-        setAudioData(getAudios(buildPurchases(responsePurchases)));
-        }
-        setUserData(user);
+        const userData = buildUser(response.data);
+        setUserData(userData);
+      
+        //setAudioData(getAudios(buildPurchases(responsePurchases)));
+      }
       
       } catch (error) {
         console.error("Error al obtener datos del usuario:", error);
@@ -230,7 +230,7 @@ const MyProfile = ()  => {
         )}
         <UserDetail userForm={user} />
         <select
-                    value={user.type}
+                    value={userType || ""}
                     disabled={!isEditing}
                     className={`mt-1 px-4 py-2 rounded-lg bg-gray-700 text-gray-100 ${isEditing ? "border border-purple-500" : "border-none"}`}
                     onChange={(e) => setUserData({ ...user, type: e.target.value })}
