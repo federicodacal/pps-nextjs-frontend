@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect   } from "react";
+import { useState, useEffect } from "react";
 import { createAudio } from "@/app/services/audio-service";
 import { useRouter } from "next/navigation";
 import AudioWavePlayer from "../../components/audio/AudioPlayerWave";
@@ -13,13 +13,14 @@ const newAudio = {
   state: "",
   category: "",
   genre: "",
-  BPM: "",
+  BPM: 0,
   tone: "",
   length: "",
-  size: "",
+  size: 0,
   description: "",
   state_item: "",
   price: "",
+  file_url: "",
 }
 
 const AudioForm = () => {
@@ -46,10 +47,12 @@ const AudioForm = () => {
 
     const formData = new FormData();
 
-    Object.keys(audioData).forEach((key) =>
-      formData.append(key, audioData[key as keyof typeof audioData])
-    );
-    
+    Object.keys(audioData).forEach((key) => {
+      let value = String(audioData[key as keyof typeof audioData])
+
+      formData.append(key, value)
+    });
+
     formData.append("file", audioFile);
 
     try {

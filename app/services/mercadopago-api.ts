@@ -1,45 +1,51 @@
-import {readFileSync, writeFileSync} from "node:fs";
+import { MercadoPagoConfig, Preference } from "mercadopago";
+import { Item, Purchase, CheckoutItem, CheckoutData, PurchasePayload } from "@/app/types/purchase";
 
-import {MercadoPagoConfig, Preference} from "mercadopago";
+export const mercadopago = new MercadoPagoConfig({ accessToken: process.env.MP_ACCESS_TOKEN! });
+
+interface PaymentPayload {
+  id: string,
+  unit_price: number,
+  quantity: number,
+  title: string,
+}
 
 interface Message {
   id: number;
   text: string;
 }
 
-export const mercadopago = new MercadoPagoConfig({accessToken: process.env.MP_ACCESS_TOKEN!});
-
 const api = {
   message: {
-    async list(): Promise<Message[]> {
-      return [{id:1, text:"UNO"},{id:2, text:"DOS"}]
+
+    async add(payment: PurchasePayload): Promise<void> {
+      // Obtenemos los mensajes
+      // Crear Purchase
+ 
     },
 
-    async add(message: Message): Promise<void> {
-      const db = await api.message.list();
+    async submit(checkoutdata: CheckoutData, metadata: string) {
+      const payload: PaymentPayload[] = []
 
-      if (db.some((_message) => _message.id === message.id)) {
-        throw new Error("Message already added");
-      }
+      checkoutdata.items.forEach((item,index)=> {
+        payload.push({
+          id: item.id,
+          unit_price: item.price,
+          quantity: 1,
+          title: `Item N° ${index+1}`,
+        })
+      });
 
-      const draft = db.concat(message);
-
-      writeFileSync("db/message.db", JSON.stringify(draft, null, 2));
-    },
-
-    async submit(text: Message["text"]) {
       const preference = await new Preference(mercadopago).create({
         body: {
-          items: [
-            {
-              id: "message",
-              unit_price: 100,
-              quantity: 1,
-              title: "Mensaje de muro",
-            },
-          ],
+          items: payload,
+          auto_return:"approved",
+          back_urls: {
+            success: "http://localhost:3000//pages/payment",
+          
+          },
           metadata: {
-            text,
+            metadata,
           },
         },
       });
