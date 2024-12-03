@@ -126,27 +126,27 @@ const getAudios = (purchases: Purchase[]) => {
   return audios
 }
 
-const MyProfile = ()  => {
+const MyProfile = () => {
   const [user, setUserData] = useState<UserForm>(initUser());
   const [audios, setAudioData] = useState<DownloableAudio[]>(initAudio());
   const [isEditing, setIsEditing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { userId } = useAuth(); 
+  const { userId } = useAuth();
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         const userID = (user != undefined) ? user.ID : ""
         if (userId) {
-        const response = await getUserById(hardcodedUser);
-        const responsePurchases = await getPurchasesAudioByBuyer(hardcodedUser)
+          const response = await getUserById(hardcodedUser);
+          const responsePurchases = await getPurchasesAudioByBuyer(hardcodedUser)
 
-        console.log("Datos del usuario:", response.data);
-        setUserData(buildUser(response));
-        setAudioData(getAudios(buildPurchases(responsePurchases)));
+          console.log("Datos del usuario:", response.data);
+          setUserData(buildUser(response));
+          setAudioData(getAudios(buildPurchases(responsePurchases)));
         }
         setUserData(user);
-      
+
       } catch (error) {
         console.error("Error al obtener datos del usuario:", error);
       }
@@ -221,25 +221,22 @@ const MyProfile = ()  => {
       {/* Title */}
       <Header title="Mi perfil" />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 m-auto p-5">
         {/* Credits */}
-        {user?.credits !== undefined ? (
-          <p>Créditos: {user.credits}</p>
-          ) : (
-          <p>Créditos no disponibles</p>
+        {user?.credits !== undefined && user?.type == 'creator' ? (
+
+          <div className="absolute mb-5 mr-5 mt-48 top-1 right-1 bg-yellow-500 text-gray-900 font-bold py-2 px-4 rounded-lg text-lg">
+            Créditos: {user.credits}
+          </div>
+        ) : (
+          <></>
         )}
         <UserDetail userForm={user} />
-        <select
-                    value={user.type}
-                    disabled={!isEditing}
-                    className={`mt-1 px-4 py-2 rounded-lg bg-gray-700 text-gray-100 ${isEditing ? "border border-purple-500" : "border-none"}`}
-                    onChange={(e) => setUserData({ ...user, type: e.target.value })}
-                    >
-                    <option value="buyer">Comprador</option>
-                    <option value="creator">Creador</option>
-                  </select>
+       
 
         <DownloadList audios={audios} />
+
+        
 
       </div>
       <Footer />

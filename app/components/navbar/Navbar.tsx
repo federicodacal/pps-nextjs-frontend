@@ -12,7 +12,6 @@ export const Navbar = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const publicPages = [
-    { path: "/pages/test", text: "TEST" },
     { path: "/pages/samples", text: "Samples" },
     { path: "/pages/effects", text: "Effects" },
     { path: "/pages/acapellas", text: "Acapellas" },
@@ -52,24 +51,24 @@ export const Navbar = () => {
   }
 
   return (
-    <nav className="flex bg-gradient-to-b to-[#3B0764] from-[#291b38] bg-opacity-30 justify-between">
+    <nav className="flex bg-gradient-to-b to-[#3B0764] from-[#291b38] bg-opacity-30 justify-between ">
       <Link className="flex items-center ml-8 mt-5" href="/" >
       <Image
             src="/home.png" // Ruta de la imagen
             alt="Example Link"
             width={60} // Ancho de la imagen
             height={60} // Altura de la imagen
-            className="rounded-lg shadow-lg group-hover:scale-105 group-hover:opacity-80 transition-transform duration-300 ease-in-out"
+            className="rounded-lg shadow-lg group-hover:scale-105 group-hover:opacity-80 transition-transform duration-300 ease-in-out "
             priority
           />
       </Link>
 
-      <div className="flex items-center">
+      <div className="flex items-center ">
         {[
           ...publicPages, 
           ...(token ? privatePages : []), 
         ].map((page) => (
-          <Link key={page.path} className="mr-2 m-5" href={page.path}>
+          <Link key={page.path} className="mr-2 m-5 p-3 rounded border-1 border-indigo-500 outline hover:outline-2" href={page.path}>
             {page.text}
           </Link>
         ))}
@@ -86,7 +85,7 @@ export const Navbar = () => {
               {menu.text}
             </button>
           ) : (
-            <Link key={menu.path} className="mr-2 m-5" href={menu.path}>
+            <Link key={menu.path} className="mr-2 m-5 p-3 rounded border-1 border-emerald-500 outline hover:outline-2" href={menu.path}>
               {menu.text}
             </Link>
           )

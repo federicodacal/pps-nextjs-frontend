@@ -110,10 +110,7 @@ const UserDetail: React.FC<UserProps> = ({ userForm }) => {
     return (
         <div>
             <div className="bg-gray-800 rounded-lg p-6 shadow-md max-w-4xl mx-auto relative">
-                {/* Credits */}
-                <div className="absolute mb-5 mr-5 top-1 right-1 bg-yellow-500 text-gray-900 font-bold py-2 px-4 rounded-lg text-lg">
-                    Créditos: {user.credits}
-                </div>
+
 
                 <form className="grid grid-cols-2 gap-6">
                     {/* Form Fields */}
@@ -211,6 +208,19 @@ const UserDetail: React.FC<UserProps> = ({ userForm }) => {
                             Modificar
                         </button>
                     )}
+
+                    <div>
+                        <select
+                            value={user.type}
+                            disabled={!isEditing}
+                            className={`mt-1 px-4 py-2 rounded-lg bg-gray-700 text-gray-100 ${isEditing ? "border border-purple-500" : "border-none"}`}
+                            onChange={(e) => setUserData({ ...user, type: e.target.value })}
+                        >
+                            <option value="buyer">Comprador</option>
+                            <option value="creator">Creador</option>
+                        </select>
+                    </div>
+
                     <button
                         onClick={() => setIsModalOpen(true)}
                         className="bg-red-600 hover:bg-red-700 text-white py-2 px-6 rounded-lg"
