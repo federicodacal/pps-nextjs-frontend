@@ -12,7 +12,9 @@ import {
   BsSkipBackward,
   BsPlusCircleFill,
   BsHeartFill,
+  BsBagHeart,
   BsHeart,
+  BsFillHeartFill,
 } from "react-icons/bs";
 import { useFavorites } from "@/app/contexts/FavoritesContext";
 
@@ -86,23 +88,23 @@ const AudioCard: React.FC<AudioProps> = ({
     <>
       <div className="container ">
         <div className="sub-container">
-          <div>
+          <div className="flex p-3 m-3 font-semibold">
             <h1>{name}</h1>
           </div>
           <div ref={containerRef} />
           <div className="wavesurfer-container" />
-          <div >
-            <div>
+          <div>
+            <div className="flex p-2 m-2 font-medium">
               <p>BPM: {bpm}</p>
               <p>Duración : {duration}</p>
               <p>Tonalidad: {tone}</p>
               <p>Género: {genre}</p>
             </div>
-            <div>
+            <div className="flex p-2 m-2 font-medium">
               <p>Creador : {creator}</p>
               <p>Categoría : {category}</p>
             </div>
-            <div className="wavesurfer-controls">
+            <div className="wavesurfer-controls flex place-content-center gap-5">
               <button onClick={onPlayPause} >
                 {isPlaying ? <BsFillStopFill /> : <BsFillPlayFill />}
               </button>
@@ -112,7 +114,7 @@ const AudioCard: React.FC<AudioProps> = ({
                 <BsPlusCircleFill />
               </button>
               <button onClick={() => toggleFavorite(id)}>
-                {isFavorite(id) ? <BsHeartFill /> : <BsHeart />}
+                {isFavorite(id) ?  <BsHeart /> : <BsFillHeartFill />}
               </button>
             </div>
           </div>
