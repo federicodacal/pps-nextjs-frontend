@@ -27,6 +27,7 @@ type AudioProps = {
   duration: string;
   audioUrl: string;
   onAddToCart: (id: string) => void;
+  onAddToFavorites: (id: string) => void;
 };
 
 const AudioCard: React.FC<AudioProps> = ({

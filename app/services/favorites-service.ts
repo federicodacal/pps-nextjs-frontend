@@ -1,17 +1,17 @@
 import axios from 'axios';
-import { PROXY }  from './config';
+import { NEXT_PUBLIC_PROXY }  from './config';
 
 // Favorites Services
 export const addFavorite = async (audio_ID: string, user_ID: string) => {
-    return axios.post(`http://localhost:5000/favorites/${audio_ID}`, { user_ID });
+    return axios.post(`${NEXT_PUBLIC_PROXY}${audio_ID}`, { user_ID });
   };
   
   export const getFavoritesByUserId = async (user_ID: string) => {
-    return axios.get<any[]>(`http://localhost:5000/favorites/${user_ID}`);
+    return axios.get<any[]>(`${NEXT_PUBLIC_PROXY}${user_ID}`);
   };
   
   export const deleteByAudioId = async (audio_ID: string, user_ID: string) => {
-    return axios.delete(`http://localhost:5000/favorites/${audio_ID}`, {
+    return axios.delete(`${NEXT_PUBLIC_PROXY}${audio_ID}`, {
       data: { user_ID },
     });
   };

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useState, useEffect } from "react";
 import { createAudio } from "@/app/services/audio-service";
 import { useRouter } from "next/navigation";
 import AudioWavePlayer from "../../components/audio/AudioPlayerWave";
@@ -67,7 +66,8 @@ const AudioForm = () => {
       // Añadir todos los demás campos de audioData al FormData
       Object.keys(audioData).forEach((key) => {
         if (key !== "creator_ID") { // Evita agregar creator_ID de nuevo
-          formData.append(key, audioData[key as keyof typeof audioData]);
+          let value = String(audioData[key as keyof typeof audioData])
+          formData.append(key, value);
         }
       });
 

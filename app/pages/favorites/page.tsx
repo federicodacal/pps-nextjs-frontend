@@ -45,6 +45,7 @@ const Favorites = () => {
               duration={favorite.audio.length}
               audioUrl={favorite.audio.file_url}
               onAddToCart={(id) => console.log(`Agregado al carrito: ${id}`)}
+              onAddToFavorites={(id) => console.log(`Agregado a favoritos: ${id}`)}
             />
           ))}
         </div>

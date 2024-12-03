@@ -20,6 +20,7 @@ const initUser = () => {
     created_at: '',
     modified_at: '',
     user_detail_ID: "",
+    state: "",
   }
 }
 
@@ -32,7 +33,7 @@ const initUserDetail = () => {
     phone_number: "",
     created_at: "",
     modified_at: "",
-    state: "",
+
   }
 }
 
@@ -70,6 +71,7 @@ const buildUser = (response: any) => {
     email: response.email,
     pwd: response.pwd,
     type: response.type,
+    state: response.user_detail.state,
     user_detail: {
       ID: response.user_detail.ID,
       username: response.user_detail.username,
@@ -78,7 +80,6 @@ const buildUser = (response: any) => {
       phone_number: response.user_detail.phone_number,
       created_at: response.user_detail.created_at,
       modified_at: response.user_detail.modified_at,
-      state: response.user_detail.state,
     },
     creator: buildCreator(response),
     created_at: response.user_detail.created_at,
@@ -140,7 +141,7 @@ export default function CreatorDetail() {
         ID: user.ID,
         pwd: user.pwd,
         type: user.type,
-        state: user.user_detail.state,
+        state: user.state,
         user_detail_ID: "N/A",
         personal_ID: Number(user.user_detail.personal_ID),
         username: user.user_detail.username,

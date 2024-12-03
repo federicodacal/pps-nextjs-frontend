@@ -40,12 +40,12 @@ const UserList: React.FC<UserListProps> = ({ users, title }) => {
                 <td className="px-4 py-2">
                   <span
                     className={`px-2 py-1 rounded-full text-sm ${
-                      user.user_detail.state === "active"
+                      user.state === "active"
                         ? "bg-green-500 text-black"
                         : "bg-red-500 text-white"
                     }`}
                   >
-                    {user.user_detail.state}
+                    {user.state}
                   </span>
                 </td>
               </tr>

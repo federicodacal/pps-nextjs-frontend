@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const withAuth = (WrappedComponent: React.FC, requiredTypes?:string[]) => {
-    return () => {
+    const Authentication = () => {
         const { token, userType, loading } = useAuth();
         const router = useRouter();
         const [isReady, setIsReady] = useState(false);
@@ -37,6 +37,8 @@ const withAuth = (WrappedComponent: React.FC, requiredTypes?:string[]) => {
             <WrappedComponent />
         ) : null;
     };
+
+    return Authentication
 };
 
 export default withAuth;

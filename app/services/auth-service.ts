@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { API_BASE_URL, PROXY }  from './config';
+import { API_BASE_URL }  from './config';
 
 // Auth Services
 export async function loginUser(userData: { email: string; pwd: string }) {

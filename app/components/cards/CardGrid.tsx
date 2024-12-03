@@ -35,8 +35,8 @@ const AudioList: React.FC = () => {
           category={audio.category}
           duration={audio.length}
           audioUrl={audio.file_url}
-          onAddToFavorites={(id: number) => console.log(`${id} added to favorites`)}
-          onAddToCart={(id: number) => console.log(`${id} added to cart`)}
+          onAddToFavorites={(id: string) => console.log(`${id} added to favorites`)}
+          onAddToCart={(id: string) => console.log(`${id} added to cart`)}
         />
       ))}
     </div>

@@ -15,6 +15,7 @@ const initUser = () => {
     email: "",
     pwd: "",
     type: "",
+    state: "",
     user_detail: {
       ID: "",
       username: "",
@@ -23,7 +24,6 @@ const initUser = () => {
       phone_number: "",
       created_at: "",
       modified_at: "",
-      state: "",
     },
     creator: initCreator(),
     created_at: '',
@@ -58,6 +58,7 @@ const buildUsers = (response: any) => {
       email: user.email,
       pwd: user.pwd,
       type: user.type,
+      state: user.state,
       user_detail: {
         ID: user.user_detail.ID,
         username: user.user_detail.username,
@@ -66,7 +67,6 @@ const buildUsers = (response: any) => {
         phone_number: user.user_detail.phone_number,
         created_at: user.user_detail.created_at,
         modified_at: user.user_detail.modified_at,
-        state: user.user_detail.state,
       },
       creator: user.creator != null ? {
         ID: user.creator.ID,
