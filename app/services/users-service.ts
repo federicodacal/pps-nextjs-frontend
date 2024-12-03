@@ -32,3 +32,27 @@ export const deleteByID = async (userId: string) => {
 
     return response
 };
+
+export const refuseByID = async (userId: string) => {
+    const response = axios.delete(`${NEXT_PUBLIC_PROXY}/users/approval/${userId}`);
+
+    return response
+};
+
+export const approveByID = async (userId: string) => {
+    const response = axios.post(`${NEXT_PUBLIC_PROXY}/users/approval/${userId}`);
+
+    return response
+};
+
+export const inactiveCreatorByID = async (userId: string) => {
+    const response = axios.delete(`${NEXT_PUBLIC_PROXY}/users/creator/${userId}`);
+
+    return response
+};
+
+export const activeCreatorByID = async (userId: string) => {
+    const response = axios.post(`${NEXT_PUBLIC_PROXY}/users/creator/${userId}`);
+
+    return response
+};

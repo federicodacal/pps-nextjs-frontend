@@ -7,23 +7,8 @@ import Footer from '../../../components/footer/Footer';
 import { UserPayload } from '../../../types/users';
 import UserCard from '@/app/components/user-form/UserCard';
 
-const hardcodedUser = 'user_003'
-
-const initUser = () => {
-  return {
-    ID: "",
-    full_name: "",
-    personal_ID: "",
-    username: "",
-    email: "",
-    phone_number: "",
-    pwd: "",
-    credits: "",
-    type: "",
-    subscription_ID: "1",
-    profile: "",
-    state: "",
-  }
+interface Props {
+  params: any
 }
 
 const buildUser = (response: any) => {
@@ -43,8 +28,8 @@ const buildUser = (response: any) => {
   }
 }
 
-export default async function UserDetail({ params }) {
-  const fetchUser = async (ID:string) => {
+const UserDetail: React.FC<Props> = async ({ params }) => {
+  const fetchUser = async (ID: string) => {
     const response = await getUserById(ID);
 
     console.log(response.data)
@@ -53,38 +38,15 @@ export default async function UserDetail({ params }) {
   }
 
   const user = await fetchUser(params.ID as string)
-  
-
-  /*const router = useRouter();
-  const { ID } = router.query; // Captura el parámetro dinámico "id"
-  const [user, setUser] = useState<any | null>(null);
-
-  useEffect(() => {
-    if (ID) {
-      getUserById(ID as string)
-        .then(setUser)
-        .catch(console.error);
-    }
-  }, [ID]);
-
-  if (!user) return <p className="text-white">Loading...</p>;
-
-  return (
-    <main className="min-h-screen bg-gray-900 flex items-center justify-center">
-      <UserCard user={user} />
-    </main>
-  );*/
 
   return (<>
     <div>
       <Header title="Detalles del usuario" />
     </div>
-    <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+    <div className="h-full bg-gray-900 flex items-center justify-center">
+      <UserCard user={user} />
     </div>
-    <div>
-      <h1>{params.ID}</h1>
-      <h1>{user.state}</h1>
-    </div>
+
 
     <div className='w-screen'>
       <Footer />
@@ -93,10 +55,4 @@ export default async function UserDetail({ params }) {
   </>)
 }
 
-/*
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { id } = context.params!;
-  const user = await getUserById(id as string);
-  console.log(user)
-  return { props: { user } };
-};*/
+export default UserDetail
