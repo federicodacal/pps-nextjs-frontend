@@ -5,6 +5,7 @@ import Header from '../../components/header/Header';
 import withAuth from '@/app/hoc/withAuth';
 import AudioCard from '../../components/audio/AudioCard';
 import { useFavorites } from '@/app/contexts/FavoritesContext';
+import Footer from '@/app/components/footer/Footer';
 
 const Favorites = () => {
   const { favorites, loading } = useFavorites();
@@ -19,7 +20,7 @@ const Favorites = () => {
   );
 
   return (
-    <div className="min-h-screen bg-dark text-lightText p-6">
+    <div className="min-h-screen bg-gray-900 text-lightText p-6">
       <Header title="Listado de favoritos" />
       <input
         type="text"
@@ -52,6 +53,7 @@ const Favorites = () => {
       ) : (
         <p>No se encontraron resultados.</p>
       )}
+       <Footer/>
     </div>
   );
 };

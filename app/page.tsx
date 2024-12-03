@@ -37,7 +37,7 @@ const Home = () => {
 
     const fetchCarousel = async () => {
       try {
-        const response = await getCarrousel(); 
+        const response = await getCarrousel();
         const images = response.data.map((item: any) => ({
           image: item.imgUrl,
           title: item.titulo,
@@ -62,18 +62,23 @@ const Home = () => {
   );
 
   return (
-    <div className="min-h-screen bg-dark text-lightText p-6">
+    <div className="min-h-screen min-w-screen bg-gray-900 text-lightText place-items-center">
 
       <Header title="AudioLibre" />
       <Carousel data={carouselImages} />
 
-      <input
-        type="text"
-        placeholder="Buscar por nombre, categoría o BPM..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="w-full p-3 rounded-md bg-dim text-lightText placeholder-gray-400 focus:outline-none mb-6 mt-2"
-      />
+      <div className="min-w-screen  text-lightText">
+
+        <input
+          type="text"
+          placeholder="Buscar por nombre, categoría o BPM..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-72 p-3  bg-dim text-lightText placeholder-gray-400 focus:outline-none mb-6 mt-2"
+        />
+      </div>
+
+
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {filteredAudios.map((audio, index) => (

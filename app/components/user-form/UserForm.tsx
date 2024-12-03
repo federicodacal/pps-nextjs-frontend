@@ -99,7 +99,7 @@ export default function UserForm() {
     <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
       <form
         onSubmit={handleSubmit}
-        className="bg-gray-800 p-6 rounded shadow-md w-full max-w-md"
+        className="bg-gray-800 p-8 rounded shadow-md w-full max-w-md"
       >
         <h1 className="text-2xl font-bold mb-4">Registro de Usuario</h1>
         {/* Email Section */}

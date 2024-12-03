@@ -23,7 +23,7 @@ export default function RootLayout({
         <AuthProvider>
           <FavoritesProvider>
           <Navbar/>
-          <main className="flex flex-col items-center p-24">{children}</main>
+          <main className="flex flex-col items-center bg-gray-900">{children}</main>
           </FavoritesProvider>
         </AuthProvider>
       </body>

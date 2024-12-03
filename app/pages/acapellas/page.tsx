@@ -41,7 +41,7 @@ const AcapellasPage = () => {
   );
 
   return (
-    <div className="min-h-screen bg-dark text-lightText p-6">
+    <div className="min-h-screen bg-gray-900 text-lightText">
       <Header title="Listado de acapellas"/>
 
       <input
@@ -76,6 +76,7 @@ const AcapellasPage = () => {
           No se encontraron resultados.
         </p>
       )}
+       <Footer/>
     </div>
   );
 };

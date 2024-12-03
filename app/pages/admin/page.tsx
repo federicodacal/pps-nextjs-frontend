@@ -136,59 +136,55 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-100 flex flex-col">
+    <div className="min-h-screen max-w-screen bg-gray-900 text-gray-100 flex flex-col">
       {/* Title */}
       <Header title="Admin" />
       {/* Listados */}
-      <div className="flex justify-center items-center mb-72 px-10 sm:px-0" >
-        <div className="flex flex-col w-[1000px]">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-10">
+      <div className="flex justify-center items-center mb-72 px-10 sm:px-0 " >
+        <div className="flex flex-auto flex-col w-[1000px] p-16">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 w-full">
             {/*Usuarios pendientes*/}
-            <div className="flex flex-col mt-5">
-             
+            <div>
               <UserList users={users} title="Nuevos usuarios" />
-
-
-               
             </div>
             <div>
               {/*Audios pendientes*/}
-              <div className="flex flex-col mt-5">
-              <UserList users={users} title="Audios pendientes" />
+              <div >
+                <UserList users={users} title="Audios pendientes" />
               </div>
             </div>
             {/*Usuarios suscripcion vencida*/}
-            <div className="flex flex-col mt-5">
-            <UserList users={users} title="Creadores por vencer" />
+            <div >
+              <UserList users={users} title="Creadores por vencer" />
             </div>
           </div>
         </div>
       </div>
 
-    {/* Modal */ }
-  {
-    isModalOpen && (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-        <div className="bg-gray-800 p-6 rounded-lg text-center">
-          <p className="text-lg mb-4">¿Estás seguro de eliminar tu cuenta?</p>
-          <div className="flex justify-center space-x-4">
-            <button
-              className="bg-red-600 hover:bg-red-700 text-white py-2 px-6 rounded-lg"
-            >
-              Confirmar
-            </button>
-            <button
-              onClick={() => setIsModalOpen(false)}
-              className="bg-gray-600 hover:bg-gray-700 text-white py-2 px-6 rounded-lg"
-            >
-              Cancelar
-            </button>
+      {/* Modal */}
+      {
+        isModalOpen && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+            <div className="bg-gray-800 p-6 rounded-lg text-center">
+              <p className="text-lg mb-4">¿Estás seguro de eliminar tu cuenta?</p>
+              <div className="flex justify-center space-x-4">
+                <button
+                  className="bg-red-600 hover:bg-red-700 text-white py-2 px-6 rounded-lg"
+                >
+                  Confirmar
+                </button>
+                <button
+                  onClick={() => setIsModalOpen(false)}
+                  className="bg-gray-600 hover:bg-gray-700 text-white py-2 px-6 rounded-lg"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-    )
-  }
-  <Footer />
+        )
+      }
+      <Footer />
     </div >
   );
 }

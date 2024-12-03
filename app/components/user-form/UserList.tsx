@@ -17,9 +17,9 @@ const UserList: React.FC<UserListProps> = ({ users, title }) => {
   };
 
   return (
-    <div className="bg-gray-900 text-gray-100 p-6 rounded-lg shadow-lg">
+    <div className="bg-gray-900 text-gray-100 rounded-lg shadow-lg">
       <h2 className="text-2xl font-bold mb-4 text-violet-400">{title}</h2>
-      <div className="overflow-y-auto max-h-96 border border-gray-700 rounded-lg">
+      <div className="h-screen overflow-y-scroll scrollbar-thin scrollbar-thumb-purpleLight scrollbar-track-backgroundDark max-h-96 border border-gray-700 rounded-lg">
         <table className="table-auto w-full text-left">
           <thead className="bg-gray-800 text-violet-300">
             <tr>
