@@ -138,16 +138,24 @@ const MyProfile = ()  => {
       try {
         //const userID = (user != undefined) ? user.ID : ""
         if (userId) {
-        const response = await getUserById(userId);
-        //const responsePurchases = await getPurchasesAudioByBuyer(userId)
+          const response = await getUserById(userId);
+          const userData = buildUser(response.data);
+          setUserData(userData);
 
-        const userData = buildUser(response.data);
-        setUserData(userData);
-      
-        //setAudioData(getAudios(buildPurchases(responsePurchases)));
-      }
+          let responsePurchases;
+
+            try {
+              responsePurchases = await getPurchasesAudioByBuyer(userId);
+            } catch {
+              console.log('El user no tiene compras');
+              responsePurchases = [];
+            }
+
+          setAudioData(getAudios(buildPurchases(responsePurchases)));
+        }
       
       } catch (error) {
+        setAudioData([]);
         console.error("Error al obtener datos del usuario:", error);
       }
     };
