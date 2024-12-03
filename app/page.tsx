@@ -6,7 +6,7 @@ import CardGrid from './components/cards/CardGrid';
 import Footer from './components/footer/Footer';
 import Header from './components/header/Header';
 import { getAllAudios } from '../app/services/audio-service';
-import { Audio } from '../app/types/audio';
+import { AudioDB } from '../app/types/audio';
 import AudioCard from '../app/components/audio/AudioCard';
 import { getCarrousel } from './services/carrousel-service';
 
@@ -58,23 +58,26 @@ const Home = () => {
     (audio) =>
       audio.audio_name.toLowerCase().includes(search.toLowerCase()) ||
       audio.category.toLowerCase().includes(search.toLowerCase()) ||
+      audio.genre.toLowerCase().includes(search.toLowerCase()) ||
+      audio.description.toLowerCase().includes(search.toLowerCase()) ||
+      audio.tone.toString() === search ||
       audio.BPM.toString() === search
   );
 
   return (
-    <div className="min-h-screen min-w-screen bg-gray-900 text-lightText place-items-center">
+    <div className="min-h-screen  bg-gray-900 text-lightText place-items-center">
 
       <Header title="AudioLibre" />
       <Carousel data={carouselImages} />
 
-      <div className="min-w-screen  text-lightText">
+      <div className=" text-lightText">
 
         <input
           type="text"
           placeholder="Buscar por nombre, categoría o BPM..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-72 p-3  bg-dim text-lightText placeholder-gray-400 focus:outline-none mb-6 mt-2"
+          className="min-w-4xl h-16 bg-dim text-lightText placeholder-gray-400 focus:outline-none mb-6 mt-2"
         />
       </div>
 

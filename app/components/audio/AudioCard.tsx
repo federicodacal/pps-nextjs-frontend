@@ -100,7 +100,7 @@ const AudioCard: React.FC<AudioProps> = ({
               <p>Tonalidad: {tone}</p>
               <p>Género: {genre}</p>
             </div>
-            <div className="flex p-2 m-2 font-medium">
+            <div className="flex p-2 m-2 font-medium ">
               <p>Creador : {creator}</p>
               <p>Categoría : {category}</p>
             </div>
