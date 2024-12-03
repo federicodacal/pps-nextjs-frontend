@@ -14,7 +14,7 @@ export const createUser = async ( userData: UserPayload) => {
 };
 
 export const getUserById = async (id: string) => {
-    return axios.get<User>(`${NEXT_PUBLIC_PROXY}/users/${id}`);
+    return axios.get<User>(`https://pps-flask-api.vercel.app/users/${id}`);
 };
 
 export const getUsers = async () => {
