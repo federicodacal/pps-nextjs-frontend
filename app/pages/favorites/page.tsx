@@ -11,7 +11,6 @@ const Favorites = () => {
   const { favorites, loading } = useFavorites();
   const [search, setSearch] = useState("");
 
-
   const filteredFavorites = favorites.filter(
     (favorite) =>
       favorite.audio.audio_name.toLowerCase().includes(search.toLowerCase()) ||

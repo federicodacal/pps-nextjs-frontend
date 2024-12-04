@@ -15,6 +15,7 @@ import { PURCHASE } from '../../mocks/Purchase';
 import { useSessionStorage } from '@/app/hooks/useSessionStorage';
 import PurchaseResume from "@/app/components/cart/PurchaseResume";
 import withAuth from "@/app/hoc/withAuth";
+import { useAuth } from "@/app/contexts/AuthContext";
 
 const mockUser: User = USER
 const mockAudios = AUDIOS
@@ -95,9 +96,11 @@ const Cart = () => {
   const [, setMetadata] = useSessionStorage('purchase_metadata', {});
   const audioIDs = retrieveAudios();
   const router = useRouter();
+  const { userId } = useAuth();
   const itemsList = audios
 
   console.log(audios)
+  console.log(userId)
 
   useEffect(() => {
     const fetchAudios = async () => {
@@ -107,14 +110,13 @@ const Cart = () => {
         audioIDs.forEach(async (id) => {
           if (id != "") {
             let response = await getAudioById(id);
+
             console.log(response.data)
             audiosDB.push(response.data);
 
             setAudios(audiosDB);
           }
-
         });
-
         console.log(audios)
       } catch (error) {
         console.error("Error al obtener los audios:", error);
@@ -122,7 +124,6 @@ const Cart = () => {
     };
 
     fetchAudios()
-
   }, []);
 
   const handlePurchase = async () => {

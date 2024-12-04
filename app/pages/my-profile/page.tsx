@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react';
-import { getUserById, updateUser, deleteByID } from '@/app/services/users-service';
+import { getUserById, updateUser, deleteByID, getUserByIdServer } from '@/app/services/users-service';
 import Header from '../../components/header/Header';
 import Footer from '../../components/footer/Footer';
 import { UserPayload } from '../../types/users';
@@ -13,7 +13,7 @@ import UserDetail from '@/app/components/user-form/UserDetail';
 import { profile } from 'console';
 import DownloadList from '@/app/components/audio/DownloableAudio';
 
-const hardcodedUser = 'caa20840-36bd-4e7e-8599-f32ed1c2d646'
+//const hardcodedUser = 'caa20840-36bd-4e7e-8599-f32ed1c2d646'
 
 interface UserForm {
   ID: string,
@@ -136,10 +136,11 @@ const MyProfile = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const userID = (user != undefined) ? user.ID : ""
+        console.log(userId)
+
         if (userId) {
-          const response = await getUserById(hardcodedUser);
-          const responsePurchases = await getPurchasesAudioByBuyer(hardcodedUser)
+          const response = await getUserByIdServer(userId);
+          const responsePurchases = await getPurchasesAudioByBuyer(userId)
 
           console.log("Datos del usuario:", response.data);
           setUserData(buildUser(response));
@@ -232,12 +233,7 @@ const MyProfile = () => {
           <></>
         )}
         <UserDetail userForm={user} />
-       
-
         <DownloadList audios={audios} />
-
-        
-
       </div>
       <Footer />
     </div>

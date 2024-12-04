@@ -62,7 +62,7 @@ const AudioCard: React.FC<AudioProps> = ({
     setAlertMessage(message);
     setTimeout(() => {
       setAlertMessage(null);
-    }, 1000); // La alerta desaparece después de 1 segundo
+    }, 1000);
   };
 
   const onPlayPause = useCallback(() => {
@@ -83,6 +83,11 @@ const AudioCard: React.FC<AudioProps> = ({
     storage.setItem("selected_audios", selectedAudios += audioId.toString() + ",")
   };
 
+  const addToFavorites = (audioId: string) => {
+    toggleFavorite(audioId)
+
+    handleClick("Se ha agregado a favoritos")
+  };
 
   return (
     <>
@@ -113,8 +118,8 @@ const AudioCard: React.FC<AudioProps> = ({
               >
                 <BsPlusCircleFill />
               </button>
-              <button onClick={() => toggleFavorite(id)}>
-                {isFavorite(id) ?  <BsHeart /> : <BsFillHeartFill />}
+              <button onClick={() => addToFavorites(id)}>
+                {isFavorite(id) ?  <BsFillHeartFill/> : <BsHeart/>}
               </button>
             </div>
           </div>

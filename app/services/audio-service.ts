@@ -12,6 +12,10 @@ export const getAllAudios = async () => {
 };
 
 export const getAudioById = async (id: string) => {
+    return axios.get<AudioDB>(`${NEXT_PUBLIC_PROXY}/audios/${id}`);
+};
+
+export const getAudioByIdServer = async (id: string) => {
     return axios.get<AudioDB>(`https://pps-flask-api.vercel.app/audios/${id}`);
 };
 
