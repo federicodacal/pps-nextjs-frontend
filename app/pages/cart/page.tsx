@@ -137,6 +137,16 @@ const Cart = () => {
     router.push("/pages/checkout");
   };
 
+  const getTotal = () => {
+    let total = 0
+
+    audios.forEach(audio => {
+      total += audio.item.price
+    });
+
+    return total
+  }
+
   return (
     <div>
       <div>
@@ -148,25 +158,24 @@ const Cart = () => {
             {/*Carrito*/}
             {
               audios.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-10 m-auto">
                   <div className="flex flex-col mt-5">
                     <PurchaseResume items={itemsList}></PurchaseResume>
                   </div>
                   <div>
                     {/*Items*/}
-                    <div className="bg-white rounded-xl shadow-xl p-7 text-black">
-                      <h2 className="text-2xl mb-2">Resumen de orden</h2>
+                    <div className="bg-purple-100 mt-16 shadow-xl p-5 text-black">
+                      <h2 className="text-2xl m-3 mt-5">Resumen de orden</h2>
 
-                      <div className="grid grid-cols-2">
+                      <div className="grid grid-cols-2 m-5 mt-10">
 
                         <span className="text-xl">No. Productos</span>
                         <span className="text-right">{audios.length}</span>
 
-                        <span className="text-xl">Subtotal</span>
-                        <span className="text-right">{audios.length}</span>
-
                         <span className="mt-5 text-2xl">Total</span>
-                        <span className="text-right mt-5 text-2xl">$ 100</span>
+                        <span className="text-right mt-5 text-2xl">$ {getTotal()}</span>
+
+                        <span className="mt-10 text-sm">Los pagos se procesarán por medio de la plataforma externa</span>
 
                       </div>
                       <div className="mt-5 mb-2 w-full p-5 ">
