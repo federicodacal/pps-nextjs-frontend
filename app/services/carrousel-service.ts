@@ -1,7 +1,6 @@
 import axios from 'axios';
-
-const BASE_URL = 'http://localhost:5000'
+import { NEXT_PUBLIC_DATA_PROXY, DATA_BASE_URL } from './config';
 
 export const getCarrousel = async () => {
-    return axios.get<any[]>(`${BASE_URL}/api/carrousel`);
+    return axios.get<any[]>(`${DATA_BASE_URL}/api/carrousel`);
 };

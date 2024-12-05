@@ -13,7 +13,7 @@ export const Navbar = () => {
 
   const publicPages = [
     { path: "/pages/samples", text: "Samples" },
-    { path: "/pages/effects", text: "Effects" },
+    { path: "/pages/effects", text: "Efectos" },
     { path: "/pages/acapellas", text: "Acapellas" },
     { path: "/pages/admin", text: "Admin" },
   ];
@@ -22,9 +22,8 @@ export const Navbar = () => {
     ...(userType === "creator"
       ? [{ path: "/pages/upload-audio", text: "Carga nuevo audio" }]
       : []),
-    { path: "/pages/favorites", text: "Favorites" },
-    { path: "/pages/cart", text: "Cart" },
-    { path: "/pages/checkout", text: "Checkout" },
+    { path: "/pages/favorites", text: "Favoritos" },
+    { path: "/pages/cart", text: "Carrito" },
   ];
   
   const userMenus = token
