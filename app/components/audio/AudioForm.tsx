@@ -25,12 +25,17 @@ const newAudio = {
   file_url: "",
 }
 
+const getTones = () => {
+  return ["C","C#","D","D#","E","F","G","G#","F","F#","G","G#","A","A#","B","Bb","Ab","Gb","Eb","Db"]
+}
+
 const AudioForm = () => {
   const router = useRouter();
   const [audioFile, setAudioFile] = useState<File | null>(null);
   const [audioData, setAudioData] = useState<Audio>(newAudio);
   const [genres, setGenres] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
+  const [tones, setTones] = useState<string[]>(getTones());
   const { creatorId } = useAuth();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -99,6 +104,7 @@ const AudioForm = () => {
         ]);
         setGenres(genresResponse.data);
         setCategories(categoriesResponse.data);
+        setTones(getTones())
       }
       catch(err) {
         console.error("Error al traer genres or categories:", err);
@@ -212,13 +218,18 @@ const AudioForm = () => {
       <label htmlFor="tone" className="block mb-2 text-sm font-medium">
         Tono
       </label>
-      <input
-        type="number"
-        name="tone"
-        onChange={handleInputChange}
-        placeholder="Tono del audio"
-        className="w-full p-3 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
+      <select
+          name="tone"
+          onChange={handleInputChange}
+          className="w-full p-3 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          <option value="">Seleccione tonalidad</option>
+          {tones.map((tone, index) => (
+            <option key={index} value={tone}>
+              {tone}
+            </option>
+          ))}
+        </select>
     </div>
 
     {/* Duración */}

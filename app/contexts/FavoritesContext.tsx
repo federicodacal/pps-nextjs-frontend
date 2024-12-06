@@ -88,11 +88,11 @@ export const FavoritesProvider = ({ children }: { children: ReactNode }) => {
             if (isFav) {
               await deleteByAudioId(audio_ID, userId);
               setFavorites(favorites.filter((fav) => fav.audio.ID !== audio_ID));
-              alert('Audio quitado de favoritos');
+              console.log('Audio quitado de favoritos');
             } else {
               await addFavorite(audio_ID, userId);
               fetchFavorites();
-              alert('Audio agregado a favoritos');
+              console.log('Audio agregado a favoritos');
             }
         }
         else {

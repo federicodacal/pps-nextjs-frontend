@@ -4,7 +4,9 @@ import React, { useEffect, useState } from "react";
 import storage from "local-storage-fallback";
 import { useRouter } from "next/navigation";
 import { createUser } from "@/app/services/users-service";
-import { getSubscriptions } from "@/app/services/subscriptions-service"; 
+import { getSubscriptions } from "@/app/services/subscriptions-service";
+import Header from "@/app/components/header/Header";
+import Footer from "@/app/components/footer/Footer";
 
 type SubscriptionPlan = {
   id: number;
@@ -14,7 +16,7 @@ type SubscriptionPlan = {
   value: string;
 };
 
-const buildUser = (userData:any) => {
+const buildUser = (userData: any) => {
   return {
     ID: userData.ID,
     email: userData.email,
@@ -46,7 +48,7 @@ const PlansPage = () => {
   const [accountId, setAccountId] = useState("");
   const [confirmAccountId, setConfirmAccountId] = useState("");
   const [bio, setBio] = useState("");
-  
+
   useEffect(() => {
     const fetchSubscriptions = async () => {
       try {
@@ -68,8 +70,8 @@ const PlansPage = () => {
     fetchSubscriptions();
   }, []);
 
-  const handleSelectPlan = (plan:any) => {
-    setSelectedPlanId(plan.id); 
+  const handleSelectPlan = (plan: any) => {
+    setSelectedPlanId(plan.id);
     storage.setItem("selectedPlan", plan.id.toString());
     console.log(`Has seleccionado el ${plan.name}, id: ${plan.id}`);
   };
@@ -124,7 +126,7 @@ const PlansPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center">
-      <h1 className="text-3xl font-bold my-8">Planes de Suscripción</h1>
+      <Header title="Planes de Suscripción"/>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full px-4 max-w-5xl">
         {subscriptionPlans.map((plan) => (
           <div
@@ -140,11 +142,10 @@ const PlansPage = () => {
             </div>
             <button
               onClick={() => handleSelectPlan(plan)}
-              className={`mt-4 font-bold py-2 px-4 rounded ${
-                selectedPlanId === plan.id
+              className={`mt-4 font-bold py-2 px-4 rounded ${selectedPlanId === plan.id
                   ? "bg-green-600 hover:bg-green-700"
                   : "bg-blue-600 hover:bg-blue-700"
-              } text-white`}
+                } text-white`}
             >
               {selectedPlanId === plan.id ? "Seleccionado" : "Seleccionar Plan"}
             </button>
@@ -203,6 +204,7 @@ const PlansPage = () => {
           Cancelar
         </button>
       </div>
+      <Footer/>
     </div>
   );
 };

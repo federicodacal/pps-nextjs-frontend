@@ -103,7 +103,6 @@ const UserDetail: React.FC<UserProps> = ({ userForm }) => {
 
         console.log(response)
         // Solo se ejecuta una vez al montar el componente
-
     }
 
 
@@ -208,18 +207,6 @@ const UserDetail: React.FC<UserProps> = ({ userForm }) => {
                             Modificar
                         </button>
                     )}
-
-                    <div>
-                        <select
-                            value={user.type}
-                            disabled={!isEditing}
-                            className={`mt-1 px-4 py-2 rounded-lg bg-gray-700 text-gray-100 ${isEditing ? "border border-purple-500" : "border-none"}`}
-                            onChange={(e) => setUserData({ ...user, type: e.target.value })}
-                        >
-                            <option value="buyer">Comprador</option>
-                            <option value="creator">Creador</option>
-                        </select>
-                    </div>
 
                     <button
                         onClick={() => setIsModalOpen(true)}

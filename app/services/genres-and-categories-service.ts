@@ -1,11 +1,18 @@
 import axios from 'axios';
-
-const BASE_URL = 'http://localhost:5000'
+import { DATA_BASE_URL, NEXT_PUBLIC_DATA_PROXY } from './config';
 
 export const getGenres = async () => {
-    return axios.get<any[]>(`${BASE_URL}/api/generos`);
+    return axios.get<any[]>(`${NEXT_PUBLIC_DATA_PROXY}/generos`);
+};
+
+export const getGenresServer = async () => {
+    return axios.get<any[]>(`${DATA_BASE_URL}/generos`);
 };
 
 export const getCategories = async () => {
-    return axios.get<any[]>(`${BASE_URL}/api/categorias`);
+    return axios.get<any[]>(`${NEXT_PUBLIC_DATA_PROXY}/categorias`);
+};
+
+export const getCategoriesServer = async () => {
+    return axios.get<any[]>(`${DATA_BASE_URL}/categorias`);
 };
