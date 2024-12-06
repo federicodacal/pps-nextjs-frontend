@@ -18,7 +18,7 @@ const PurchaseResume: React.FC<AudioItemProps> = ({ items }) => {
     return (
         <div className="h-full text-violet-200 flex flex-col items-center w-full mt-10 ">
             {items.map((audio, index) => (
-                <div className="bg-purple-800">
+                <div key={index} className="bg-purple-800">
                     <div key={index} className=" p-4 mb-2 shadow-md w-full max-w-4xl flex rounded-md  flex gap-20">
                         <div className="w-full">
                             <p>Nombre: {audio.audio_name}</p>
