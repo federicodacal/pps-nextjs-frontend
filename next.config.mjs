@@ -1,7 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['localhost'], 
+    domains: ['localhost','admin-audiolibre-api.vercel.app'], 
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'admin-audiolibre-api.vercel.app',
+        port: '',
+        pathname: '/api/**',
+      },
+    ],
 },
     async headers() {
         return [
@@ -17,7 +25,7 @@ const nextConfig = {
           },
           {
             // matching all API routes
-            source: "/data/:path*",
+            source: "/api/data/:path*",
             headers: [
               { key: "Access-Control-Allow-Credentials", value: "true" },
               { key: "Access-Control-Allow-Origin", value: "*" },
@@ -35,7 +43,7 @@ const nextConfig = {
             },
             {
               source: '/data/:path*',
-              destination: 'https://admin-audiolibre-api.vercel.app/:path*',
+              destination: 'https://admin-audiolibre-api.vercel.app/api/:path*',
             },
           ]
         },

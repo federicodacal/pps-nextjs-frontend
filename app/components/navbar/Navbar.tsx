@@ -19,11 +19,11 @@ export const Navbar = () => {
   ];
   
   const privatePages = [
+    { path: "/pages/favorites", text: "Favoritos" },
+    { path: "/pages/cart", text: "Carrito" },
     ...(userType === "creator"
       ? [{ path: "/pages/upload-audio", text: "Carga nuevo audio" }]
       : []),
-    { path: "/pages/favorites", text: "Favoritos" },
-    { path: "/pages/cart", text: "Carrito" },
   ];
   
   const userMenus = token
