@@ -33,9 +33,8 @@ const UserDetail: React.FC<UserProps> = ({ userForm }) => {
 
     useEffect(() => {
         setUserData(userForm)
-
-    }, []);
-
+    }, [userForm]);
+    
     const handleEdit = () => {
         setIsEditing((prev) => !prev);
     };
@@ -115,6 +114,7 @@ const UserDetail: React.FC<UserProps> = ({ userForm }) => {
                         const isTextArea = key === "profile";
                         const isPassword = key === "pwd";
                         const isDropdown = key === "type";
+                        const isCreatorField = key === "account_type" || key === "points" || key === "subscription_ID"
 
                         return (
                             <div
@@ -161,7 +161,19 @@ const UserDetail: React.FC<UserProps> = ({ userForm }) => {
                                         <option value="Comprador">Comprador</option>
                                         <option value="Creador">Creador</option>
                                     </select>
+                                ) : isCreatorField && user.type == "creator" ? (
+                                    <input
+                                        type="text"
+                                        value={value || ""}
+                                        readOnly={!isEditing}
+                                        className={`mt-1 px-4 py-2 rounded-lg bg-gray-700 text-gray-100 ${isEditing ? "border border-purple-500" : "border-none"
+                                            }`}
+                                        onChange={(e) =>
+                                            setUserData({ ...user, [key]: e.target.value })
+                                        }
+                                    />
                                 ) : (
+                                   
                                     <input
                                         type="text"
                                         value={value || ""}

@@ -59,7 +59,7 @@ export default async function Checkout() {
   }
 
   return (
-    <div className="grid gap-8">
+    <div className="grid gap-8 m-auto">
       <div>
         <Header title="Resumen de compra" />
       </div>

@@ -1,5 +1,4 @@
 
-import { GetServerSideProps } from 'next';
 import React, { useEffect, useState } from 'react';
 import { getUserById, updateUser, deleteByID } from '@/app/services/users-service';
 import Header from '../../../components/header/Header';
