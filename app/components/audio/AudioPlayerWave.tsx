@@ -23,8 +23,8 @@ const AudioWavePlayer: React.FC<AudioWavePlayerProps> = ({ audioFile }) => {
 
   const { wavesurfer, isPlaying } = useWavesurfer({
     container: containerRef,
-    height: 100,
-    waveColor: "rgb(200, 0, 200)",
+    height: 80,
+    waveColor: "rgb(226, 201, 230)",
     progressColor: "rgb(100, 0, 100)",
     plugins: useMemo(() => [Timeline.create()], []),
   });
@@ -44,28 +44,20 @@ const AudioWavePlayer: React.FC<AudioWavePlayerProps> = ({ audioFile }) => {
     }
   }, [audioFile]);
 
-
-
   const onPlayPause = useCallback(() => {
     wavesurfer && wavesurfer.playPause();
   }, [wavesurfer]);
 
-
-
   return (
-    <div className="container">
-      <div className="sub-container">
+      <div className="sub-container-sm">
         <div ref={containerRef} />
         <div className="wavesurfer-container" />
         <div className="wavesurfer-controls">
-    
-  
           <button onClick={onPlayPause} >
             {isPlaying ? <BsFillStopFill /> : <BsFillPlayFill />}
           </button>
         </div>
       </div>
-    </div>
   );
 };
 

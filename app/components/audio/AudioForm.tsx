@@ -8,6 +8,23 @@ import { Audio } from "../../types/audio"
 import { getCategories, getGenres } from "@/app/services/genres-and-categories-service";
 import { useAuth } from '@/app/contexts/AuthContext';
 
+interface FormValues {
+  ID: string,
+  creator_ID: string,
+  audio_name: string,
+  state: string,
+  category: string,
+  genre: string,
+  BPM: number,
+  tone: string,
+  length: string,
+  file_url: string,
+  size: number,
+  description: string,
+  state_item: string,
+  price: string,
+}
+
 const newAudio = {
   ID: "",
   creator_ID: "",
@@ -26,13 +43,16 @@ const newAudio = {
 }
 
 const getTones = () => {
-  return ["C","C#","D","D#","E","F","G","G#","F","F#","G","G#","A","A#","B","Bb","Ab","Gb","Eb","Db"]
+  return ["C", "C#", "D", "D#", "E", "F", "G", "G#", "F", "F#", "G", "G#", "A", "A#", "B", "Bb", "Ab", "Gb", "Eb", "Db"]
 }
 
 const AudioForm = () => {
   const router = useRouter();
   const [audioFile, setAudioFile] = useState<File | null>(null);
   const [audioData, setAudioData] = useState<Audio>(newAudio);
+  const [errors, setErrors] = useState<Partial<FormValues>>({});
+  const [formValues, setFormValues] = useState<FormValues>(newAudio);
+
   const [genres, setGenres] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [tones, setTones] = useState<string[]>(getTones());
@@ -48,7 +68,12 @@ const AudioForm = () => {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setAudioData((prev) => ({ ...prev, [name]: value }));
+
+    //setAudioData({ ...formValues, [name]: value });
+    setErrors({ ...errors, [name]: '' });
+
+    // Eliminar esto
+     setAudioData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -106,7 +131,7 @@ const AudioForm = () => {
         setCategories(categoriesResponse.data);
         setTones(getTones())
       }
-      catch(err) {
+      catch (err) {
         console.error("Error al traer genres or categories:", err);
       }
     }
@@ -116,39 +141,39 @@ const AudioForm = () => {
 
   return (
     <form
-    onSubmit={handleSubmit}
-    className="bg-gray-800 p-5 rounded-lg w-full max-w-4xl mx-auto text-white grid grid-cols-2 gap-4"
-  >
-    {/* Nombre del Audio */}
-    <div>
-      <label htmlFor="audio_name" className="block mb-2 text-sm font-medium">
-        Nombre del Audio
-      </label>
-      <input
-        type="text"
-        name="audio_name"
-        onChange={handleInputChange}
-        placeholder="Nombre del audio"
-        className="w-full p-3 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-    </div>
+      onSubmit={handleSubmit}
+      className="bg-gray-800 p-5 rounded-lg w-full max-w-4xl mx-auto text-white grid grid-cols-2 gap-4"
+    >
+      {/* Nombre del Audio */}
+      <div>
+        <label htmlFor="audio_name" className="block mb-2 text-sm font-medium">
+          Nombre del Audio
+        </label>
+        <input
+          type="text"
+          name="audio_name"
+          onChange={handleInputChange}
+          placeholder="Nombre del audio"
+          className="w-full p-3 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
 
-    {/* Precio */}
-    <div>
-      <label htmlFor="price" className="block mb-2 text-sm font-medium">
-        Precio
-      </label>
-      <input
-        type="number"
-        name="price"
-        onChange={handleInputChange}
-        placeholder="$ Precio del audio"
-        className="w-full p-3 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-    </div>
+      {/* Precio */}
+      <div>
+        <label htmlFor="price" className="block mb-2 text-sm font-medium">
+          Precio
+        </label>
+        <input
+          type="number"
+          name="price"
+          onChange={handleInputChange}
+          placeholder="$ Precio del audio"
+          className="w-full p-3 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
 
-    {/* Categoría */}
-    <div>
+      {/* Categoría */}
+      <div>
         <label htmlFor="category" className="block mb-2 text-sm font-medium">
           Categoría
         </label>
@@ -166,8 +191,8 @@ const AudioForm = () => {
         </select>
       </div>
 
-    {/* Género */}
-    <div>
+      {/* Género */}
+      <div>
         <label htmlFor="genre" className="block mb-2 text-sm font-medium">
           Género
         </label>
@@ -185,40 +210,40 @@ const AudioForm = () => {
         </select>
       </div>
 
-    {/* Tamaño */}
-    <div>
-      <label htmlFor="size" className="block mb-2 text-sm font-medium">
-        Tamaño
-      </label>
-      <input
-        type="number"
-        name="size"
-        onChange={handleInputChange}
-        placeholder="Tamaño del archivo"
-        className="w-full p-3 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-    </div>
+      {/* Tamaño */}
+      <div>
+        <label htmlFor="size" className="block mb-2 text-sm font-medium">
+          Tamaño
+        </label>
+        <input
+          type="number"
+          name="size"
+          onChange={handleInputChange}
+          placeholder="Tamaño del archivo"
+          className="w-full p-3 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
 
-    {/* BPM */}
-    <div>
-      <label htmlFor="BPM" className="block mb-2 text-sm font-medium">
-        BPM
-      </label>
-      <input
-        type="number"
-        name="BPM"
-        onChange={handleInputChange}
-        placeholder="BPM del audio"
-        className="w-full p-3 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-    </div>
+      {/* BPM */}
+      <div>
+        <label htmlFor="BPM" className="block mb-2 text-sm font-medium">
+          BPM
+        </label>
+        <input
+          type="number"
+          name="BPM"
+          onChange={handleInputChange}
+          placeholder="BPM del audio"
+          className="w-full p-3 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
 
-    {/* Tono */}
-    <div>
-      <label htmlFor="tone" className="block mb-2 text-sm font-medium">
-        Tono
-      </label>
-      <select
+      {/* Tono */}
+      <div>
+        <label htmlFor="tone" className="block mb-2 text-sm font-medium">
+          Tono
+        </label>
+        <select
           name="tone"
           onChange={handleInputChange}
           className="w-full p-3 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -230,57 +255,61 @@ const AudioForm = () => {
             </option>
           ))}
         </select>
-    </div>
+      </div>
 
-    {/* Duración */}
-    <div>
-      <label htmlFor="length" className="block mb-2 text-sm font-medium">
-        Duración
-      </label>
-      <input
-        type="number"
-        name="length"
-        onChange={handleInputChange}
-        placeholder="Duración del audio"
-        className="w-full p-3 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-    </div>
+      {/* Duración */}
+      <div>
+        <label htmlFor="length" className="block mb-2 text-sm font-medium">
+          Duración
+        </label>
+        <input
+          type="number"
+          name="length"
+          onChange={handleInputChange}
+          placeholder="Duración del audio"
+          className="w-full p-3 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
 
-    {/* Descripción */}
-    <div className="col-span-2">
-      <label htmlFor="description" className="block mb-2 text-sm font-medium">
-        Descripción
-      </label>
-      <textarea
-        name="description"
-        onChange={handleInputChange}
-        placeholder="Descripción del audio"
-        className="w-full p-3 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-    </div>
+      {/* Descripción */}
+      <div className="col-span-2">
+        <label htmlFor="description" className="block mb-2 text-sm font-medium">
+          Descripción
+        </label>
+        <textarea
+          name="description"
+          onChange={handleInputChange}
+          placeholder="Descripción del audio"
+          className="w-full p-3 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
 
-    {/* Archivo */}
-    <div className="col-span-2">
-      <label htmlFor="file" className="block mb-2 text-sm font-medium">
-        Archivo de Audio
-      </label>
-      <input
-        type="file"
-        onChange={handleFileChange}
-        className="w-full p-3 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-    </div>
+      {/* Archivo */}
+      <div className="col-span-2">
+        <label htmlFor="file" className="block mb-2 text-sm font-medium">
+          Archivo de Audio
+        </label>
+        <div className="flex flex-auto gap-28">
+          <input
+            type="file"
+            onChange={handleFileChange}
+            className="w-fit h-12 p-3 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <AudioWavePlayer audioFile={audioFile} />
+        </div>
 
-    {/* Botón de envío */}
-    <div className="col-span-2 flex justify-center">
-      <button
-        type="submit"
-        className="px-5 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-white font-medium"
-      >
-        Cargar Audio
-      </button>
-    </div>
-  </form>
+      </div>
+
+      {/* Botón de envío */}
+      <div className="col-span-2 flex justify-center mt-5">
+        <button
+          type="submit"
+          className="px-5 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-white font-medium"
+        >
+          Cargar Audio
+        </button>
+      </div>
+    </form>
   );
 };
 

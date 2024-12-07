@@ -52,3 +52,19 @@ export interface UserDetail {
     phone_number: string
     username: string
 }
+
+export interface UserForm {
+    ID: string,
+    full_name: string,
+    personal_ID: number,
+    username: string,
+    email: string,
+    phone_number: string,
+    pwd: string,
+    credits: number,
+    type: string,
+    subscription_ID: number,
+    profile: string,
+    state: string,
+    account_type: string,
+  }

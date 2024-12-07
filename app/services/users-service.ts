@@ -64,3 +64,9 @@ export const activeCreatorByID = async (userId: string) => {
 
     return response
 };
+
+export const validateMailByID = async (userId: string | string[]) => {
+    const response = axios.post(`${NEXT_PUBLIC_PROXY}/users/confirm-email/${userId}`);
+
+    return response
+};

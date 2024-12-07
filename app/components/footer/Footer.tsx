@@ -7,8 +7,8 @@ import {
 export default function Footer() {
   return (
 
-    <div className="w-full mt-10 text-center bg-purple-950 text-white" >
-      <div className="flex flex-auto  flex-col w-[1000px] p-8 m-5">
+    <div className="w-full mt-5 text-center bg-purple-950 text-white flex items-end" >
+      <div className="flex flex-auto  flex-col w-[1000px] p-7 m-5">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 w-full">
 
           <div>

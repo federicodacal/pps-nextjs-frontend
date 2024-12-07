@@ -2,22 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { getUserById, updateUser, deleteByID } from '@/app/services/users-service';
-import { UserPayload } from '../../types/users';
-
-interface UserForm {
-    ID: string,
-    full_name: string,
-    personal_ID: number,
-    username: string,
-    email: string,
-    phone_number: string,
-    pwd: string,
-    credits: number,
-    type: string,
-    subscription_ID: number,
-    profile: string,
-    state: string,
-}
+import { UserPayload, UserForm } from '../../types/users';
 
 interface UserProps {
     userForm: UserForm
@@ -27,23 +12,29 @@ const initUser = () => {
     return {
         ID: "",
         full_name: "",
-        personal_ID: "",
+        personal_ID: 0,
         username: "",
         email: "",
         phone_number: "",
         pwd: "",
-        credits: "",
+        credits: 0,
         type: "",
-        subscription_ID: "1",
+        subscription_ID: 0,
         profile: "",
         state: "",
+        account_type: "",
     }
 }
 
 const UserDetail: React.FC<UserProps> = ({ userForm }) => {
-    const [user, setUserData] = useState(initUser);
+    const [user, setUserData] = useState(userForm);
     const [isEditing, setIsEditing] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
+
+    useEffect(() => {
+        setUserData(userForm)
+
+    }, []);
 
     const handleEdit = () => {
         setIsEditing((prev) => !prev);
@@ -59,28 +50,34 @@ const UserDetail: React.FC<UserProps> = ({ userForm }) => {
         setIsEditing(false);
     };
 
+    const buildRequest = () => {
+        return {
+            ID: user.ID,
+            pwd: user.pwd,
+            type: user.type,
+            state: user.state,
+            user_detail_ID: "N/A",
+            personal_ID: Number(user.personal_ID),
+            username: user.username,
+            full_name: user.full_name,
+            phone_number: user.phone_number,
+            creator_ID: "N/A",
+            profile: user.profile,
+            points: 0,
+            credits: Number(user.credits),
+            subscription_ID: Number(user.subscription_ID),
+            account_ID: "N/A",
+            personal_account_ID: "N/A",
+            account_type: user.account_type,
+        }
+    };
+
     const handleConfirm = async () => {
         try {
-            const response = await modifyUser({
-                ID: user.ID,
-                pwd: user.pwd,
-                type: user.type,
-                state: user.state,
-                user_detail_ID: "N/A",
-                personal_ID: Number(user.personal_ID),
-                username: user.username,
-                full_name: user.full_name,
-                phone_number: user.phone_number,
-                creator_ID: "N/A",
-                profile: user.profile,
-                points: 0,
-                credits: Number(user.credits),
-                subscription_ID: Number(user.subscription_ID),
-                account_ID: "N/A",
-                personal_account_ID: "N/A",
-                account_type: "cbu",
 
-            });
+            console.log(user)
+
+            const response = await modifyUser(buildRequest());
             console.log("Response:", response);
             setIsEditing(false);
         } catch (error) {
@@ -105,7 +102,6 @@ const UserDetail: React.FC<UserProps> = ({ userForm }) => {
         // Solo se ejecuta una vez al montar el componente
     }
 
-
     return (
         <div>
             <div className="bg-gray-800 rounded-lg p-6 shadow-md max-w-4xl mx-auto relative">
@@ -113,7 +109,7 @@ const UserDetail: React.FC<UserProps> = ({ userForm }) => {
 
                 <form className="grid grid-cols-2 gap-6">
                     {/* Form Fields */}
-                    {Object.entries(userForm).map(([key, value]) => {
+                    {Object.entries(user).map(([key, value]) => {
                         if (key === "personal_ID" || key === "state" || key === "user_detail" || key === "credits" || key === "ID") return null; // Hidden fields
 
                         const isTextArea = key === "profile";
@@ -131,7 +127,7 @@ const UserDetail: React.FC<UserProps> = ({ userForm }) => {
                                 </label>
                                 {isTextArea ? (
                                     <textarea
-                                        value={value}
+                                        value={value || ""}
                                         maxLength={100}
                                         readOnly={!isEditing}
                                         className={`mt-1 px-4 py-2 rounded-lg bg-gray-700 text-gray-100 ${isEditing ? "border border-purple-500" : "border-none"
@@ -168,7 +164,7 @@ const UserDetail: React.FC<UserProps> = ({ userForm }) => {
                                 ) : (
                                     <input
                                         type="text"
-                                        value={value}
+                                        value={value || ""}
                                         readOnly={!isEditing}
                                         className={`mt-1 px-4 py-2 rounded-lg bg-gray-700 text-gray-100 ${isEditing ? "border border-purple-500" : "border-none"
                                             }`}
