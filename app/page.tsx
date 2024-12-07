@@ -70,14 +70,13 @@ const Home = () => {
       <Header title="AudioLibre" />
       <Carousel data={carouselImages} />
 
-      <div className=" text-lightText">
-
+      <div className='max-w-4xl m-auto p-5'>
         <input
           type="text"
           placeholder="Buscar por nombre, categoría o BPM..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="min-w-4xl h-16 bg-dim text-lightText placeholder-gray-400 focus:outline-none mb-6 mt-2"
+          className="w-full p-3 rounded-md bg-dim text-lightText placeholder-gray-200 focus:outline-none mb-6  border-2"
         />
       </div>
 

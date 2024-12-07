@@ -12,23 +12,9 @@ import { Purchase, PurchaseDetail } from '@/app/types/purchase';
 import UserDetail from '@/app/components/user-form/UserDetail';
 import { profile } from 'console';
 import DownloadList from '@/app/components/audio/DownloableAudio';
+import { UserForm } from '@/app/types/users'
 
 //const hardcodedUser = 'caa20840-36bd-4e7e-8599-f32ed1c2d646'
-
-interface UserForm {
-  ID: string,
-  full_name: string,
-  personal_ID: number,
-  username: string,
-  email: string,
-  phone_number: string,
-  pwd: string,
-  credits: number,
-  type: string,
-  subscription_ID: number,
-  profile: string,
-  state: string,
-}
 
 interface DownloableAudio {
   ID: string;
@@ -54,6 +40,7 @@ const initUser = () => {
     subscription_ID: 0,
     profile: "",
     state: "",
+    account_type: "",
   }
 }
 
@@ -70,7 +57,7 @@ const initAudio = () => {
 }
 
 const buildUser = (response: any) => {
-  return {
+  let user = {
     ID: response.data.ID,
     full_name: response.data.user_detail.full_name,
     personal_ID: response.data.user_detail.personal_ID,
@@ -78,12 +65,17 @@ const buildUser = (response: any) => {
     email: response.data.email,
     phone_number: response.data.user_detail.phone_number,
     pwd: response.data.pwd,
-    credits: response.data.creator.credits,
+    credits: response.data.creator?.credits,
     type: response.data.type,
-    subscription_ID: response.data.creator.subscription_ID,
-    profile: "Enthusiastic developer and designer.",
+    subscription_ID: response.data.creator?.subscription_ID,
+    profile: response.data.creator?.profile,
     state: response.data.state,
+    account_type: response.data.creator?.account_type
   }
+
+  console.log("Datos del usuario:", user);
+
+  return user
 }
 
 const buildPurchases = (response: any) => {
@@ -129,8 +121,6 @@ const getAudios = (purchases: Purchase[]) => {
 const MyProfile = () => {
   const [user, setUserData] = useState<UserForm>(initUser());
   const [audios, setAudioData] = useState<DownloableAudio[]>(initAudio());
-  const [isEditing, setIsEditing] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const { userId } = useAuth();
 
   useEffect(() => {
@@ -140,89 +130,37 @@ const MyProfile = () => {
 
         if (userId) {
           const response = await getUserByIdServer(userId);
+
+          setUserData(buildUser(response));
+        }
+      } catch (error) {
+        console.error("Error al obtener datos del usuario:", error);
+      }
+
+      try {
+        if (userId) {
           const responsePurchases = await getPurchasesAudioByBuyer(userId)
 
-          console.log("Datos del usuario:", response.data);
-          setUserData(buildUser(response));
+          console.log("Datos de compras:", responsePurchases.data);
           setAudioData(getAudios(buildPurchases(responsePurchases)));
         }
         setUserData(user);
 
       } catch (error) {
-        console.error("Error al obtener datos del usuario:", error);
+        console.error("Error al obtener datos del compras:", error);
       }
     };
 
     fetchUserData();
+
   }, [userId]);
-
-  const handleEdit = () => {
-    setIsEditing((prev) => !prev);
-  };
-
-  const handleDelete = async () => {
-    deleteUser(user.ID)
-
-    setIsModalOpen(false);
-  };
-
-  const handleCancel = () => {
-    setIsEditing(false);
-  };
-
-  const handleConfirm = async () => {
-    try {
-      const response = await modifyUser({
-        ID: user.ID,
-        pwd: user.pwd,
-        type: user.type,
-        state: user.state,
-        user_detail_ID: "N/A",
-        personal_ID: Number(user.personal_ID),
-        username: user.username,
-        full_name: user.full_name,
-        phone_number: user.phone_number,
-        creator_ID: "N/A",
-        profile: user.profile,
-        points: 0,
-        credits: 0,
-        subscription_ID: 0,
-        account_ID: "N/A",
-        personal_account_ID: "N/A",
-        account_type: "cbu",
-
-      });
-      console.log("Response:", response);
-      setIsEditing(false);
-    } catch (error) {
-      console.error("Error updating user:", error);
-    }
-  };
-
-  const modifyUser = async (user: UserPayload | undefined) => {
-    if (user != undefined) {
-      const userPayload = user
-
-      const response = await updateUser(userPayload)
-
-      console.log(response)
-    }
-  }
-
-  const deleteUser = async (userID: string) => {
-    const response = await deleteByID(userID)
-
-    console.log(response)
-    // Solo se ejecuta una vez al montar el componente
-
-  }
 
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100 flex flex-col">
       {/* Title */}
       <Header title="Mi perfil" />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 m-auto p-5">
+      <div className="flex flex-auto gap-8 m-auto p-5">
         {/* Credits */}
         {user?.credits !== undefined && user?.type == 'creator' ? (
 
@@ -233,7 +171,13 @@ const MyProfile = () => {
           <></>
         )}
         <UserDetail userForm={user} />
-        <DownloadList audios={audios} />
+        {audios.length > 0 && audios[0].ID != "" ? (
+             <DownloadList audios={audios} />
+        ) : (
+          <></>
+        )}
+      
+      
       </div>
       <Footer />
     </div>

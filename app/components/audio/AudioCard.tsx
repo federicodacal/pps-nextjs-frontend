@@ -48,7 +48,7 @@ const AudioCard: React.FC<AudioProps> = ({
   const [urlIndex, setUrlIndex] = useState(0);
   const { wavesurfer, isPlaying, currentTime } = useWavesurfer({
     container: containerRef,
-    height: 100,
+    height: 80,
     waveColor: "rgb(255, 200, 255)",
     progressColor: "rgb(100, 0, 100)",
     url: audioUrl,
@@ -99,13 +99,13 @@ const AudioCard: React.FC<AudioProps> = ({
           <div ref={containerRef} />
           <div className="wavesurfer-container" />
           <div>
-            <div className="flex p-2 m-2 font-medium">
+            <div className="flex p-2 m-2 font-medium gap-5">
               <p>BPM: {bpm}</p>
               <p>Duración : {duration}</p>
               <p>Tonalidad: {tone}</p>
               <p>Género: {genre}</p>
             </div>
-            <div className="flex p-2 m-2 font-medium ">
+            <div className="flex p-2 m-2 font-medium gap-5">
               <p>Creador : {creator}</p>
               <p>Categoría : {category}</p>
             </div>

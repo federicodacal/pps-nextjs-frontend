@@ -29,7 +29,7 @@ const SamplesPage = () => {
     fetchAudios();
   }, []);
 
-  const filterSamples = (audio:Audio) => {
+  const filterSamples = (audio: Audio) => {
     return audio.category == "sample"
   }
 
@@ -42,32 +42,33 @@ const SamplesPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-900 text-lightText ">
-      <Header title="Listado de samples"/>
-
-      <input
-        type="text"
-        placeholder="Buscar por nombre, categoría o BPM..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="w-full p-3 rounded-md bg-dim text-lightText placeholder-gray-400 focus:outline-none mb-6"
-      />
+      <Header title="Listado de samples" />
+      <div className='max-w-4xl m-auto p-5'>
+        <input
+          type="text"
+          placeholder="Buscar por nombre, categoría o BPM..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full p-3 rounded-md bg-dim text-lightText placeholder-gray-200 focus:outline-none mb-6  border-2"
+        />
+      </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filteredAudios.map((audio,index) => (
+        {filteredAudios.map((audio, index) => (
           <AudioCard
-          key={index}
-          id={audio.ID}
-          name={audio.audio_name}
-          creator={audio.creator_ID}
-          bpm={audio.BPM}
-          tone={audio.tone.toString()}
-          genre={audio.genre}
-          category={audio.category}
-          duration={audio.length}
-          audioUrl={audio.file_url}
-          onAddToFavorites={(id: string) => console.log(`${id} added to favorites`)}
-          onAddToCart={(id: string) => console.log(`${id} added to cart`)}
-        />
+            key={index}
+            id={audio.ID}
+            name={audio.audio_name}
+            creator={audio.creator_ID}
+            bpm={audio.BPM}
+            tone={audio.tone.toString()}
+            genre={audio.genre}
+            category={audio.category}
+            duration={audio.length}
+            audioUrl={audio.file_url}
+            onAddToFavorites={(id: string) => console.log(`${id} added to favorites`)}
+            onAddToCart={(id: string) => console.log(`${id} added to cart`)}
+          />
         ))}
       </div>
 
@@ -76,7 +77,7 @@ const SamplesPage = () => {
           No se encontraron resultados.
         </p>
       )}
-     <Footer/>
+      <Footer />
     </div>
   );
 };

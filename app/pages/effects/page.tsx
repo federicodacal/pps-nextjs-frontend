@@ -41,16 +41,18 @@ const EffectsPage = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-900 text-lightText ">
+    <div className="min-h-screen bg-gray-900 text-lightText  ">
       <Header title="Listado de efectos"/>
 
-      <input
-        type="text"
-        placeholder="Buscar por nombre, categoría o BPM..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="w-full p-3 rounded-md bg-dim text-lightText placeholder-gray-400 focus:outline-none mb-6"
-      />
+      <div className='max-w-4xl m-auto p-5'>
+        <input
+          type="text"
+          placeholder="Buscar por nombre, categoría o BPM..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full p-3 rounded-md bg-dim text-lightText placeholder-gray-200 focus:outline-none mb-6  border-2"
+        />
+      </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {filteredAudios.map((audio, index) => (
@@ -76,7 +78,10 @@ const EffectsPage = () => {
           No se encontraron resultados.
         </p>
       )}
-       <Footer/>
+      <div className='flex items-end py-10'>
+      <Footer/>
+      </div>
+       
     </div>
   );
 };

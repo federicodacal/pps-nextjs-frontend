@@ -21,7 +21,7 @@ const DownloadList: React.FC<DownloadListProps> = ({ audios }) => {
       return;
     }*/
     const link = document.createElement("a");
-    const testLink = "https://pps-flask-api.vercel.app/audios/file/67456be6bdcaefd1c6dae91b"
+    const testLink = "https://pps-flask-api.vercel.app/audios/file/6753778781ef710718720e59"
 
     window.open(testLink, "_blank");
     /*link.href = "fileUrl";

@@ -69,7 +69,7 @@ body {
   justify-content: center;
   align-items: center;
   padding: 1rem;
-  margin: 1rem;
+  margin: 0.5rem;
   
 }
 .sub-container {
@@ -82,6 +82,17 @@ body {
   background: linear-gradient(to bottom, #CC00CC, #4C0099);
   box-shadow: inset 11px 11px 22px #0a0b10, inset -11px -11px 22px #282b40;
 }
+.sub-container-sm {
+  height: 12rem;
+  width: 15vw;
+  padding: 1.0rem;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 0.2rem;
+  background: linear-gradient(to bottom, #CC00CC, #4C0099);
+  box-shadow: inset 5px 5px 8px #0a0b10, inset -11px -11px 22px #282b40;
+}
+
 .audio-image {
   height: 10rem;
   width: 18vw;
@@ -95,7 +106,7 @@ body {
   font-size: 0.8rem;
 }
 .wavesurfer-container {
-  margin: 1rem 0;
+  margin: 0.5rem 0;
   
 }
 .wavesurfer-controls {
