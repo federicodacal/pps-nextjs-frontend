@@ -2,10 +2,11 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { createUser } from "@/app/services/users-service";
+import { createUser, getUserByEmail, getUserByUsername } from "@/app/services/users-service";
 import { User, UserDetail, UserPayload } from '../../types/users';
 import storage from "local-storage-fallback";
 import Notification from "@/app/components/notification/Notification";
+import axios from "axios";
 
 const initUser = () => {
   return {
@@ -69,7 +70,7 @@ export default function UserForm() {
     setFormData({ ...userData, type });
   };
 
-  const validate = () => {
+  const validate = async () => {
     const newErrors: Record<string, string> = {};
 
     if (!userData.email) newErrors.email = "El correo es obligatorio.";
@@ -102,6 +103,35 @@ export default function UserForm() {
     if (userData.termsAccepted !== "true")
       newErrors.termsAccepted = "Debe aceptar los términos y condiciones.";
 
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return false;
+    }
+
+    try {
+      if (!newErrors.email && userData.email) {
+        await getUserByEmail(userData.email);
+        setNotification({ message: 'El correo electrónico ya está registrado.', type: 'error' });
+        newErrors.email = "El correo electrónico ya está registrado.";
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status !== 404) {
+        newErrors.email = "Error al validar el correo electrónico.";
+      }
+    }
+
+    try {
+      if (!newErrors.username && userData.username) {
+        await getUserByUsername(userData.username);
+        setNotification({ message: 'El nombre de usuario ya está registrado.', type: 'error' });
+        newErrors.username = "El nombre de usuario ya está registrado.";
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status !== 404) {
+        newErrors.username = "Error al validar el nombre de usuario.";
+      }
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -109,7 +139,9 @@ export default function UserForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if(!validate()) return;
+    const isValid = await validate();
+    
+    if(!isValid) return;
 
     if (userData.type === "creator") {
       startTransition(() => {

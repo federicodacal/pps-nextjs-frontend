@@ -20,7 +20,7 @@ const Notification: React.FC<NotificationProps> = ({ message, type }) => {
   };
 
   return (
-    <div className={`p-4 mb-4 mt-2 rounded-md ${getTypeStyles(type)} shadow-md`}>
+    <div className={`p-4 mb-4 mt-1 rounded-md ${getTypeStyles(type)} shadow-md`}>
       <b>{message}</b>
     </div>
   );

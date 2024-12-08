@@ -17,6 +17,14 @@ export const getUserById = async (id: string) => {
     return axios.get<User>(`${NEXT_PUBLIC_PROXY}/users/${id}`);
 };
 
+export const getUserByEmail = async (email: string) => {
+    return axios.get<User>(`${NEXT_PUBLIC_PROXY}/users/email/${email}`);
+};
+
+export const getUserByUsername = async (username: string) => {
+    return axios.get<User>(`${NEXT_PUBLIC_PROXY}/users/username/${username}`);
+};
+
 export const getUserByIdServer = async (id: string) => {
     return axios.get<User>(`${API_BASE_URL}/users/${id}`);
 };
