@@ -31,6 +31,7 @@ const FavoritesContext = createContext<FavoritesContextType | undefined>(undefin
 export const FavoritesProvider = ({ children }: { children: ReactNode }) => {
     const [favorites, setFavorites] = useState<Favorite[]>([]);
     const [loading, setLoading] = useState(true);
+    const [alertMessage, setAlertMessage] = useState<string | null>(null);
     const { userId } = useAuth();
 
     const fetchFavorites = async () => {
@@ -79,6 +80,13 @@ export const FavoritesProvider = ({ children }: { children: ReactNode }) => {
             setLoading(false);
         }
     }, [userId]);
+
+    const handleClick = (message: string) => {
+      setAlertMessage(message);
+      setTimeout(() => {
+        setAlertMessage(null);
+      }, 1000);
+    };
   
     const toggleFavorite = async (audio_ID: string) => {
       const isFav = favorites.some((fav) => fav.audio.ID === audio_ID);
@@ -97,7 +105,7 @@ export const FavoritesProvider = ({ children }: { children: ReactNode }) => {
         }
         else {
             console.log('No hay userId: FavoriteContext');
-            alert('Es necesario estar logeado');
+            handleClick('Es necesario estar logeado');
         }  
       } catch (error) {
         console.error('Error al actualizar favoritos:', error);
@@ -120,3 +128,7 @@ export const useFavorites = () => {
     }
     return context;
 };
+
+function setAlertMessage(message: string) {
+  throw new Error("Function not implemented.");
+}

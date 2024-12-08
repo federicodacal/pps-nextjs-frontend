@@ -17,6 +17,7 @@ import {
   BsFillHeartFill,
 } from "react-icons/bs";
 import { useFavorites } from "@/app/contexts/FavoritesContext";
+import { useAuth } from "@/app/contexts/AuthContext";
 
 type AudioProps = {
   id: string,
@@ -56,6 +57,7 @@ const AudioCard: React.FC<AudioProps> = ({
   });
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
   const { isFavorite, toggleFavorite } = useFavorites();
+  const { userId } = useAuth();
   let textoAlerta = ""
 
   const handleClick = (message: string) => {
@@ -84,14 +86,20 @@ const AudioCard: React.FC<AudioProps> = ({
   };
 
   const addToFavorites = (audioId: string) => {
-    const isFav = isFavorite(audioId);
-    toggleFavorite(audioId);
-    if (isFav) {
-      handleClick("Se ha quitado de favoritos");
-    } else {
-      handleClick("Se ha agregado a favoritos");
+
+    if(userId) {
+        const isFav = isFavorite(audioId);
+        toggleFavorite(audioId);
+        if (isFav) {
+          handleClick("Se ha quitado de favoritos");
+        } else {
+          handleClick("Se ha agregado a favoritos");
+        }
+      }
+      else {
+        handleClick("Es necesario iniciar sesión");
+      }
     }
-  };
 
   return (
     <>
