@@ -7,6 +7,7 @@ import AudioWavePlayer from "../../components/audio/AudioPlayerWave";
 import { Audio } from "../../types/audio"
 import { getCategories, getGenres } from "@/app/services/genres-and-categories-service";
 import { useAuth } from '@/app/contexts/AuthContext';
+import Notification from "@/app/components/notification/Notification";
 
 interface FormValues {
   ID: string,
@@ -50,17 +51,44 @@ const AudioForm = () => {
   const router = useRouter();
   const [audioFile, setAudioFile] = useState<File | null>(null);
   const [audioData, setAudioData] = useState<Audio>(newAudio);
-  const [errors, setErrors] = useState<Partial<FormValues>>({});
+  const [isPending, setIsPending] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [formValues, setFormValues] = useState<FormValues>(newAudio);
-
+  const [notification, setNotification] = useState<{ message: string; type: 'error' | 'success' | 'info' } | null>(null);
   const [genres, setGenres] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [tones, setTones] = useState<string[]>(getTones());
   const { creatorId } = useAuth();
+  
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setAudioFile(e.target.files[0]); // Actualiza el estado con el archivo seleccionado
+    const fileInput = e.target; 
+    const file = fileInput.files ? fileInput.files[0] : null;
+
+    if (file) {
+      const validTypes = ["audio/wav"];
+      if (!validTypes.includes(file.type)) {
+        setNotification({ message: "Por favor, cargue un archivo de audio en formato WAV.", type: 'error' });
+        setAudioFile(null); 
+        return; 
+      }
+
+      const maxSize = 2 * 1024 * 1024; // 2MB
+      if (file.size > maxSize) {
+        setNotification({ message: "El tamaño máximo permitido es 2MB.", type: 'error' });
+        setAudioFile(null); 
+        return; 
+      }
+
+      setNotification(null);
+      setAudioFile(file);
+      setErrors((prevErrors) => {
+        const { audioFile, ...rest } = prevErrors; // Elimina el error de 'audioFile'
+        return rest;
+      });
+    } else {
+      setNotification(null);
+      setAudioFile(null); 
     }
   };
 
@@ -70,15 +98,61 @@ const AudioForm = () => {
     const { name, value } = e.target;
 
     //setAudioData({ ...formValues, [name]: value });
-    setErrors({ ...errors, [name]: '' });
+    //setErrors({ ...errors, [name]: '' });
 
     // Eliminar esto
      setAudioData((prev) => ({ ...prev, [name]: value }));
+
+    setErrors((prevErrors) => {
+      const updatedErrors = { ...prevErrors };
+      delete updatedErrors[name]; 
+      return updatedErrors;
+    });
   };
+
+  const validate = () => {
+    const newErrors: Record<string, string> = {};
+
+    if (!audioFile) newErrors.audioFile = "Seleccione un archivo de audio";
+
+    if (!audioData.audio_name) newErrors.audio_name = "El nombre del archivo es obligatorio";
+    else if (audioData.audio_name.length > 49) newErrors.audio_name = "El nombre del archivo debe tener como máximo 49 caracteres"
+
+    if (!audioData.price) newErrors.price = "El precio es obligatorio";
+    else if (!/^\d+$/.test(audioData.price) || Number(audioData.price) < 0 || Number(audioData.price) > 100000) {
+      newErrors.price = "El precio debe ser un número entre 0 y 100000";
+    }
+
+    if (!audioData.category) newErrors.category = "La categoria es obligatoria";
+
+    if (!audioData.genre) newErrors.genre = "El género es obligatorio";
+
+    if (!audioData.size) newErrors.size = "El tamaño es obligatorio";
+    else if (audioData.size < 1 || audioData.size > 2000) newErrors.size = "El tamaño debe estar entre 1 y 2000";
+
+    if (!audioData.BPM) newErrors.BPM = "El BPM es obligatorio";
+    else if (!/^\d+$/.test(audioData.BPM.toLocaleString()) || audioData.BPM < 1 || audioData.BPM > 300) {
+      newErrors.BPM = "El BPM debe ser un número entre 1 y 300";
+    }
+    
+    if (!audioData.tone) newErrors.tone = "El tono es obligatorio";
+
+    if (!audioData.length) newErrors.length = "La duración es obligatoria";
+    else if (Number(audioData.length) < 1 || Number(audioData.length) > 120) newErrors.length = "La duración debe estar entre 1 y 120 segundos";
+
+    if (!audioData.description) newErrors.description = "La descripción es obligatoria";
+    else if (audioData.description.length > 199) newErrors.description = "La descripción debe tener como máximo 199 caracteres";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!audioFile) return console.log("SELECCIONE AUDIO");
+
+    if (!validate()) return;
+
+    setIsPending(true);
 
     const formData = new FormData();
 
@@ -102,7 +176,11 @@ const AudioForm = () => {
       });
 
       // Agregar el archivo
-      formData.append("file", audioFile);
+      if (audioFile instanceof File) {
+        formData.append("file", audioFile);
+      } else {
+        throw new Error("El archivo de audio no es válido.");
+      }
 
       // Imprimir el FormData para depuración
       formData.forEach((value, key) => {
@@ -115,6 +193,9 @@ const AudioForm = () => {
       router.push("/");
     } catch (error: any) {
       console.error("Error al crear el audio:", error.message);
+      setNotification({ message: `Error al crear el audio: ${error.message}`, type: 'error' });
+    } finally {
+      setIsPending(false)
     }
   };
 
@@ -156,6 +237,7 @@ const AudioForm = () => {
           placeholder="Nombre del audio"
           className="w-full p-3 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
+        {errors.audio_name && <p className="text-red-500 font-bold">{errors.audio_name}</p>}
       </div>
 
       {/* Precio */}
@@ -170,6 +252,7 @@ const AudioForm = () => {
           placeholder="$ Precio del audio"
           className="w-full p-3 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
+        {errors.price && <p className="text-red-500 font-bold">{errors.price}</p>}
       </div>
 
       {/* Categoría */}
@@ -189,6 +272,7 @@ const AudioForm = () => {
             </option>
           ))}
         </select>
+        {errors.category && <p className="text-red-500 font-bold">{errors.category}</p>}
       </div>
 
       {/* Género */}
@@ -208,6 +292,7 @@ const AudioForm = () => {
             </option>
           ))}
         </select>
+        {errors.genre && <p className="text-red-500 font-bold">{errors.genre}</p>}
       </div>
 
       {/* Tamaño */}
@@ -222,6 +307,7 @@ const AudioForm = () => {
           placeholder="Tamaño del archivo"
           className="w-full p-3 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
+        {errors.size && <p className="text-red-500 font-bold">{errors.size}</p>}
       </div>
 
       {/* BPM */}
@@ -236,6 +322,7 @@ const AudioForm = () => {
           placeholder="BPM del audio"
           className="w-full p-3 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
+        {errors.BPM && <p className="text-red-500 font-bold">{errors.BPM}</p>}
       </div>
 
       {/* Tono */}
@@ -255,12 +342,13 @@ const AudioForm = () => {
             </option>
           ))}
         </select>
+        {errors.tone && <p className="text-red-500 font-bold">{errors.tone}</p>}
       </div>
 
       {/* Duración */}
       <div>
         <label htmlFor="length" className="block mb-2 text-sm font-medium">
-          Duración
+          Duración (en segundos)
         </label>
         <input
           type="number"
@@ -269,6 +357,7 @@ const AudioForm = () => {
           placeholder="Duración del audio"
           className="w-full p-3 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
+        {errors.length && <p className="text-red-500 font-bold">{errors.length}</p>}
       </div>
 
       {/* Descripción */}
@@ -282,6 +371,7 @@ const AudioForm = () => {
           placeholder="Descripción del audio"
           className="w-full p-3 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
+        {errors.description && <p className="text-red-500 font-bold">{errors.description}</p>}
       </div>
 
       {/* Archivo */}
@@ -289,28 +379,34 @@ const AudioForm = () => {
         <label htmlFor="file" className="block mb-2 text-sm font-medium">
           Archivo de Audio
         </label>
+          {errors.audioFile && <p className="text-red-500 font-bold">{errors.audioFile}</p>}   
         <div className="flex flex-auto gap-28">
           <input
             type="file"
+            accept="audio/wav"
             onChange={handleFileChange}
             className="w-fit h-12 p-3 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <AudioWavePlayer audioFile={audioFile} />
         </div>
-
       </div>
 
+      {notification && (
+          <Notification message={notification.message} type={notification.type} />
+        )}
       {/* Botón de envío */}
       <div className="col-span-2 flex justify-center mt-5">
-        <button
-          type="submit"
-          className="px-5 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-white font-medium"
+      <button
+        type="submit"
+        className={`w-full py-2 rounded-md transition-colors ${isPending ? "bg-gray-500" : "bg-green-500 hover:bg-green-600"}`}
+        disabled={isPending}
         >
-          Cargar Audio
+        {isPending ? "Procesando..." : "Cargar Audio"}
         </button>
       </div>
     </form>
   );
 };
+
 
 export default AudioForm;
