@@ -11,11 +11,28 @@ const Carousel = ({
   const carouselRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (carouselRef.current) {
-      const { width, height } = carouselRef.current.getBoundingClientRect();
-      setCarouselSize({ width, height });
+    const updateSize = () => {
+      if (carouselRef.current) {
+        const { width, height } = carouselRef.current.getBoundingClientRect();
+        setCarouselSize({ width, height });
+      }
+    };
+    updateSize(); 
+    window.addEventListener("resize", updateSize); 
+    return () => window.removeEventListener("resize", updateSize);
+  }, [currentImg]);
+
+  const handleNext = () => {
+    if (currentImg < data.length - 1) {
+      setCurrentImg((prev) => prev + 1);
     }
-  }, []);
+  };
+
+  const handlePrev = () => {
+    if (currentImg > 0) {
+      setCurrentImg((prev) => prev - 1);
+    }
+  };
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
@@ -24,9 +41,15 @@ const Carousel = ({
         <div
           ref={carouselRef}
           style={{
-            left: -currentImg * carouselSize.width,
+            transform:  `translateX(-${Math.min(
+              currentImg, 
+              data.length - 1
+            ) * carouselSize.width}px)`,
+            willChange: "transform",
+            boxSizing: "border-box",
+            zIndex: 1, 
           }}
-          className="absolute flex h-full w-full transition-all duration-300"
+          className="absolute flex h-full w-full transition-transform duration-500"
         >
           {data.map((item, i) => (
             <div key={i} className="relative h-full w-full shrink-0">
@@ -35,6 +58,18 @@ const Carousel = ({
                 alt={`carousel-image-${i}`}
                 fill
                 src={item.image}
+                sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
+                priority= {i === 0}
+                style={{ willChange: "transform",
+                  objectFit: "cover",
+                 }}
+                //onLoad={() => {
+                //  if (carouselRef.current) {
+                //    const { width, height } = carouselRef.current.getBoundingClientRect();
+                //    console.log(`Width and height:  ${width} ${height}`)
+                //    setCarouselSize({ width, height });
+                //  }
+                //}}
               />
             </div>
           ))}
@@ -51,7 +86,7 @@ const Carousel = ({
       <div className="mt-3 flex justify-center">
         <button
           disabled={currentImg === 0}
-          onClick={() => setCurrentImg((prev) => prev - 1)}
+          onClick={handlePrev}
           className={`border px-4 py-2 font-bold ${
             currentImg === 0 && "opacity-50"
           }`}
@@ -60,7 +95,7 @@ const Carousel = ({
         </button>
         <button
           disabled={currentImg === data.length - 1}
-          onClick={() => setCurrentImg((prev:any) => prev + 1)}
+          onClick={handleNext}
           className={`border px-4 py-2 font-bold ${
             currentImg === data.length - 1 && "opacity-50"
           }`}
