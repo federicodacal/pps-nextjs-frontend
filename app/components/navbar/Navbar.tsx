@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export const Navbar = () => {
-  const { token, logout, userType } = useAuth(); 
+  const { token, logout, userType, username } = useAuth(); 
   const router = useRouter(); 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -28,7 +28,7 @@ export const Navbar = () => {
   
   const userMenus = token
     ? [
-        { path: "/pages/my-profile", text: "Mi perfil" },
+        { path: "/pages/my-profile", text: username },
         { text: "Logout", onClick: () => logout() },
       ]
     : [

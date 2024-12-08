@@ -100,6 +100,8 @@ export default function UserForm() {
       newErrors.confirmPassword = "Las contraseñas no coinciden.";
 
     if (!userData.username) newErrors.username = "El nombre de usuario es obligatorio.";
+    else if(userData.username.length > 15) newErrors.username = "El nombre de usuario no puede superar los 15 caracteres"
+ 
     if (!userData.full_name) newErrors.full_name = "El nombre completo es obligatorio.";
     if (!userData.phone_number) {
       newErrors.phone_number = "El teléfono es obligatorio.";
