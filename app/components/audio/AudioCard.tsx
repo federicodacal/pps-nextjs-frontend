@@ -84,9 +84,13 @@ const AudioCard: React.FC<AudioProps> = ({
   };
 
   const addToFavorites = (audioId: string) => {
-    toggleFavorite(audioId)
-
-    handleClick("Se ha agregado a favoritos")
+    const isFav = isFavorite(audioId);
+    toggleFavorite(audioId);
+    if (isFav) {
+      handleClick("Se ha quitado de favoritos");
+    } else {
+      handleClick("Se ha agregado a favoritos");
+    }
   };
 
   return (
