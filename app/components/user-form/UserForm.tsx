@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { createUser } from "@/app/services/users-service";
 import { User, UserDetail, UserPayload } from '../../types/users';
 import storage from "local-storage-fallback";
+import Notification from "@/app/components/notification/Notification";
 
 const initUser = () => {
   return {
@@ -52,6 +53,8 @@ export default function UserForm() {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [userData, setFormData] = useState(initUser());
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [notification, setNotification] = useState<{ message: string; type: 'error' | 'success' | 'info' } | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -66,8 +69,47 @@ export default function UserForm() {
     setFormData({ ...userData, type });
   };
 
+  const validate = () => {
+    const newErrors: Record<string, string> = {};
+
+    if (!userData.email) newErrors.email = "El correo es obligatorio.";
+    if (userData.email && !/\S+@\S+\.\S+/.test(userData.email))
+      newErrors.email = "El correo electrónico no es válido.";
+    if (!userData.confirmEmail)
+      newErrors.confirmEmail = "Confirme su correo.";
+    if (userData.email !== userData.confirmEmail)
+      newErrors.confirmEmail = "Los correos no coinciden.";
+
+    if (!userData.pwd) newErrors.pwd = "La contraseña es obligatoria.";
+    if (!userData.confirmPassword)
+      newErrors.confirmPassword = "Confirme su contraseña.";
+    if (userData.pwd !== userData.confirmPassword)
+      newErrors.confirmPassword = "Las contraseñas no coinciden.";
+
+    if (!userData.username) newErrors.username = "El nombre de usuario es obligatorio.";
+    if (!userData.full_name) newErrors.full_name = "El nombre completo es obligatorio.";
+    if (!userData.phone_number) {
+      newErrors.phone_number = "El teléfono es obligatorio.";
+    } else if (!/^\(?\d{2,5}\)?[-.\d]?\d{4}[-.\d]?\d{4}$/.test(userData.phone_number)) {
+      newErrors.phone_number = "El número de teléfono no es válido. Ejemplos válidos: 11-34254334, (11)34254334";
+    }
+    if (!userData.personal_ID) {
+      newErrors.personal_ID = "El DNI es obligatorio.";
+    } else if (!/^\d{7,11}$/.test(userData.personal_ID)) { 
+      newErrors.personal_ID = "El DNI debe ser un número válido de entre 7 y 11 dígitos.";
+    }
+
+    if (userData.termsAccepted !== "true")
+      newErrors.termsAccepted = "Debe aceptar los términos y condiciones.";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if(!validate()) return;
 
     if (userData.type === "creator") {
       startTransition(() => {
@@ -78,13 +120,14 @@ export default function UserForm() {
       try {
         await createUser(buildUser(userData)).then(() => {
           console.log("Usuario creado exitosamente");
+          setNotification({ message: "Usuario creado exitosamente", type: 'success' });
           router.push("/pages/user-register");
         });
 
         setFormData(initUser());
-      } catch (error) {
+      } catch (error:any) {
+        setNotification({ message: `Ocurrió un error: ${error?.response?.data?.message || 'Por favor intente nuevamente.'}`, type: 'error' });
         console.error("Error al crear usuario:", error);
-        alert("Ocurrió un error. Por favor intente nuevamente.");
       }
     }
   };
@@ -100,7 +143,8 @@ export default function UserForm() {
       <form
         onSubmit={handleSubmit}
         className="bg-gray-800 p-8 rounded shadow-md w-full max-w-md"
-      >
+        noValidate
+        >
         <h1 className="text-2xl font-bold mb-4">Registro de Usuario</h1>
         {/* Email Section */}
         <div>
@@ -113,8 +157,9 @@ export default function UserForm() {
             value={userData.email}
             onChange={handleChange}
             className="mt-1 block w-full bg-gray-700 text-white border border-gray-600 rounded p-2"
-            required
           />
+          {errors.email && <p className="text-red-500 font-bold">{errors.email}</p>}
+
           <input
             type="email"
             name="confirmEmail"
@@ -122,8 +167,8 @@ export default function UserForm() {
             onChange={handleChange}
             className="mt-1 block w-full bg-gray-700 text-white border border-gray-600 rounded p-2"
             placeholder="Confirmar correo electrónico"
-            required
           />
+          {errors.confirmEmail && <p className="text-red-500 font-bold">{errors.confirmEmail}</p>}
         </div>
 
         {/* User Details Section */}
@@ -135,8 +180,8 @@ export default function UserForm() {
             value={userData.username}
             onChange={handleChange}
             className="mt-1 block w-full bg-gray-700 text-white border border-gray-600 rounded p-2"
-            required
           />
+          {errors.username && <p className="text-red-500 font-bold">{errors.username}</p>}
         </div>
 
         <div>
@@ -147,20 +192,20 @@ export default function UserForm() {
             value={userData.full_name}
             onChange={handleChange}
             className="mt-1 block w-full bg-gray-700 text-white border border-gray-600 rounded p-2"
-            required
           />
+          {errors.full_name && <p className="text-red-500 font-bold">{errors.full_name}</p>}
         </div>
 
         <div>
           <label className="block text-sm font-medium">DNI</label>
           <input
-            type="text"
+            type="number"
             name="personal_ID"
             value={userData.personal_ID}
             onChange={handleChange}
             className="mt-1 block w-full bg-gray-700 text-white border border-gray-600 rounded p-2"
-            required
           />
+          {errors.personal_ID && <p className="text-red-500 font-bold">{errors.personal_ID}</p>}
         </div>
 
         <div>
@@ -171,8 +216,8 @@ export default function UserForm() {
             value={userData.phone_number}
             onChange={handleChange}
             className="mt-1 block w-full bg-gray-700 text-white border border-gray-600 rounded p-2"
-            required
           />
+          {errors.phone_number && <p className="text-red-500 font-bold">{errors.phone_number}</p>}
         </div>
 
         {/* pwd Section */}
@@ -184,8 +229,8 @@ export default function UserForm() {
             value={userData.pwd}
             onChange={handleChange}
             className="mt-1 block w-full bg-gray-700 text-white border border-gray-600 rounded p-2"
-            required
           />
+          {errors.pwd && <p className="text-red-500 font-bold">{errors.pwd}</p>}
           <input
             type="password"
             name="confirmPassword"
@@ -193,8 +238,8 @@ export default function UserForm() {
             onChange={handleChange}
             className="mt-1 block w-full bg-gray-700 text-white border border-gray-600 rounded p-2"
             placeholder="Confirmar contraseña"
-            required
           />
+          {errors.confirmPassword && <p className="text-red-500 font-bold">{errors.confirmPassword}</p>}
         </div>
 
         {/* User Type */}
@@ -238,21 +283,23 @@ export default function UserForm() {
             checked={userData.termsAccepted === "true"}
             onChange={(e) => handleTermsChanges(e.target.checked)}
             className="mr-2"
-            required
           />
+          {errors.termsAccepted && <p className="text-red-500 font-bold">{errors.termsAccepted}</p>}
           <label className=" text-white">
             Acepto los términos y condiciones de uso de AudioLibre
           </label>
         </div>
 
         <button
-          type="submit"
-          className={`w-full py-2 rounded-md transition-colors ${isPending ? "bg-gray-500" : "bg-green-500 hover:bg-green-600"
-            } text-white`}
-          disabled={isPending}
-        >
-          {isPending ? "Procesando..." : "Registrar"}
-        </button>
+        type="submit"
+        className={`w-full py-2 rounded-md transition-colors ${isPending ? "bg-gray-500" : "bg-green-500 hover:bg-green-600"}`}
+        disabled={isPending}
+      >
+        {isPending ? "Procesando..." : "Registrar"}
+      </button>
+        {notification && (
+          <Notification message={notification.message} type={notification.type} />
+        )}
       </form>
     </div>
   );
