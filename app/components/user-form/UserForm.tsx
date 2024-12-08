@@ -60,10 +60,22 @@ export default function UserForm() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData({ ...userData, [name]: value });
+
+    setErrors((prevErrors) => {
+      const updatedErrors = { ...prevErrors };
+      delete updatedErrors[name];
+      return updatedErrors;
+    });
   };
 
   const handleTermsChanges = (checked: boolean) => {
     setFormData({ ...userData, termsAccepted: checked.toString() });
+
+    setErrors((prevErrors) => {
+      const updatedErrors = { ...prevErrors };
+      delete updatedErrors["termsAccepted"];
+      return updatedErrors;
+    });
   };
 
   const handleRoleChange = (type: string) => {
