@@ -35,8 +35,7 @@ export interface Item {
 
 export interface ItemPayload {
   item_ID: string
-  audio_ID: string
-  creator_ID: string
+  audio_name: string
   price: number
 }
 

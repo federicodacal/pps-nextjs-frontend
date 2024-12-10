@@ -74,8 +74,6 @@ const AudioCard: React.FC<AudioProps> = ({
   const addToCart = (audioId: string) => {
     let selectedAudios = storage.getItem("selected_audios")
 
-    console.log(selectedAudios)
-
     if (selectedAudios == null) {
       selectedAudios = ""
     };
