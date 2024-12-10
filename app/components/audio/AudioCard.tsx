@@ -85,19 +85,19 @@ const AudioCard: React.FC<AudioProps> = ({
 
   const addToFavorites = (audioId: string) => {
 
-    if(userId) {
-        const isFav = isFavorite(audioId);
-        toggleFavorite(audioId);
-        if (isFav) {
-          handleClick("Se ha quitado de favoritos");
-        } else {
-          handleClick("Se ha agregado a favoritos");
-        }
-      }
-      else {
-        handleClick("Es necesario iniciar sesión");
+    if (userId) {
+      const isFav = isFavorite(audioId);
+      toggleFavorite(audioId);
+      if (isFav) {
+        handleClick("Se ha quitado de favoritos");
+      } else {
+        handleClick("Se ha agregado a favoritos");
       }
     }
+    else {
+      handleClick("Es necesario iniciar sesión");
+    }
+  }
 
   return (
     <>
@@ -123,14 +123,20 @@ const AudioCard: React.FC<AudioProps> = ({
               <button onClick={onPlayPause} >
                 {isPlaying ? <BsFillStopFill /> : <BsFillPlayFill />}
               </button>
-              <button
-                onClick={() => addToCart(id)}
-              >
-                <BsPlusCircleFill />
-              </button>
-              <button onClick={() => addToFavorites(id)}>
-                {isFavorite(id) ?  <BsFillHeartFill/> : <BsHeart/>}
-              </button>
+              {
+                userId != undefined || userId != null ? <div>
+                  <button
+                    onClick={() => addToCart(id)}
+                  >
+                    <BsPlusCircleFill />
+                  </button>
+                  <button onClick={() => addToFavorites(id)}>
+                    {isFavorite(id) ? <BsFillHeartFill /> : <BsHeart />}
+                  </button>
+                </div> :
+                <></>
+              }
+
             </div>
           </div>
 
