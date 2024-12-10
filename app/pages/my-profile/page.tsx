@@ -38,7 +38,7 @@ const initUser = () => {
     pwd: "",
     credits: 0,
     type: "",
-    subscription_ID: 0,
+    subscription_ID: "",
     profile: "",
     state: "",
     account_type: "",

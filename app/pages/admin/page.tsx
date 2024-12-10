@@ -44,8 +44,16 @@ const initCreator = () => {
     points: 0,
     profile: "",
     state: "",
-    subscription_ID: 0,
+    subscription_ID: "",
     user_ID: "",
+    account: {
+      ID: "",
+      created_at: "",
+      creator_ID: "",
+      modified_at: "",
+      personal_account_ID: "",
+      type: ""
+    }
   }
 }
 
@@ -81,6 +89,7 @@ const buildUsers = (response: any) => {
         points: user.creator.points,
         profile: user.creator.profile,
         state: user.creator.state,
+        account: user.creator.account
       } : initCreator(),
       created_at: user.created_at,
       modified_at: '',

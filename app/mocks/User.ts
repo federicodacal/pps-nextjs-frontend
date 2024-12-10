@@ -11,8 +11,16 @@ export const USER: User = {
     points: 0,
     profile: "",
     state: "",
-    subscription_ID: 0,
-    user_ID: ""
+    subscription_ID: "",
+    user_ID: "",
+    account: {
+      ID: "",
+      created_at: "",
+      creator_ID: "",
+      modified_at: "",
+      personal_account_ID: "",
+      type: ""
+    }
   },
   email: "",
   modified_at: "",

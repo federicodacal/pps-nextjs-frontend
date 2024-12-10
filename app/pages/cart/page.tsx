@@ -10,25 +10,25 @@ import { useRouter } from "next/navigation";
 import { User } from "@/app/types/users";
 import { ItemPayload, PurchasePayload, CheckoutItem, CheckoutData, Purchase } from "@/app/types/purchase";
 import { USER } from '../../mocks/User';
-import { AUDIOS } from '../../mocks/Audio';
-import { PURCHASE } from '../../mocks/Purchase';
 import { useSessionStorage } from '@/app/hooks/useSessionStorage';
 import PurchaseResume from "@/app/components/cart/PurchaseResume";
 import withAuth from "@/app/hoc/withAuth";
 import { useAuth } from "@/app/contexts/AuthContext";
+import { getUserById } from "@/app/services/users-service";
 
 const mockUser: User = USER
-const mockAudios = AUDIOS
-const mockPurchase = PURCHASE
 
 const retrieveAudios = () => {
   let audiosIDs = storage.getItem("selected_audios");
+
+  console.log("AUDIO IDS")
+  console.log(audiosIDs)
 
   if (audiosIDs == null) {
     audiosIDs = "";
   }
 
-  return audiosIDs.split(",").sort().slice(-1);
+  return audiosIDs.split(",");
 };
 
 const buildPayload = (audios: any[], ID: string): PurchasePayload => {
@@ -50,8 +50,9 @@ const buildItems = (audios: AudioDB[]) => {
   audios.forEach(audio => {
     items.push({
       item_ID: audio.item.ID,
+      audio_name: audio.audio_name,
       audio_ID: audio.ID,
-      creator_ID: audio.item.creator_ID,
+      creator_ID: audio.creator_ID,
       price: audio.item.price,
     })
   });
@@ -89,35 +90,46 @@ const buildMetadata = (purchase: Purchase) => {
   return metadata
 }
 
+
 const Cart = () => {
   const [audios, setAudios] = useState<AudioDB[]>([]); //
+  const [user, setUserData] = useState<User>(); //
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [, setItemsData] = useSessionStorage('items_data', {});
   const [, setMetadata] = useSessionStorage('purchase_metadata', {});
-  const audioIDs = retrieveAudios();
+  const audioIDs = retrieveAudios(); // RECUPERO LOS IDS DE LOS AUDIOS SELECCIONADOS
+  audioIDs.pop()
   const router = useRouter();
   const { userId } = useAuth();
   const itemsList = audios
 
-  console.log(audios)
-  console.log(userId)
+  const isCreator = () => {
+    return (user?.type == 'creator')
+  }
 
   useEffect(() => {
     const fetchAudios = async () => {
-      let audiosDB: AudioDB[] = [];
+
+      console.log(audioIDs)
+      console.log("USER ID")
+      console.log(userId)
 
       try {
-        audioIDs.forEach(async (id) => {
-          if (id != "") {
-            let response = await getAudioById(id);
+        const audiosDB: AudioDB[] = [];
 
-            console.log(response.data)
-            audiosDB.push(response.data);
+        for (const id of audioIDs) {
+          let response = await getAudioById(id);
 
-            setAudios(audiosDB);
+          console.log(response)
+
+          if (response.data) {
+            audiosDB.push(response.data); // Solo agrega los audios válidos
           }
-        });
-        console.log(audios)
+        }
+
+        console.log(audiosDB)
+
+        setAudios(audiosDB);
       } catch (error) {
         console.error("Error al obtener los audios:", error);
       }
@@ -127,7 +139,9 @@ const Cart = () => {
   }, []);
 
   const handlePurchase = async () => {
-    document.cookie = `itemsData=${JSON.stringify(buildPayload(audios, mockUser.ID))}; path=/`;
+    if (userId != null){
+      document.cookie = `itemsData=${JSON.stringify(buildPayload(audios, userId))}; path=/`;
+    }
 
     //setItemsData(buildCheckoutItems(audios));
     //setMetadata(buildMetadata(mockPurchase))
@@ -195,6 +209,30 @@ const Cart = () => {
 
             }
             {/*Checkout*/}
+            {isCreator() ?
+              <div className="grid grid-cols-2 m-5 mt-10">
+
+                <span className="text-xl">Créditos</span>
+                <span className="text-right">{user?.creator.credits}</span>
+
+                <span className="mt-10 text-sm">Los pagos se procesarán por medio de la plataforma externa</span>
+
+                <div className="mt-5 mb-2 w-full p-5 ">
+                  <button
+                    onClick={() => setIsModalOpen(true)}
+                    className="flex justify-center bg-yellow-500 hover:bg-yellow-400 text-black w-full p-3"
+                  >
+                    Realizar compra
+                  </button>
+                </div>
+
+              </div>
+
+              :
+
+              <></>
+
+            }
 
           </div>
         </div>
