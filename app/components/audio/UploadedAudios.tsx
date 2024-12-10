@@ -1,13 +1,27 @@
+import { deleteAudioByIdServer } from "@/app/services/audio-service";
 import React from "react";
+import AudioDetailCard from "./AudioDetailCard";
+import { AudioItem } from "@/app/types/audio";
+import AudioPlayer from "./AudioPlayer";
 
 type AudioFile = {
-  ID: string;
-  audio_name: string | undefined;
-  file_url: string | undefined;
-  genre: string | undefined;
-  BPM: number | undefined;
-  category: string | undefined;
-  size: number | undefined;
+  BPM: number
+  ID: string
+  audio_name: string
+  category: string
+  created_at: string
+  creator_ID: string
+  description: string
+  file_name: string
+  file_url: string
+  genre: string
+  item: AudioItem
+  length: number
+  modified_at: string
+  score: number
+  size: number
+  state: string
+  tone: number
 };
 
 type DownloadListProps = {
@@ -15,6 +29,7 @@ type DownloadListProps = {
 };
 
 const UploadedAudios: React.FC<DownloadListProps> = ({ audios }) => {
+
   const handleDownload = (fileUrl: string | undefined) => {
     /*if (!fileUrl) {
       alert("Invalid file URL");
@@ -27,6 +42,12 @@ const UploadedAudios: React.FC<DownloadListProps> = ({ audios }) => {
     /*link.href = "fileUrl";
     link.download = testLink.split("/").pop() || "audio.wav";
     link.click();*/
+  };
+
+  const handleDelete = async (audioID: string) => {
+    const response = await deleteAudioByIdServer(audioID)
+
+    console.log(response)
   };
 
   return (
@@ -56,11 +77,19 @@ const UploadedAudios: React.FC<DownloadListProps> = ({ audios }) => {
                   <strong>Size:</strong> {audio.size} MB
                 </p>
               </div>
+              <div>
+              <AudioPlayer
+                        audioUrl={audio.file_url}
+                        onAddToCart={() => {}}
+                        onAddToFavorites={() => {}}
+                        full={false}
+                    />
+              </div>
               <button
-                onClick={() => handleDownload(audio.file_url)}
-                className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-500"
+                onClick={() => handleDelete(audio.ID)}
+                className="mt-2 px-4 py-2 bg-rose-400 text-black rounded hover:bg-blue-500"
               >
-                Download
+                Eliminar
               </button>
             </li>
           )) :

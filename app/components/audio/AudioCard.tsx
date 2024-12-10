@@ -124,7 +124,7 @@ const AudioCard: React.FC<AudioProps> = ({
                 {isPlaying ? <BsFillStopFill /> : <BsFillPlayFill />}
               </button>
               {
-                userId != undefined || userId != null ? <div>
+                userId != undefined || userId != null ? <div className="flex place-content-center gap-5">
                   <button
                     onClick={() => addToCart(id)}
                   >

@@ -15,6 +15,8 @@ import DownloadList from '@/app/components/audio/DownloableAudio';
 import { UserForm } from '@/app/types/users'
 import UploadedAudios from '@/app/components/audio/UploadedAudios';
 import { checkCreatorDebt } from '@/app/services/subscriptions-service';
+import { AudioDB } from '@/app/types/audio';
+import { getAudioByCreatorId } from '@/app/services/audio-service';
 
 //const hardcodedUser = 'caa20840-36bd-4e7e-8599-f32ed1c2d646'
 
@@ -125,30 +127,49 @@ const getAudios = (purchases: Purchase[]) => {
 const MyProfile = () => {
   const [user, setUserData] = useState<UserForm>();
   const [audios, setAudioData] = useState<DownloableAudio[]>(initAudio());
+  const [myAudios, setMyAudioData] = useState<AudioDB[]>([]);
   const { userId, creatorId } = useAuth();
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
+
+  async function getDownloableAudios(userId: string) {
+    const response = await getPurchasesAudioByBuyer(userId);
+
+    console.log("Datos de compras:", response.data);
+    setAudioData(getAudios(buildPurchases(response)));
+  }
+
+  async function getMyAudios(userId: string) {
+    const response = await getAudioByCreatorId(userId);
+
+    console.log("Datos de mis audios:", response.data);
+    setMyAudioData(response.data);
+  }
+
+  async function getUser(userId: string) {
+    const response = await getUserByIdServer(userId);
+
+    setUserData(buildUser(response));
+
+    if (creatorId !== null) {
+      const debtResponse = await checkCreatorDebt(creatorId);
+
+      console.log('Deuda creador?', debtResponse.data);
+
+      if (debtResponse.data.days_overdue > 30) {
+        setAlertMessage(`${debtResponse.data.message}. Por favor, revise el vencimiento de su suscripción.`);
+        setTimeout(() => {
+          setAlertMessage(null);
+        }, 5000);
+      }
+
+    }
+  }
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         if (userId)  {
-          const response = await getUserByIdServer(userId);
-
-          setUserData(buildUser(response));
-
-          if(creatorId !== null) {
-            const debtResponse = await checkCreatorDebt(creatorId);
-            
-            console.log('Deuda creador?', debtResponse.data);
-
-            if(debtResponse.data.days_overdue > 30) {
-              setAlertMessage(`${debtResponse.data.message}. Por favor, revise el vencimiento de su suscripción.`);
-              setTimeout(() => {
-                setAlertMessage(null);
-              }, 5000);
-            }
-
-          }
+          await getUser(userId);
         }
       } catch (error) {
         console.error("Error al obtener datos del usuario:", error);
@@ -156,14 +177,18 @@ const MyProfile = () => {
 
       try {
         if (userId) {
-          const responsePurchases = await getPurchasesAudioByBuyer(userId)
-
-          console.log("Datos de compras:", responsePurchases.data);
-          setAudioData(getAudios(buildPurchases(responsePurchases)));
+          await getDownloableAudios(userId);
         }
-
       } catch (error) {
-        console.error("Error al obtener datos del compras:", error);
+        console.error("Error al obtener datos de compras:", error);
+      }
+
+      try {
+        if (creatorId) {
+          await getMyAudios(creatorId);
+        }
+      } catch (error) {
+        console.error("Error al obtener datos de audios subidos:", error);
       }
     };
 
@@ -195,8 +220,8 @@ const MyProfile = () => {
           <></>
         )}
         {
-          user?.type == "creator" ?
-            <UploadedAudios audios={audios} /> :
+          user?.type == "creator"?
+            <UploadedAudios audios={myAudios} /> :
             <></>
         }
 

@@ -20,6 +20,15 @@ export const getAudioByIdServer = async (id: string) => {
     return axios.get<AudioDB>(`${API_BASE_URL}/audios/${id}`);
 };
 
+export const getAudioByCreatorId = async (id: string) => {
+    console.log(id)
+    return axios.get<AudioDB[]>(`${NEXT_PUBLIC_PROXY}/audios/creator/${id}`);
+};
+
+export const getAudioByCreatorIdServer = async (id: string) => {
+    return axios.get<AudioDB[]>(`${API_BASE_URL}/audios/creator/${id}`);
+};
+
 export const refuseByID = async (userId: string) => {
     const response = axios.delete(`${NEXT_PUBLIC_PROXY}/audios/approval/${userId}`);
 
@@ -30,4 +39,14 @@ export const approveByID = async (userId: string) => {
     const response = axios.put(`${NEXT_PUBLIC_PROXY}/audios/approval/${userId}`);
 
     return response
+};
+
+export const deleteAudioById = async (id: string) => {
+    console.log(id)
+    return axios.delete<any>(`${NEXT_PUBLIC_PROXY}/audios/${id}`);
+};
+
+export const deleteAudioByIdServer = async (id: string) => {
+    console.log(id)
+    return axios.delete<any>(`${API_BASE_URL}/audios/${id}`);
 };

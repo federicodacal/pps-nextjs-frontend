@@ -26,7 +26,7 @@ const UserDetail: React.FC<Props> = async ({ params }) => {
       <Header title="Detalles de audio" />
     </div>
     <div className="h-full bg-gray-900 flex items-center justify-center">
-      <AudioDetailCard audio={audio} />
+      <AudioDetailCard audio={audio} full={true}/>
     </div>
     <div className='w-screen'>
       <Footer />

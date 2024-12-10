@@ -3,25 +3,27 @@
 import React, { useEffect, useRef, useState } from 'react';
 import WaveSurfer from 'wavesurfer.js';
 import {
-    BsFillStopFill,
-    BsFillPlayFill,
-    BsSkipForward,
-    BsSkipBackward,
-    BsPlusCircleFill,
-    BsHeartFill,
-    BsHeart,
-  } from "react-icons/bs";
+  BsFillStopFill,
+  BsFillPlayFill,
+  BsSkipForward,
+  BsSkipBackward,
+  BsPlusCircleFill,
+  BsHeartFill,
+  BsHeart,
+} from "react-icons/bs";
 
 interface AudioPlayerProps {
   audioUrl: string; // URL del audio recibido desde la base de datos
   onAddToCart: () => void;
   onAddToFavorites: () => void;
+  full: boolean;
 }
 
 const AudioPlayer: React.FC<AudioPlayerProps> = ({
   audioUrl,
   onAddToCart,
   onAddToFavorites,
+  full
 }) => {
   const waveformRef = useRef<HTMLDivElement>(null); // Contenedor para la onda
   const waveSurferRef = useRef<WaveSurfer | null>(null); // Referencia a WaveSurfer
@@ -36,7 +38,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
         progressColor: '#7C3AED', // Color de progreso
         cursorColor: '#9333EA', // Color del cursor
         barWidth: 2, // Grosor de las barras
-        height: 80, 
+        height: 80,
       });
 
       waveSurferRef.current.load(audioUrl); // Cargar el audio
@@ -67,18 +69,27 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
         >
           {isPlaying ? <BsFillStopFill /> : <BsFillPlayFill />}
         </button>
-        <button
-          onClick={onAddToCart}
-          className="px-4 py-4 bg-purple-600 hover:bg-purple-700 text-lime-100 rounded-full shadow-md transition-all"
-        >
-          <BsPlusCircleFill />
-        </button>
-        <button
-          onClick={onAddToFavorites}
-          className="px-4 py-4 bg-purple-600 hover:bg-purple-700 text-lime-100 rounded-full shadow-md transition-all"
-        >
-          <BsHeartFill />
-        </button>
+
+        {
+          full ? <div>
+            <button
+              onClick={onAddToCart}
+              className="px-4 py-4 bg-purple-600 hover:bg-purple-700 text-lime-100 rounded-full shadow-md transition-all"
+            >
+              <BsPlusCircleFill />
+            </button>
+            <button
+              onClick={onAddToFavorites}
+              className="px-4 py-4 bg-purple-600 hover:bg-purple-700 text-lime-100 rounded-full shadow-md transition-all"
+            >
+              <BsHeartFill />
+            </button>
+          </div> : <></>
+
+
+        }
+
+
       </div>
     </div>
   );
