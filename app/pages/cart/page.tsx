@@ -51,6 +51,8 @@ const buildItems = (audios: AudioDB[]) => {
     items.push({
       item_ID: audio.item.ID,
       audio_name: audio.audio_name,
+      audio_ID: audio.ID,
+      creator_ID: audio.creator_ID,
       price: audio.item.price,
     })
   });
@@ -137,7 +139,9 @@ const Cart = () => {
   }, []);
 
   const handlePurchase = async () => {
-    document.cookie = `itemsData=${JSON.stringify(buildPayload(audios, mockUser.ID))}; path=/`;
+    if (userId != null){
+      document.cookie = `itemsData=${JSON.stringify(buildPayload(audios, userId))}; path=/`;
+    }
 
     //setItemsData(buildCheckoutItems(audios));
     //setMetadata(buildMetadata(mockPurchase))

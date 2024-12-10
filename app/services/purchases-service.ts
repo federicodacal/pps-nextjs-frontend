@@ -4,6 +4,8 @@ import { Purchase, PurchasePayload }  from '../types/purchase';
 
 // Audio Services
 export const createPurchase = async (purchaseData: PurchasePayload) => {
+    console.log(purchaseData)
+
     return axios.post(`${API_BASE_URL}/purchases`, purchaseData);
 };
 

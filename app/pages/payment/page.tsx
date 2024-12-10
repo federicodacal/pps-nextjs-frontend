@@ -5,14 +5,12 @@ import { createPurchase } from "@/app/services/purchases-service";
 import { PurchasePayload } from "@/app/types/purchase";
 import React, { useEffect } from 'react';
 
-
-
-
 export default async function Payment() {
     const pushPurchase = async () => {
         const cookieStore = cookies();
         const data = cookieStore.get('itemsData')?.value;
         const itemsData: PurchasePayload = data ? JSON.parse(data) : {};
+
     
         const response = await createPurchase(itemsData)
     
@@ -23,15 +21,15 @@ export default async function Payment() {
     const response = pushPurchase()
 
     return (
-        <div>
+        <div className='h-full'>
             <div>
                 <Header title="Compra" />
             </div>
-            <div className="flex justify-center items-center mb-72 px-10 sm:px-0" >
-                <div className="flex flex-col w-[1000px]">
-                    <div >
+            <div className="flex place-content-center m-auto px-10 sm:px-0 " >
+                <div className="flex flex-col col-auto  ">
 
-                        <div className="flex justify-center items-center mb-72 px-10 sm:px-0">
+
+                        <div className="flex mb-72 px-10 sm:px-0 place-items-center">
                             {/*Items*/}
                             <div className="bg-white rounded-xl shadow-xl p-7 text-black">
                                 <h2 className="text-2xl mb-2">¡Su pago fue aprobado!</h2>
@@ -50,7 +48,6 @@ export default async function Payment() {
 
 
 
-                    </div>
                 </div>
             </div>
             <div>

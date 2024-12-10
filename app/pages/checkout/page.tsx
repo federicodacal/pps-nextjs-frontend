@@ -20,20 +20,6 @@ import { getAudioById, getAudioByIdServer } from "@/app/services/audio-service";
 import { AudioDB } from "../../types/audio";
 
 
-const mockPurchase = PURCHASE
-
-/*async function add(purchase: Purchase) {
-
-  let items = buildCheckoutItems(purchase)
-  let metadata = buildMetadata(purchase)
-
-  const url = await api.message.submit(items, metadata)
-
-  console.log(url)
-
-  redirect(url);
-}*/
-
 
 const retrievePurchaseID = () => {
   let purchaseID = storage.getItem("purchase_ID");

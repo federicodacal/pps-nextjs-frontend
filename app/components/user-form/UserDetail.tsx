@@ -26,6 +26,17 @@ const initUser = () => {
     }
 }
 
+const fieldsName = new Map([
+    ["full_name", "Nombre completo"],
+    ["username", "Nombre de usuario"],
+    ["email", "Correo electrónico"],
+    ["type", "Tipo de usuario"],
+    ["phone_number", "Número de teléfono"],
+    ["profile", "biografía"],
+    ["account_type", "Tipo de cuenta"],
+    ["account_id", "Número de cuenta"],
+])
+
 const UserDetail: React.FC<UserProps> = ({ userForm }) => {
     const [user, setUserData] = useState(userForm);
     const [isEditing, setIsEditing] = useState(false);
@@ -34,7 +45,7 @@ const UserDetail: React.FC<UserProps> = ({ userForm }) => {
     useEffect(() => {
         setUserData(userForm)
     }, [userForm]);
-    
+
     const handleEdit = () => {
         setIsEditing((prev) => !prev);
     };
@@ -109,12 +120,12 @@ const UserDetail: React.FC<UserProps> = ({ userForm }) => {
                 <form className="grid grid-cols-2 gap-6">
                     {/* Form Fields */}
                     {Object.entries(user).map(([key, value]) => {
-                        if (key === "personal_ID" || key === "state" || key === "user_detail" || key === "credits" || key === "ID") return null; // Hidden fields
+                        if (key === "personal_ID" || key === "state" || key === "user_detail" || key === "credits" || key === "ID" || key === "account_id") return null; // Hidden fields
 
                         const isTextArea = key === "profile";
                         const isPassword = key === "pwd";
                         const isDropdown = key === "type";
-                        const isCreatorField = key === "account_type" || key === "points" || key === "subscription_ID"
+                        const isCreatorField = key === "account_type" || key === "points" || key === "subscription_ID" || key === "profile"
 
                         return (
                             <div
@@ -122,10 +133,13 @@ const UserDetail: React.FC<UserProps> = ({ userForm }) => {
                                 className={`flex flex-col col-span-1 ${key === "profile" ? "col-span-2" : ""
                                     }`}
                             >
-                                <label className="text-sm font-semibold text-gray-400 capitalize">
-                                    {key === "pwd" ? "Password" : key.replace("_", " ")}
-                                </label>
-                                {isTextArea ? (
+                                {isCreatorField && user.type != "creator" ? <></> :
+                                    <label className="text-sm font-semibold text-gray-400 capitalize">
+                                        {key === "pwd" ? "Password" : key.replace("_", " ")}
+                                    </label>
+                                }
+
+                                {isTextArea && user.type == "creator" ? (
                                     <textarea
                                         value={value || ""}
                                         maxLength={100}
@@ -161,19 +175,10 @@ const UserDetail: React.FC<UserProps> = ({ userForm }) => {
                                         <option value="Comprador">Comprador</option>
                                         <option value="Creador">Creador</option>
                                     </select>
-                                ) : isCreatorField && user.type == "creator" ? (
-                                    <input
-                                        type="text"
-                                        value={value || ""}
-                                        readOnly={!isEditing}
-                                        className={`mt-1 px-4 py-2 rounded-lg bg-gray-700 text-gray-100 ${isEditing ? "border border-purple-500" : "border-none"
-                                            }`}
-                                        onChange={(e) =>
-                                            setUserData({ ...user, [key]: e.target.value })
-                                        }
-                                    />
+                                ) : isCreatorField && user.type != "creator" ? (
+                                    <></>
                                 ) : (
-                                   
+
                                     <input
                                         type="text"
                                         value={value || ""}
