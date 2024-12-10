@@ -41,6 +41,7 @@ const initUser = () => {
     profile: "",
     state: "",
     account_type: "",
+    account_id: "",
   }
 }
 
@@ -70,7 +71,8 @@ const buildUser = (response: any) => {
     subscription_ID: response.data.creator?.subscription_ID,
     profile: response.data.creator?.profile,
     state: response.data.state,
-    account_type: response.data.creator?.account_type
+    account_type: response.data.creator?.account_type,
+    account_id: response.data.creator?.personal_account_ID
   }
 
   console.log("Datos del usuario:", user);
