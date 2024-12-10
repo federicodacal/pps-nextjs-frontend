@@ -123,7 +123,7 @@ const getAudios = (purchases: Purchase[]) => {
 }
 
 const MyProfile = () => {
-  const [user, setUserData] = useState<UserForm>(initUser());
+  const [user, setUserData] = useState<UserForm>();
   const [audios, setAudioData] = useState<DownloableAudio[]>(initAudio());
   const { userId, creatorId } = useAuth();
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
@@ -131,7 +131,7 @@ const MyProfile = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        if (userId) {
+        if (userId)  {
           const response = await getUserByIdServer(userId);
 
           setUserData(buildUser(response));
@@ -161,7 +161,6 @@ const MyProfile = () => {
           console.log("Datos de compras:", responsePurchases.data);
           setAudioData(getAudios(buildPurchases(responsePurchases)));
         }
-        setUserData(user);
 
       } catch (error) {
         console.error("Error al obtener datos del compras:", error);
@@ -187,14 +186,16 @@ const MyProfile = () => {
         ) : (
           <></>
         )}
-        <UserDetail userForm={user} />
+
+        {user? <UserDetail userForm={user} />: <></>}
+        
         {audios.length > 0 && audios[0].ID != "" ? (
           <DownloadList audios={audios} />
         ) : (
           <></>
         )}
         {
-          user.type == "creator" ?
+          user?.type == "creator" ?
             <UploadedAudios audios={audios} /> :
             <></>
         }
