@@ -48,12 +48,15 @@ const AudioAdminList: React.FC<UserListProps> = ({ audios, title }) => {
                     {audio.state}  
                   </span>
                 </td>
+                <td>
                 <button
                   className="px-4 py-2 bg-violet-500 text-white rounded hover:bg-violet-700"
                   onClick={() => handleNavigation(audio.ID)}
                 >
                   View Details
                 </button>
+                </td>
+               
               </tr>
             ))}
           </tbody>

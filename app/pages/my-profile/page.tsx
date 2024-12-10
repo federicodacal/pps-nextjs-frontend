@@ -13,6 +13,7 @@ import UserDetail from '@/app/components/user-form/UserDetail';
 import { profile } from 'console';
 import DownloadList from '@/app/components/audio/DownloableAudio';
 import { UserForm } from '@/app/types/users'
+import UploadedAudios from '@/app/components/audio/UploadedAudios';
 import { checkCreatorDebt } from '@/app/services/subscriptions-service';
 
 //const hardcodedUser = 'caa20840-36bd-4e7e-8599-f32ed1c2d646'
@@ -130,8 +131,6 @@ const MyProfile = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        console.log(userId)
-
         if (userId) {
           const response = await getUserByIdServer(userId);
 
@@ -171,7 +170,7 @@ const MyProfile = () => {
 
     fetchUserData();
 
-  }, [userId]);
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100 flex flex-col">
@@ -190,11 +189,15 @@ const MyProfile = () => {
         )}
         <UserDetail userForm={user} />
         {audios.length > 0 && audios[0].ID != "" ? (
-             <DownloadList audios={audios} />
+          <DownloadList audios={audios} />
         ) : (
           <></>
         )}
-      
+        {
+          user.type == "creator" ?
+            <UploadedAudios audios={audios} /> :
+            <></>
+        }
 
       <div>
           {alertMessage && (
@@ -206,7 +209,7 @@ const MyProfile = () => {
             </div>
           )}
         </div>
-      
+
       </div>
       <Footer />
     </div>

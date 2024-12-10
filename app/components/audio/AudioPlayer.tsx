@@ -39,7 +39,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
         height: 80, 
       });
 
-      waveSurferRef.current.load('https://pps-flask-api.vercel.app/audios/file/67486842b1b779a8df615290'); // Cargar el audio
+      waveSurferRef.current.load(audioUrl); // Cargar el audio
     }
 
     return () => {

@@ -100,6 +100,7 @@ const AudioDetailCard = ({ audio }: { audio: AudioDB }) => {
             <p><strong>Duración:</strong> {audio.length}</p>
             <p><strong>Descripción:</strong> {audio.description}</p>
             <p><strong>Precio $:</strong> {audio.item.price}</p>
+            <p><strong>Precio $:</strong> {audio.state}</p>
             <div className='h-full flex items-center justify-center gap-5 mt-10'>
                 <button
                     className="px-4 py-2 bg-rose-400 text-white rounded hover:bg-rose-600"
