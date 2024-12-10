@@ -8,6 +8,7 @@ import { User, UserPayload } from '../../types/users';
 import UserList from '@/app/components/user-form/UserList';
 import { getAllAudios } from '@/app/services/audio-service';
 import AudioAdminList from '@/app/components/audio/AudioAdminList';
+import withAuth from '@/app/hoc/withAuth';
 
 const hardcodedUser = 'user_003'
 
@@ -91,7 +92,7 @@ const buildUsers = (response: any) => {
   return users
 }
 
-export default function AdminPage() {
+const Cart = () => {
   const [users, setUserData] = useState(initUser());
   const [audios, setAudioData] = useState<any[]>([]);
   const [isEditing, setIsEditing] = useState(false);
@@ -179,3 +180,5 @@ export default function AdminPage() {
     </div >
   );
 }
+
+export default withAuth(Cart, ["mod"]);
