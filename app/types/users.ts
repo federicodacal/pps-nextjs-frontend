@@ -12,7 +12,7 @@ export interface UserPayload {
     profile: string
     points: number
     credits: number
-    subscription_ID: number
+    subscription_ID: string
     account_ID: string
     personal_account_ID: string
     account_type: string
@@ -33,15 +33,25 @@ export interface User {
 
 export interface Creator {
     ID: string
+    account: Account
     created_at: string
     credits: number
     modified_at: string
     points: number
     profile: string
     state: string
-    subscription_ID: number
+    subscription_ID: string
     user_ID: string
-}
+  }
+  
+  export interface Account {
+    ID: string
+    created_at: string
+    creator_ID: string
+    modified_at: string
+    personal_account_ID: string
+    type: string
+  }
 
 export interface UserDetail {
     ID: string
@@ -63,8 +73,9 @@ export interface UserForm {
     pwd: string,
     credits: number,
     type: string,
-    subscription_ID: number,
+    subscription_ID: string,
     profile: string,
     state: string,
     account_type: string,
+    account_id: string,
   }

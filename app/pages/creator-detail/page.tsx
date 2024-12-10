@@ -46,8 +46,16 @@ const initCreator = () => {
     points: 0,
     profile: "",
     state: "",
-    subscription_ID: 0,
+    subscription_ID: "",
     user_ID: "",
+    account: {
+      ID: "",
+      created_at: "",
+      creator_ID: "",
+      modified_at: "",
+      personal_account_ID: "",
+      type: ""
+    }
   }
 }
 
@@ -62,6 +70,7 @@ const buildCreator = (response: any) => {
     state: response.creator.state,
     subscription_ID: response.creator.subscription_ID,
     user_ID: response.creator.user_ID,
+    account: response.creator.account
   }
 }
 
@@ -151,7 +160,7 @@ export default function CreatorDetail() {
         profile: user.creator.profile,
         points: 0,
         credits: Number(user.creator.credits),
-        subscription_ID: Number(user.creator.subscription_ID),
+        subscription_ID: user.creator.subscription_ID,
         account_ID: "N/A",
         personal_account_ID: "N/A",
         account_type: "cbu",

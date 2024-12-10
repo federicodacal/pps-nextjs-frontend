@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['localhost','admin-audiolibre-api.vercel.app'], 
+    domains: ['localhost','admin-audiolibre-api.vercel.app','pps-flask-api.vercel.app'], 
     remotePatterns: [
       {
         protocol: 'https',
