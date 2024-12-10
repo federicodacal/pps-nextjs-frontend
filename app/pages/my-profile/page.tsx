@@ -13,6 +13,7 @@ import UserDetail from '@/app/components/user-form/UserDetail';
 import { profile } from 'console';
 import DownloadList from '@/app/components/audio/DownloableAudio';
 import { UserForm } from '@/app/types/users'
+import { checkCreatorDebt } from '@/app/services/subscriptions-service';
 
 //const hardcodedUser = 'caa20840-36bd-4e7e-8599-f32ed1c2d646'
 
@@ -123,7 +124,8 @@ const getAudios = (purchases: Purchase[]) => {
 const MyProfile = () => {
   const [user, setUserData] = useState<UserForm>(initUser());
   const [audios, setAudioData] = useState<DownloableAudio[]>(initAudio());
-  const { userId } = useAuth();
+  const { userId, creatorId } = useAuth();
+  const [alertMessage, setAlertMessage] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -134,6 +136,20 @@ const MyProfile = () => {
           const response = await getUserByIdServer(userId);
 
           setUserData(buildUser(response));
+
+          if(creatorId !== null) {
+            const debtResponse = await checkCreatorDebt(creatorId);
+            
+            console.log('Deuda creador?', debtResponse.data);
+
+            if(debtResponse.data.days_overdue > 30) {
+              setAlertMessage(`${debtResponse.data.message}. Por favor, revise el vencimiento de su suscripción.`);
+              setTimeout(() => {
+                setAlertMessage(null);
+              }, 5000);
+            }
+
+          }
         }
       } catch (error) {
         console.error("Error al obtener datos del usuario:", error);
@@ -179,6 +195,17 @@ const MyProfile = () => {
           <></>
         )}
       
+
+      <div>
+          {alertMessage && (
+            <div
+              className="fixed bottom-0 left-0 right-0 mx-auto mb-4 w-11/12 max-w-xl bg-yellow-500 text-black text-lg font-semibold px-6 py-4 rounded-lg shadow-lg animate-fade-in-out"
+              style={{ zIndex: 50 }}
+            >
+              {alertMessage}
+            </div>
+          )}
+        </div>
       
       </div>
       <Footer />
