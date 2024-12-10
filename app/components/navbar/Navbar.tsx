@@ -15,7 +15,7 @@ export const Navbar = () => {
     { path: "/pages/samples", text: "Samples" },
     { path: "/pages/effects", text: "Efectos" },
     { path: "/pages/acapellas", text: "Acapellas" },
-    { path: "/pages/admin", text: "Admin" },
+    //{ path: "/pages/admin", text: "Admin" },
   ];
   
   const privatePages = [
@@ -23,6 +23,9 @@ export const Navbar = () => {
     { path: "/pages/cart", text: "Carrito" },
     ...(userType === "creator"
       ? [{ path: "/pages/upload-audio", text: "Carga nuevo audio" }]
+      : []),
+    ...(userType === "mod"
+      ? [{ path: "/pages/admin", text: "Admin" }]
       : []),
   ];
   

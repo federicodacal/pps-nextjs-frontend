@@ -8,6 +8,7 @@ import { User, UserPayload } from '../../types/users';
 import UserList from '@/app/components/user-form/UserList';
 import { getAllAudios } from '@/app/services/audio-service';
 import AudioAdminList from '@/app/components/audio/AudioAdminList';
+import withAuth from '@/app/hoc/withAuth';
 
 
 const initUser = () => {
@@ -98,7 +99,7 @@ const buildUsers = (response: any) => {
   return users
 }
 
-export default function AdminPage() {
+const AdminPage = () => {
   const [newUsers, setUserData] = useState(initUser());
   const [debtUsers, setCreatorData] = useState(initUser());
   const [newAudios, setAudioData] = useState<any[]>([]);
@@ -225,3 +226,5 @@ export default function AdminPage() {
     </div >
   );
 }
+
+export default withAuth(AdminPage, ["mod"]);
