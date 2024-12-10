@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Header from '../../../components/header/Header';
 import Footer from '../../../components/footer/Footer';
 import UserCard from '@/app/components/user-form/UserCard';
-import { getAudioById } from '@/app/services/audio-service';
+import { getAudioById, getAudioByIdServer } from '@/app/services/audio-service';
 import AudioDetailCard from '@/app/components/audio/AudioDetailCard';
 
 interface Props {
@@ -12,7 +12,7 @@ interface Props {
 
 const UserDetail: React.FC<Props> = async ({ params }) => {
   const fetchAudio = async (ID: string) => {
-    const response = await getAudioById(ID);
+    const response = await getAudioByIdServer(ID);
 
     console.log(response.data)
 

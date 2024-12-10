@@ -14,14 +14,14 @@ type DownloadListProps = {
   audios: AudioFile[];
 };
 
-const DownloadList: React.FC<DownloadListProps> = ({ audios }) => {
+const UploadedAudios: React.FC<DownloadListProps> = ({ audios }) => {
   const handleDownload = (fileUrl: string | undefined) => {
     /*if (!fileUrl) {
       alert("Invalid file URL");
       return;
     }*/
     const link = document.createElement("a");
-    const testLink = "https://pps-flask-api.vercel.app/audios/file/6753778781ef710718720e59"
+    const testLink = fileUrl
 
     window.open(testLink, "_blank");
     /*link.href = "fileUrl";
@@ -31,7 +31,7 @@ const DownloadList: React.FC<DownloadListProps> = ({ audios }) => {
 
   return (
     <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
-      <h2 className="text-xl font-semibold mb-4 ">Mis audios comprados</h2>
+      <h2 className="text-xl font-semibold mb-4 ">Mis audios subidos</h2>
       <ul>
         {audios.length > 0 ?
           audios.map((audio) => (
@@ -72,4 +72,4 @@ const DownloadList: React.FC<DownloadListProps> = ({ audios }) => {
   );
 };
 
-export default DownloadList;
+export default UploadedAudios;

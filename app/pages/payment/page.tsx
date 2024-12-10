@@ -36,7 +36,7 @@ export default async function Payment() {
 
                                 <div className="grid grid-cols-2">
 
-                                    <p>Puede descargar su audios desde su perfil</p>
+                                    <p>Puede descargar sus audios desde su perfil</p>
 
                                 </div>
 

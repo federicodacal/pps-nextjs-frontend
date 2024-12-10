@@ -395,7 +395,7 @@ const AudioForm = () => {
           <Notification message={notification.message} type={notification.type} />
         )}
       {/* Botón de envío */}
-      <div className="col-span-2 flex justify-center mt-5">
+      <div className="col-span-2 flex justify-center mt-20">
       <button
         type="submit"
         className={`w-full py-2 rounded-md transition-colors ${isPending ? "bg-gray-500" : "bg-green-500 hover:bg-green-600"}`}

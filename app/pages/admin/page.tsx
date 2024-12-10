@@ -9,7 +9,6 @@ import UserList from '@/app/components/user-form/UserList';
 import { getAllAudios } from '@/app/services/audio-service';
 import AudioAdminList from '@/app/components/audio/AudioAdminList';
 
-const hardcodedUser = 'user_003'
 
 const initUser = () => {
   return [{
@@ -96,24 +95,30 @@ const buildUsers = (response: any) => {
     })
   });
 
-
   return users
 }
 
 export default function AdminPage() {
-  const [users, setUserData] = useState(initUser());
-  const [audios, setAudioData] = useState<any[]>([]);
+  const [newUsers, setUserData] = useState(initUser());
+  const [debtUsers, setCreatorData] = useState(initUser());
+  const [newAudios, setAudioData] = useState<any[]>([]);
   const [isEditing, setIsEditing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         const response = await getUsers();
 
-
         console.log("Usuarios:", response.data);
-        setUserData(buildUsers(response));
+
+        let users = buildUsers(response)
+
+        setUserData(filterUserByState(users, "verified"));
+        setCreatorData(filterCreatorByState(users, "debtor"));
+       
+
       } catch (error) {
         console.error("Error al obtener datos del usuario:", error);
       }
@@ -124,7 +129,12 @@ export default function AdminPage() {
         const response = await getAllAudios();
 
         console.log("Audios:", response.data);
-        setAudioData(response.data);
+
+        let a = filterAudioByState(response.data, "created")
+
+        console.log(a)
+
+        setAudioData(a);
       } catch (error) {
         console.error("Error al obtener datos del usuario:", error);
       }
@@ -134,6 +144,37 @@ export default function AdminPage() {
     fetchAudioData();
   }, []);
 
+  const filterUserByState = (users:any[], state:string) => {
+    let u : any[] = []
+
+    users.filter((user)=> {
+      if (user.state == state) u.push(user)
+    })
+
+    return u
+  }
+
+  const filterCreatorByState = (users:any[], state:string) => {
+    let u : any[] = []
+
+    users.filter((user)=> {
+      if (user.creator.state == state) u.push(user)
+    })
+
+    return u
+  }
+
+  const filterAudioByState = (audios:any[], state:string) => {
+    let a: any[] = []
+    
+    audios.filter((audio)=> {
+      if (audio.state === state) a.push(audio)
+
+    })
+
+    return a 
+  }
+
 
   return (
     <div className="min-h-screen max-w-screen bg-gray-900 text-gray-100 flex flex-col">
@@ -142,19 +183,15 @@ export default function AdminPage() {
       {/* Listados */}
       <div className="flex justify-center items-center mb-72 px-10 sm:px-0 " >
         <div className="flex flex-auto flex-col w-[1000px] p-16">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 w-full">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 w-full">
             {/*Usuarios pendientes*/}
             <div>
-              <UserList users={users} title="Nuevos usuarios" />
-            </div>
-            {/*Usuarios suscripcion vencida*/}
-            <div >
-              <UserList users={users} title="Creadores por vencer" />
+              <UserList users={newUsers} title="Nuevos usuarios" />
             </div>
             <div>
               {/*Audios pendientes*/}
               <div >
-                <AudioAdminList audios={audios} title="Audios pendientes" />
+                <AudioAdminList audios={newAudios} title="Audios pendientes" />
               </div>
             </div>
           </div>

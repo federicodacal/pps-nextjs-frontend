@@ -17,6 +17,12 @@ const images = [
   { image: "/image_3.jpg" },
 ]; */
 
+const filterAudio = (audios:any[]) => {
+  return audios.filter((audio) => {
+    audio.state == "active"
+  })
+}
+
 
 const Home = () => {
   const [audios, setAudios] = useState<any[]>([]);
@@ -29,7 +35,8 @@ const Home = () => {
       try {
         const response = await getAllAudios();
         console.log("Audios obtenidos de la API:", response.data); // Verifica que los datos de la API estén bien
-        setAudios(response.data); // Guardamos los audios de la API en el estado
+
+        setAudios(filterAudio(response.data)); // Guardamos los audios de la API en el estado
       } catch (error) {
         console.error("Error al obtener los audios:", error);
       }
