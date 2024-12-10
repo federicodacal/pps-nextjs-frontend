@@ -18,9 +18,13 @@ const images = [
 ]; */
 
 const filterAudio = (audios:any[]) => {
-  return audios.filter((audio) => {
-    audio.state == "active"
+  let a: any[] = []
+
+  audios.filter((audio) => {
+    if (audio.state == "active" ) a.push(audio)
   })
+
+  return a
 }
 
 
