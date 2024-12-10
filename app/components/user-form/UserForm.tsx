@@ -43,7 +43,7 @@ const buildUser = (userData: any) => {
     profile: "N/A",
     points: 0,
     credits: 0,
-    subscription_ID: Number(userData.subscription_ID),
+    subscription_ID: userData.subscription_ID,
     account_ID: "N/A",
     personal_account_ID: "N/A",
     account_type: "N/A",

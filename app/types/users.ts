@@ -12,7 +12,7 @@ export interface UserPayload {
     profile: string
     points: number
     credits: number
-    subscription_ID: number
+    subscription_ID: string
     account_ID: string
     personal_account_ID: string
     account_type: string
@@ -73,7 +73,7 @@ export interface UserForm {
     pwd: string,
     credits: number,
     type: string,
-    subscription_ID: number,
+    subscription_ID: string,
     profile: string,
     state: string,
     account_type: string,
