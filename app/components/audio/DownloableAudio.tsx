@@ -1,4 +1,5 @@
 import React from "react";
+import AudioPlayer from "./AudioPlayer";
 
 type AudioFile = {
   ID: string;
@@ -56,11 +57,20 @@ const DownloadList: React.FC<DownloadListProps> = ({ audios }) => {
                   <strong>Size:</strong> {audio.size} MB
                 </p>
               </div>
+              <div>
+                {audio.file_url ? <AudioPlayer
+                  audioUrl={audio.file_url}
+                  onAddToCart={() => { }}
+                  onAddToFavorites={() => { }}
+                  full={false}
+                /> : <></>}
+
+              </div>
               <button
                 onClick={() => handleDownload(audio.file_url)}
                 className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-500"
               >
-                Download
+                Descargar
               </button>
             </li>
           )) :

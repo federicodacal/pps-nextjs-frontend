@@ -38,6 +38,7 @@ const fieldsName = new Map([
 ])
 
 const UserDetail: React.FC<UserProps> = ({ userForm }) => {
+    console.log(userForm)
     const [user, setUserData] = useState(userForm);
     const [isEditing, setIsEditing] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -115,6 +116,7 @@ const UserDetail: React.FC<UserProps> = ({ userForm }) => {
     return (
         <div>
             <div className="bg-gray-800 rounded-lg p-6 shadow-md max-w-4xl mx-auto relative">
+
 
 
                 <form className="grid grid-cols-2 gap-6">

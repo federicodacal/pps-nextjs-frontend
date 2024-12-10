@@ -17,7 +17,7 @@ import {
 import { useFavorites } from "@/app/contexts/FavoritesContext";
 import AudioPlayer from './AudioPlayer';
 
-const AudioDetailCard = ({ audio }: { audio: AudioDB }) => {
+const AudioDetailCard = ({ audio }: { audio: AudioDB, full: boolean }) => {
     const [alertMessage, setAlertMessage] = useState<string | null>(null);
     const { isFavorite, toggleFavorite } = useFavorites();
     const containerRef = useRef(null);
@@ -77,6 +77,7 @@ const AudioDetailCard = ({ audio }: { audio: AudioDB }) => {
                         audioUrl={audio.file_url}
                         onAddToCart={() => {}}
                         onAddToFavorites={() => {}}
+                        full={true}
                     />
 
                 </div>
