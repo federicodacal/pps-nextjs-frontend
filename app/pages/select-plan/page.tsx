@@ -15,6 +15,7 @@ type SubscriptionPlan = {
   detail: string;
   //periodicity: string;
   value: string;
+  percentage: number;
 };
 
 const buildUser = (userData: any) => {
@@ -61,6 +62,7 @@ const PlansPage = () => {
           name: plan.type,
           detail: `Duración: ${plan.renewal_time_in_days} días`,
           value: `$${plan.monthly_price} por mes`,
+          percentage: plan.revenue_percentage
         }));
 
         console.log('Subscripciones:', plans);
@@ -125,7 +127,7 @@ const PlansPage = () => {
         username: storage.getItem(`${dataPrefix}username`),
         full_name: storage.getItem(`${dataPrefix}full_name`),
         //dni: storage.getItem(`${dataPrefix}dni`),
-        phone_number: storage.getItem(`${dataPrefix}phone`),
+        phone_number: storage.getItem(`${dataPrefix}phone_number`),
         pwd: storage.getItem(`${dataPrefix}pwd`),
         type: storage.getItem(`${dataPrefix}type`),
         personal_ID: storage.getItem(`${dataPrefix}personal_ID`),
@@ -173,6 +175,9 @@ const PlansPage = () => {
               <p className="font-semibold mb-2">{plan.detail}</p>
               <p>
                 <span className="font-semibold">Valor:</span> {plan.value}
+              </p>
+              <p>
+                <span className="font-semibold">Ganancia:</span> % {plan.percentage}
               </p>
             </div>
             <button
